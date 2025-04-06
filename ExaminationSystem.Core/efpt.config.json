@@ -1,0 +1,553 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "ExaminationDBContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": true,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "ExaminationSystem.Core",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[AnswerTF]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[BranchDepts]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Branches]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Choices]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Configurations]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Course_Topics]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Courses]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Departments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ExamModels]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ExamQuestion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Images]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[IntakeDeptCourses]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Intakes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Locations]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MultiChoiceResponse]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PoolQuestion]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Pools]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Questions]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Roles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Staff]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StaffBranchDepartmentManagement]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StaffBranchDepartmentWorksFor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StaffBranchIntakeDepartmentCourseTeach]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StaffBranchManage]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StaffRoles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StudentExamModel]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StudentIntakeBranchDepartmentStudy]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Students]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[test]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Topics]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TrueFalseResponse]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Users]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Session]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[AddBranch]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[AddCourse]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[AddDepartment]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[AddMCQuestion]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[AddQuestion]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[AddQuestionsToPool]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[AddStaffBranchManage]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[AddTFQuestions]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[AddTopic]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[AddTopicToCourse]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[BranchDeptsCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[BranchDeptsDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[BranchDeptsGet]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[BranchDeptsUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[CreatePool]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[DeleteBranch]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[DeleteDepartment]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[DeleteQuestion]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[DeleteStaffBranchManage]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GenerateExamModels]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetAllBranches]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetAllCourses]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetAllDepartments]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetAllStaffBranchManage]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetAllTopics]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetBranchById]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetCourseById]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetCoursesByTopic]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetDepartmentById]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetQuestions]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetStaffBranchManageByBranchId]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetTopicById]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetTopicsByCourse]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[InitExamStudent]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[InsertStudentResponses]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[IntakeDeptCoursesCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[IntakeDeptCoursesDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[IntakeDeptCoursesGet]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[IntakeDeptCoursesUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[IntakesCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[IntakesDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[IntakesGet]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[IntakesUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[LocationsCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[LocationsDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[LocationsGet]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[LocationsUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[RemoveQuestionFromPool]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[RoleCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[RoleGetAll]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[RoleGetById]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[RoleUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[SetConfigurations]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[SetExamSession]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchDeptManageCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchDeptManageDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchDeptManageGet]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchDeptManageUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchDeptWorksForCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchDeptWorksForDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchDeptWorksForGet]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchDeptWorksForUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchIntakeDeptCourseTeachCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchIntakeDeptCourseTeachDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchIntakeDeptCourseTeachGet]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffBranchIntakeDeptCourseTeachUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffGetAll]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffGetByEmail]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffGetBySSN]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffRolesCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffRolesDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StaffUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StartExam]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StudentCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StudentDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StudentGetAll]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StudentGetByEmail]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StudentGetBySSN]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StudentIntakeBranchDeptStudyCreate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StudentIntakeBranchDeptStudyDelete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StudentIntakeBranchDeptStudyGet]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StudentIntakeBranchDeptStudyUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[StudentUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateBranch]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateConfigurationGrades]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateConfigurations]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateConfigurationStudentList]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateCourse]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateDepartment]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateStaffBranchManage]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateTopic]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[ValidateSessionData]",
+         "ObjectType": 1
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDatabaseNamesForRoutines": true,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false,
+   "UseT4Split": false
+}
