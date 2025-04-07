@@ -2739,11 +2739,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\iti-intake-45\\projects\\tempExam\\ExaminationSystem\\ExaminationSystem.EF\\ExaminationSystem.EF.csproj",
+      "projectUniqueName": "E:\\iti-intake-45\\1- Projects\\ExaminationSystem\\ExaminationSystem.EF\\ExaminationSystem.EF.csproj",
       "projectName": "ExaminationSystem.EF",
-      "projectPath": "E:\\iti-intake-45\\projects\\tempExam\\ExaminationSystem\\ExaminationSystem.EF\\ExaminationSystem.EF.csproj",
+      "projectPath": "E:\\iti-intake-45\\1- Projects\\ExaminationSystem\\ExaminationSystem.EF\\ExaminationSystem.EF.csproj",
       "packagesPath": "C:\\Users\\Mohamed Nasr\\.nuget\\packages\\",
-      "outputPath": "E:\\iti-intake-45\\projects\\tempExam\\ExaminationSystem\\ExaminationSystem.EF\\obj\\",
+      "outputPath": "E:\\iti-intake-45\\1- Projects\\ExaminationSystem\\ExaminationSystem.EF\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2764,8 +2764,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "E:\\iti-intake-45\\projects\\tempExam\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj": {
-              "projectPath": "E:\\iti-intake-45\\projects\\tempExam\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj"
+            "E:\\iti-intake-45\\1- Projects\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj": {
+              "projectPath": "E:\\iti-intake-45\\1- Projects\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj"
             }
           }
         }

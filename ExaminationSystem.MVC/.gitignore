@@ -110,7 +110,8 @@ wwwroot/vendor/**/*.css
 wwwroot/vendor/**/*.js
 wwwroot/vendor/css
 
-
+# sensitive data
+appsettings.json
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/

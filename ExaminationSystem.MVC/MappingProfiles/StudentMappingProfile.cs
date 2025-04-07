@@ -1,6 +1,6 @@
 using AutoMapper;
 using ExaminationSystem.Core.Models;
-using ExaminationSystem.MVC.ViewModels;
+using ExaminationSystem.MVC.ViewModels.StudentViewModels;
 
 namespace ExaminationSystem.MVC.MappingProfiles
 {

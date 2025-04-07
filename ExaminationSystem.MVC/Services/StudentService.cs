@@ -2,7 +2,7 @@ using AutoMapper;
 using ExaminationSystem.Core;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.EF;
-using ExaminationSystem.MVC.ViewModels;
+using ExaminationSystem.MVC.ViewModels.StudentViewModels;
 
 namespace ExaminationSystem.MVC.Services
 {

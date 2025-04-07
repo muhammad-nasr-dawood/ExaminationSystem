@@ -21,7 +21,7 @@ builder.Services.AddScoped<IStudentService, StudentService>(); // this is the on
 
 
 builder.Services.AddDbContext<ExaminationDBContext>(
-            options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped // will create a new object for each request
+            options => options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped // will create a new object for each request
         ); // if you didn't pass this callback function it will use the default constructor of the DbContext and will use the connection string from the OnConfiguring method in the ITIDBContext class
 var app = builder.Build();
 

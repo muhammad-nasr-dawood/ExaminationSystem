@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace ExaminationSystem.MVC.ViewModels
+namespace ExaminationSystem.MVC.ViewModels.StudentViewModels
 {
   public class StudentViewModel
   {

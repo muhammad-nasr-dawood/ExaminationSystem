@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\iti-intake-45\\projects\\tempExam\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj": {}
+    "E:\\iti-intake-45\\1- Projects\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj": {}
   },
   "projects": {
-    "E:\\iti-intake-45\\projects\\tempExam\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj": {
+    "E:\\iti-intake-45\\1- Projects\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\iti-intake-45\\projects\\tempExam\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj",
+        "projectUniqueName": "E:\\iti-intake-45\\1- Projects\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj",
         "projectName": "ExaminationSystem.Core",
-        "projectPath": "E:\\iti-intake-45\\projects\\tempExam\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj",
+        "projectPath": "E:\\iti-intake-45\\1- Projects\\ExaminationSystem\\ExaminationSystem.Core\\ExaminationSystem.Core.csproj",
         "packagesPath": "C:\\Users\\Mohamed Nasr\\.nuget\\packages\\",
-        "outputPath": "E:\\iti-intake-45\\projects\\tempExam\\ExaminationSystem\\ExaminationSystem.Core\\obj\\",
+        "outputPath": "E:\\iti-intake-45\\1- Projects\\ExaminationSystem\\ExaminationSystem.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
