@@ -3691,6 +3691,32 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
+        public virtual async Task<List<TeachAtResult>> TeachAtAsync(long? staffId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "StaffId",
+                    Value = staffId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.BigInt,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<TeachAtResult>("EXEC @returnValue = [dbo].[TeachAt] @StaffId = @StaffId", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
         public virtual async Task<int> UpdateBranchAsync(int? id, string zipCode, string streetNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter

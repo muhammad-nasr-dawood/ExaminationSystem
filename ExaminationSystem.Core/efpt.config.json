@@ -3,7 +3,7 @@
    "ContextClassName": "ExaminationDBContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
-   "IncludeConnectionString": true,
+   "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": "Models",
@@ -484,6 +484,10 @@
       },
       {
          "Name": "[dbo].[StudentUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[TeachAt]",
          "ObjectType": 1
       },
       {

@@ -8,10 +8,6 @@ namespace ExaminationSystem.Core.Models;
 
 public partial class ExaminationDBContext : DbContext
 {
-    public ExaminationDBContext()
-    {
-    }
-
     public ExaminationDBContext(DbContextOptions<ExaminationDBContext> options)
         : base(options)
     {
@@ -76,7 +72,6 @@ public partial class ExaminationDBContext : DbContext
     public virtual DbSet<TrueFalseResponse> TrueFalseResponses { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
