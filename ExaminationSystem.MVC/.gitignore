@@ -102,13 +102,11 @@ bld/
 
 # Ignoring following files/folder only for master
 
-wwwroot/css/*.css
+
 !wwwroot/css/demo.css
-wwwroot/js/*.js
-wwwroot/vendor/**/*.css
+
 !wwwroot/vendor/fonts/*.css
-wwwroot/vendor/**/*.js
-wwwroot/vendor/css
+
 
 # sensitive data
 appsettings.json
