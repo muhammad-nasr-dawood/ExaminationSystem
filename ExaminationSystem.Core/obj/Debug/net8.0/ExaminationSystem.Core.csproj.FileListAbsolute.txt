@@ -36,3 +36,5 @@ E:\iti-intake-45\1- Projects\ExaminationSystem\ExaminationSystem.Core\obj\Debug\
 E:\iti-intake-45\1- Projects\ExaminationSystem\ExaminationSystem.Core\obj\Debug\net8.0\refint\ExaminationSystem.Core.dll
 E:\iti-intake-45\1- Projects\ExaminationSystem\ExaminationSystem.Core\obj\Debug\net8.0\ExaminationSystem.Core.pdb
 E:\iti-intake-45\1- Projects\ExaminationSystem\ExaminationSystem.Core\obj\Debug\net8.0\ref\ExaminationSystem.Core.dll
+E:\iti-intake-45\1- Projects\ExaminationSystem\ExaminationSystem.Core\bin\Debug\net8.0\ExaminationSystem.Core.runtimeconfig.json
+E:\iti-intake-45\1- Projects\ExaminationSystem\ExaminationSystem.Core\obj\Debug\net8.0\ExaminationSystem.Core.genruntimeconfig.cache

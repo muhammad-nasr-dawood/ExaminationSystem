@@ -83,6 +83,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[ProfileImages]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Questions]",
          "ObjectType": 0
       },
@@ -545,7 +549,7 @@
    "UseManyToManyEntity": false,
    "UseNoDefaultConstructor": false,
    "UseNoNavigations": false,
-   "UseNoObjectFilter": false,
+   "UseNoObjectFilter": true,
    "UseNodaTime": false,
    "UseNullableReferences": false,
    "UsePrefixNavigationNaming": false,
