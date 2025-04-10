@@ -16,9 +16,9 @@ namespace ExaminationSystem.EF.Repositories
         {
             _dbContext = dbContext;
         }
-        public User ValidateLoginByEmailAndPassword(string email, string password)
+        public User ValidateLoginByEmail(string email)
         {
-            return _dbContext.Users.FirstOrDefault(u => u.Email == email && u.PasswordHash == password);
+            return _dbContext.Users.FirstOrDefault(u => u.Email == email);
         }
     }
 }

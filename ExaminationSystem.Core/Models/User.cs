@@ -34,10 +34,6 @@ public partial class User
     public string PasswordHash { get; set; }
 
     [Required]
-    [MaxLength(100)]
-    public byte[] Salt { get; set; }
-
-    [Required]
     [StringLength(6)]
     [Unicode(false)]
     public string ZipCode { get; set; }

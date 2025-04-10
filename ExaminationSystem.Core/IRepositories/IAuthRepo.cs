@@ -9,6 +9,6 @@ namespace ExaminationSystem.Core.IRepositories
 {
     public interface IAuthRepo
     {
-        User ValidateLoginByEmailAndPassword(string email, string password);
+        User ValidateLoginByEmail(string email);
     }
 }

@@ -1,7 +1,9 @@
+using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.Services;
 using ExaminationSystem.MVC.ViewModels.AuthViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -20,9 +22,11 @@ public class AuthController : Controller
   }
 
   public IActionResult LoginCover() => View();
+
   [HttpPost]
-  public IActionResult LoginCover(LoginViewModel model)
+  public async Task<IActionResult> LoginCover(LoginViewModel model)
   {
+	
 	if (ModelState.IsValid)
 	{
 	  UserLoginViewModel user = _authService.ValidateLoginByEmailAndPassword(model.Email, model.Password);
@@ -47,7 +51,17 @@ public class AuthController : Controller
 		ClaimsPrincipal principal = new ClaimsPrincipal();
 		principal.AddIdentity(card);
 
-		HttpContext.SignInAsync(principal); // to be saved in the cookie
+		var authProperties = new AuthenticationProperties
+		{
+		  IsPersistent = true, // Makes the cookie persist across browser sessions
+		  ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7) // Cookie expires after 7 days
+		};
+
+		await HttpContext.SignInAsync(
+			CookieAuthenticationDefaults.AuthenticationScheme,
+			principal,
+			authProperties
+		);
 
 		return View("Index");
 	  }
@@ -58,4 +72,13 @@ public class AuthController : Controller
 	}
 	return View(model);
   }
+
+  [Authorize] 
+  public async Task<IActionResult> Logout()
+  {
+	await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+	return RedirectToAction("LoginCover"); 
+  }
+
+
 }

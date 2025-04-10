@@ -1,10 +1,12 @@
 using ExaminationSystem.Core;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExaminationSystem.MVC.Controllers;
 
+[Authorize]
 public class StudentsController : Controller
 {
   IStudentService _studentService;
