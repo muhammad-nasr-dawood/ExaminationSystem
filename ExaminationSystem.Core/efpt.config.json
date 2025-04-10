@@ -83,6 +83,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[ProfileImages]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Questions]",
          "ObjectType": 0
       },
