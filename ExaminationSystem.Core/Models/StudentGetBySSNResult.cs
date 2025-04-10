@@ -21,8 +21,8 @@ namespace ExaminationSystem.Core.Models
         public string StreetNo { get; set; }
         public DateOnly BD { get; set; }
         public string Gender { get; set; }
-        [StringLength(255)]
-        public string Image_URL { get; set; }
+        [StringLength(500)]
+        public string ImageUrl { get; set; }
         [StringLength(11)]
         public string PhoneNumber { get; set; }
         public bool IsActive { get; set; }

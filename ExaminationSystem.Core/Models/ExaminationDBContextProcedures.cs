@@ -2642,7 +2642,7 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<int> StaffCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string image_URL, string phoneNumber, bool? isActive, decimal? salary, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> StaffCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string imageId, string phoneNumber, bool? isActive, decimal? salary, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -2723,10 +2723,10 @@ namespace ExaminationSystem.Core.Models
                 },
                 new SqlParameter
                 {
-                    ParameterName = "Image_URL",
-                    Size = 510,
-                    Value = image_URL ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NVarChar,
+                    ParameterName = "ImageId",
+                    Size = 30,
+                    Value = imageId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
                 {
@@ -2751,7 +2751,7 @@ namespace ExaminationSystem.Core.Models
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StaffCreate] @SSN = @SSN, @Fname = @Fname, @Lname = @Lname, @Email = @Email, @PasswordHash = @PasswordHash, @Salt = @Salt, @ZipCode = @ZipCode, @StreetNo = @StreetNo, @BD = @BD, @Gender = @Gender, @Image_URL = @Image_URL, @PhoneNumber = @PhoneNumber, @IsActive = @IsActive, @Salary = @Salary", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StaffCreate] @SSN = @SSN, @Fname = @Fname, @Lname = @Lname, @Email = @Email, @PasswordHash = @PasswordHash, @Salt = @Salt, @ZipCode = @ZipCode, @StreetNo = @StreetNo, @BD = @BD, @Gender = @Gender, @ImageId = @ImageId, @PhoneNumber = @PhoneNumber, @IsActive = @IsActive, @Salary = @Salary", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2982,7 +2982,7 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<int> StaffUpdateAsync(long? ssn, string fname, string lname, string email, string zipcode, string streetno, DateOnly? bd, string gender, string image_url, string phonenumber, decimal? salary, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> StaffUpdateAsync(long? ssn, string fname, string lname, string email, string zipcode, string streetno, DateOnly? bd, string gender, string imageId, string phonenumber, decimal? salary, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -3049,10 +3049,10 @@ namespace ExaminationSystem.Core.Models
                 },
                 new SqlParameter
                 {
-                    ParameterName = "image_url",
-                    Size = 510,
-                    Value = image_url ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NVarChar,
+                    ParameterName = "ImageId",
+                    Size = 30,
+                    Value = imageId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
                 {
@@ -3071,7 +3071,7 @@ namespace ExaminationSystem.Core.Models
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StaffUpdate] @ssn = @ssn, @fname = @fname, @lname = @lname, @email = @email, @zipcode = @zipcode, @streetno = @streetno, @bd = @bd, @gender = @gender, @image_url = @image_url, @phonenumber = @phonenumber, @salary = @salary", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StaffUpdate] @ssn = @ssn, @fname = @fname, @lname = @lname, @email = @email, @zipcode = @zipcode, @streetno = @streetno, @bd = @bd, @gender = @gender, @ImageId = @ImageId, @phonenumber = @phonenumber, @salary = @salary", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3110,7 +3110,7 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<int> StudentCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string image_URL, string phoneNumber, bool? isActive, string faculty, int? grad_Year, decimal? gPA, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> StudentCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string imageId, string phoneNumber, bool? isActive, string faculty, int? grad_Year, decimal? gPA, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -3191,10 +3191,10 @@ namespace ExaminationSystem.Core.Models
                 },
                 new SqlParameter
                 {
-                    ParameterName = "Image_URL",
-                    Size = 510,
-                    Value = image_URL ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NVarChar,
+                    ParameterName = "ImageId",
+                    Size = 30,
+                    Value = imageId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
                 {
@@ -3232,7 +3232,7 @@ namespace ExaminationSystem.Core.Models
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StudentCreate] @SSN = @SSN, @Fname = @Fname, @Lname = @Lname, @Email = @Email, @PasswordHash = @PasswordHash, @Salt = @Salt, @ZipCode = @ZipCode, @StreetNo = @StreetNo, @BD = @BD, @Gender = @Gender, @Image_URL = @Image_URL, @PhoneNumber = @PhoneNumber, @IsActive = @IsActive, @Faculty = @Faculty, @Grad_Year = @Grad_Year, @GPA = @GPA", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StudentCreate] @SSN = @SSN, @Fname = @Fname, @Lname = @Lname, @Email = @Email, @PasswordHash = @PasswordHash, @Salt = @Salt, @ZipCode = @ZipCode, @StreetNo = @StreetNo, @BD = @BD, @Gender = @Gender, @ImageId = @ImageId, @PhoneNumber = @PhoneNumber, @IsActive = @IsActive, @Faculty = @Faculty, @Grad_Year = @Grad_Year, @GPA = @GPA", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3582,7 +3582,7 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<int> StudentUpdateAsync(long? ssn, string fname, string lname, string email, string zipcode, string streetno, DateOnly? bd, string gender, string image_url, string phonenumber, string faculty, int? grad_year, decimal? gpa, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> StudentUpdateAsync(long? ssn, string fname, string lname, string email, string zipcode, string streetno, DateOnly? bd, string gender, string imageId, string phonenumber, string faculty, int? grad_year, decimal? gpa, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -3649,10 +3649,10 @@ namespace ExaminationSystem.Core.Models
                 },
                 new SqlParameter
                 {
-                    ParameterName = "image_url",
-                    Size = 510,
-                    Value = image_url ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.NVarChar,
+                    ParameterName = "ImageId",
+                    Size = 30,
+                    Value = imageId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
                 {
@@ -3684,7 +3684,7 @@ namespace ExaminationSystem.Core.Models
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StudentUpdate] @ssn = @ssn, @fname = @fname, @lname = @lname, @email = @email, @zipcode = @zipcode, @streetno = @streetno, @bd = @bd, @gender = @gender, @image_url = @image_url, @phonenumber = @phonenumber, @faculty = @faculty, @grad_year = @grad_year, @gpa = @gpa", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StudentUpdate] @ssn = @ssn, @fname = @fname, @lname = @lname, @email = @email, @zipcode = @zipcode, @streetno = @streetno, @bd = @bd, @gender = @gender, @ImageId = @ImageId, @phonenumber = @phonenumber, @faculty = @faculty, @grad_year = @grad_year, @gpa = @gpa", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
