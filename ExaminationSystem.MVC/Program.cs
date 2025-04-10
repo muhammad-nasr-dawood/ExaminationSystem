@@ -4,6 +4,7 @@ using ExaminationSystem.Core.Models;
 using ExaminationSystem.EF;
 using ExaminationSystem.EF.Repositories;
 using ExaminationSystem.MVC.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,19 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddDbContext<ExaminationDBContext>(
             options => options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped // will create a new object for each request
         ); // if you didn't pass this callback function it will use the default constructor of the DbContext and will use the connection string from the OnConfiguring method in the ITIDBContext class
+
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+			.AddCookie(
+				options =>
+				{
+				  options.LoginPath = "/auth/logincover"; // the path to the login page
+				  options.LogoutPath = "/Account/Logout"; // the path to the logout page
+				  options.AccessDeniedPath = "/Account/AccessDenied"; // the path to the access denied page
+				  options.ExpireTimeSpan = TimeSpan.FromHours(3); // the cookie will be stored in the CLIENT-SIDE for 3 hours
+				  options.SlidingExpiration = true; // if you set it to true it will reset the expiration time each time the user makes a request
+				}
+			);
 var app = builder.Build();
 
 
@@ -40,6 +54,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
