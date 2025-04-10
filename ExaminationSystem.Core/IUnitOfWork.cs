@@ -10,6 +10,7 @@ namespace ExaminationSystem.Core
     public interface IUnitOfWork: IDisposable
     {
         IStudentRepo Students { get; }
+        IAuthRepo AuthRepo { get; }
 
         int Complete();
     }

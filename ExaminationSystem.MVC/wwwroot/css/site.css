@@ -1,1 +1,4 @@
 /* Custom styles goes here */
+.field-validation-error {
+	color: red;
+}

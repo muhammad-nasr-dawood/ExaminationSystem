@@ -18,7 +18,8 @@ builder.Services.AddScoped<IStudentRepo, StudentRepo>(); // new object will be c
 
 builder.Services.AddAutoMapper(typeof(Program)); // regiseration for auto mapper (uses refelection)
 builder.Services.AddScoped<IStudentService, StudentService>(); // this is the only layer that can deal with the controller directly (any other dirty work like auto-mapping etc will be within it)
-
+builder.Services.AddScoped<IAuthRepo, AuthRepo>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddDbContext<ExaminationDBContext>(
             options => options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped // will create a new object for each request
