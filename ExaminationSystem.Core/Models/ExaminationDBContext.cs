@@ -507,7 +507,6 @@ public partial class ExaminationDBContext : DbContext
                 .HasConstraintName("FK_Users_Locations");
         });
 
-        OnModelCreatingGeneratedFunctions(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
     }
 
