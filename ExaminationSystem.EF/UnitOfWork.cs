@@ -16,11 +16,14 @@ namespace ExaminationSystem.EF
 
         public IAuthRepo AuthRepo {  get; }
 
-        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo)
+        public IBaseRepo<Staff> StaffRepo { get; }
+
+        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo)
         {
             _dbContext = dbContext;
             Students = students;
             AuthRepo = authRepo;
+            StaffRepo = staffRepo;
         }
 
         public int Complete()

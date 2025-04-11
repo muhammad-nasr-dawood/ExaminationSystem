@@ -1,4 +1,5 @@
 ﻿using ExaminationSystem.Core.IRepositories;
+using ExaminationSystem.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace ExaminationSystem.Core
     {
         IStudentRepo Students { get; }
         IAuthRepo AuthRepo { get; }
+        IBaseRepo<Staff> StaffRepo { get; }
 
         int Complete();
     }
