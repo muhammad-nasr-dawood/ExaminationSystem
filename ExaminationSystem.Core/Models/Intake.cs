@@ -16,13 +16,25 @@ public partial class Intake
     public byte IsRunning { get; set; }
 
     [InverseProperty("Intake")]
+    public virtual ICollection<BranchDept> BranchDepts { get; set; } = new List<BranchDept>();
+
+    [InverseProperty("Intake")]
     public virtual ICollection<IntakeDeptCourse> IntakeDeptCourses { get; set; } = new List<IntakeDeptCourse>();
 
     [InverseProperty("Intake")]
     public virtual ICollection<Pool> Pools { get; set; } = new List<Pool>();
 
     [InverseProperty("Intake")]
+    public virtual ICollection<StaffBranchDepartmentManagement> StaffBranchDepartmentManagements { get; set; } = new List<StaffBranchDepartmentManagement>();
+
+    [InverseProperty("Intake")]
+    public virtual ICollection<StaffBranchDepartmentWorksFor> StaffBranchDepartmentWorksFors { get; set; } = new List<StaffBranchDepartmentWorksFor>();
+
+    [InverseProperty("Intake")]
     public virtual ICollection<StaffBranchIntakeDepartmentCourseTeach> StaffBranchIntakeDepartmentCourseTeaches { get; set; } = new List<StaffBranchIntakeDepartmentCourseTeach>();
+
+    [InverseProperty("Intake")]
+    public virtual ICollection<StaffBranchManage> StaffBranchManages { get; set; } = new List<StaffBranchManage>();
 
     [InverseProperty("Intake")]
     public virtual ICollection<StudentIntakeBranchDepartmentStudy> StudentIntakeBranchDepartmentStudies { get; set; } = new List<StudentIntakeBranchDepartmentStudy>();

@@ -27,7 +27,7 @@ public partial class StudentIntakeBranchDepartmentStudy
     [InverseProperty("StudentIntakeBranchDepartmentStudies")]
     public virtual Branch Branch { get; set; }
 
-    [ForeignKey("BranchId, DepartmentId")]
+    [ForeignKey("BranchId, DepartmentId, IntakeId")]
     [InverseProperty("StudentIntakeBranchDepartmentStudies")]
     public virtual BranchDept BranchDept { get; set; }
 

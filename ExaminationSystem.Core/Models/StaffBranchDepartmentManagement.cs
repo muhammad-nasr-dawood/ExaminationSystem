@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExaminationSystem.Core.Models;
 
-[PrimaryKey("BranchId", "DepartmentId")]
+[PrimaryKey("BranchId", "DepartmentId", "IntakeId")]
 [Table("StaffBranchDepartmentManagement")]
 [Index("StaffSsn", Name = "UQ_StaffSSN", IsUnique = true)]
 public partial class StaffBranchDepartmentManagement
@@ -24,17 +24,24 @@ public partial class StaffBranchDepartmentManagement
 
     public DateOnly? HiringDate { get; set; }
 
+    [Key]
+    public int IntakeId { get; set; }
+
     [ForeignKey("BranchId")]
     [InverseProperty("StaffBranchDepartmentManagements")]
     public virtual Branch Branch { get; set; }
 
-    [ForeignKey("BranchId, DepartmentId")]
+    [ForeignKey("BranchId, DepartmentId, IntakeId")]
     [InverseProperty("StaffBranchDepartmentManagement")]
     public virtual BranchDept BranchDept { get; set; }
 
     [ForeignKey("DepartmentId")]
     [InverseProperty("StaffBranchDepartmentManagements")]
     public virtual Department Department { get; set; }
+
+    [ForeignKey("IntakeId")]
+    [InverseProperty("StaffBranchDepartmentManagements")]
+    public virtual Intake Intake { get; set; }
 
     [ForeignKey("StaffSsn")]
     [InverseProperty("StaffBranchDepartmentManagement")]

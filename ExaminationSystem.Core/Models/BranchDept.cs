@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExaminationSystem.Core.Models;
 
-[PrimaryKey("BranchId", "DeptId")]
+[PrimaryKey("BranchId", "DeptId", "IntakeId")]
 public partial class BranchDept
 {
     [Key]
@@ -17,6 +17,9 @@ public partial class BranchDept
     [Key]
     public int DeptId { get; set; }
 
+    [Key]
+    public int IntakeId { get; set; }
+
     [ForeignKey("BranchId")]
     [InverseProperty("BranchDepts")]
     public virtual Branch Branch { get; set; }
@@ -24,6 +27,10 @@ public partial class BranchDept
     [ForeignKey("DeptId")]
     [InverseProperty("BranchDepts")]
     public virtual Department Dept { get; set; }
+
+    [ForeignKey("IntakeId")]
+    [InverseProperty("BranchDepts")]
+    public virtual Intake Intake { get; set; }
 
     [InverseProperty("BranchDept")]
     public virtual StaffBranchDepartmentManagement StaffBranchDepartmentManagement { get; set; }

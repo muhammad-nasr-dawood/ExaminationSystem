@@ -37,7 +37,7 @@ public partial class Staff
     public virtual ICollection<StaffBranchIntakeDepartmentCourseTeach> StaffBranchIntakeDepartmentCourseTeaches { get; set; } = new List<StaffBranchIntakeDepartmentCourseTeach>();
 
     [InverseProperty("StaffSsnNavigation")]
-    public virtual StaffBranchManage StaffBranchManage { get; set; }
+    public virtual ICollection<StaffBranchManage> StaffBranchManages { get; set; } = new List<StaffBranchManage>();
 
     [ForeignKey("StaffSsn")]
     [InverseProperty("StaffSsns")]

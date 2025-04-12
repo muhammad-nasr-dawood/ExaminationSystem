@@ -100,6 +100,10 @@ public partial class ExaminationDBContext : DbContext
             entity.HasOne(d => d.Dept).WithMany(p => p.BranchDepts)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BranchDepts_Depts");
+
+            entity.HasOne(d => d.Intake).WithMany(p => p.BranchDepts)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_BranchDept_intakeId");
         });
 
         modelBuilder.Entity<Choice>(entity =>
@@ -329,6 +333,8 @@ public partial class ExaminationDBContext : DbContext
 
         modelBuilder.Entity<StaffBranchDepartmentManagement>(entity =>
         {
+            entity.HasKey(e => new { e.BranchId, e.DepartmentId, e.IntakeId }).HasName("PK_StaffBranchDepartmentManagement_1");
+
             entity.Property(e => e.HiringDate).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.Branch).WithMany(p => p.StaffBranchDepartmentManagements)
@@ -339,13 +345,17 @@ public partial class ExaminationDBContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StaffBranchDepartmentManagement_Departments");
 
+            entity.HasOne(d => d.Intake).WithMany(p => p.StaffBranchDepartmentManagements)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StaffBranchDepartmentManagement_intakeId");
+
             entity.HasOne(d => d.StaffSsnNavigation).WithOne(p => p.StaffBranchDepartmentManagement)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StaffBranchDepartmentManagement_Staff");
 
             entity.HasOne(d => d.BranchDept).WithOne(p => p.StaffBranchDepartmentManagement)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StaffBranchDepartmentManagement_BranchDepts");
+                .HasConstraintName("FK_BranchId_DeptId_IntakeId");
         });
 
         modelBuilder.Entity<StaffBranchDepartmentWorksFor>(entity =>
@@ -360,13 +370,17 @@ public partial class ExaminationDBContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StaffBranchDepartmentWorksFor_Departments");
 
+            entity.HasOne(d => d.Intake).WithMany(p => p.StaffBranchDepartmentWorksFors)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StaffBranchDeptWorksFor_intakeId");
+
             entity.HasOne(d => d.StaffSsnNavigation).WithMany(p => p.StaffBranchDepartmentWorksFors)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StaffBranchDepartmentWorksFor_Staff");
 
             entity.HasOne(d => d.BranchDept).WithMany(p => p.StaffBranchDepartmentWorksFors)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StaffBranchDepartmentWorksFor_BranchDepts");
+                .HasConstraintName("FK_BranchId_DeptId_IntakeId_worksfor");
         });
 
         modelBuilder.Entity<StaffBranchIntakeDepartmentCourseTeach>(entity =>
@@ -393,7 +407,7 @@ public partial class ExaminationDBContext : DbContext
 
             entity.HasOne(d => d.BranchDept).WithMany(p => p.StaffBranchIntakeDepartmentCourseTeaches)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StaffBranchIntakeDepartmentCourseTeach_BranchDepts");
+                .HasConstraintName("FK_BranchId_DeptId_IntakeId_Teach");
 
             entity.HasOne(d => d.IntakeDeptCourse).WithMany(p => p.StaffBranchIntakeDepartmentCourseTeaches)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -402,14 +416,17 @@ public partial class ExaminationDBContext : DbContext
 
         modelBuilder.Entity<StaffBranchManage>(entity =>
         {
-            entity.Property(e => e.StaffSsn).ValueGeneratedNever();
             entity.Property(e => e.HiringDate).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.Branch).WithOne(p => p.StaffBranchManage)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StaffBranchManage_Branch");
 
-            entity.HasOne(d => d.StaffSsnNavigation).WithOne(p => p.StaffBranchManage)
+            entity.HasOne(d => d.Intake).WithMany(p => p.StaffBranchManages)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StaffBranch_intakeId");
+
+            entity.HasOne(d => d.StaffSsnNavigation).WithMany(p => p.StaffBranchManages)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StaffBranchManage_Staff");
         });
@@ -460,7 +477,7 @@ public partial class ExaminationDBContext : DbContext
 
             entity.HasOne(d => d.BranchDept).WithMany(p => p.StudentIntakeBranchDepartmentStudies)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StudentIntakeBranchDepartmentStudy_BranchDepts");
+                .HasConstraintName("FK_BranchId_DeptId_IntakeId_study");
         });
 
         modelBuilder.Entity<Test>(entity =>
