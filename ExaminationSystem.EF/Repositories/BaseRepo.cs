@@ -108,13 +108,13 @@ namespace ExaminationSystem.EF.Repositories
             )
         {
             IQueryable<T> query = _context.Set<T>().AsQueryable();
-
+            var totalItemsInTable = query.Count();
 
             if (criteria != null)
                 query = query.Where(criteria);
 
-            var totalItems = query.Count(); 
-            var totalPages = (int)Math.Ceiling(totalItems / (double)take.GetValueOrDefault(10));  
+            var totalFilteredItems = query.Count(); 
+            var totalPages = (int)Math.Ceiling(totalFilteredItems / (double)take.GetValueOrDefault(10));  
 
             if (skip.HasValue)
                 query = query.Skip(skip.Value);
@@ -138,7 +138,8 @@ namespace ExaminationSystem.EF.Repositories
                 CurrentPage = (skip.GetValueOrDefault(0) / take.GetValueOrDefault(10)) + 1,  
                 PageSize = take.GetValueOrDefault(10), 
                 TotalPages = totalPages,
-                TotalItems = totalItems
+                TotalFilteredItems = totalFilteredItems,
+                TotalItemsInTable = totalItemsInTable
             };
         }
 

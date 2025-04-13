@@ -29,7 +29,4 @@
     <ProjectReference Include="..\ExaminationSystem.Core\ExaminationSystem.Core.csproj" />
     <ProjectReference Include="..\ExaminationSystem.EF\ExaminationSystem.EF.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModels\StaffViewModels\" />
-  </ItemGroup>
 </Project>
