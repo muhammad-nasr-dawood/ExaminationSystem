@@ -44,5 +44,16 @@ namespace ExaminationSystem.Core.IRepositories
         int Count(Expression<Func<T, bool>> criteria);
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<T, bool>> criteria);
+
+
+        Task<IEnumerable<T>> FindAllAsync(
+                int? take, int? skip, 
+                Expression<Func<T, bool>> criteria = null,
+                Expression<Func<T, object>> orderBy = null,
+                string orderByDirection = OrderBy.Ascending,
+                params Expression<Func<T, object>>[] includes);
+
+
+
     }
 }
