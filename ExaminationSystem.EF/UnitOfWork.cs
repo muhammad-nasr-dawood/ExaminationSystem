@@ -18,12 +18,24 @@ namespace ExaminationSystem.EF
 
         public IBaseRepo<Staff> StaffRepo { get; }
 
-        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo)
+        public IBaseRepo<User> UserRepo { get; }
+
+        public IBaseRepo<Location> LocationRepo { get; }
+
+        public IBaseRepo<Department> DepartmentRepo { get; }
+
+        public IBaseRepo<Branch> BranchesRepo { get; }
+
+        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo)
         {
             _dbContext = dbContext;
             Students = students;
             AuthRepo = authRepo;
             StaffRepo = staffRepo;
+            LocationRepo = locationRepo;    
+            BranchesRepo = branchRepo;
+            DepartmentRepo = departmentRepo;    
+            UserRepo = userRepo;
         }
 
         public int Complete()

@@ -15,10 +15,12 @@ namespace ExaminationSystem.MVC.Services
   {
 	public IUnitOfWork UnitOfWork { get;  }
 	private readonly IMapper _mapper;
-	public StaffService(IUnitOfWork unitOfWork, IMapper mapper)
+	private readonly IPasswordService _passwordService;
+	public StaffService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordService passwordService)
 	{
 	  UnitOfWork = unitOfWork;
 	  _mapper = mapper;
+	  _passwordService = passwordService;
 	}
 
 
@@ -88,6 +90,24 @@ namespace ExaminationSystem.MVC.Services
 	  };
 
 	  return res;
+	}
+
+
+	public bool Add(StaffAddViewModel model)
+	{
+	  var userEntity = _mapper.Map<User>(model);
+	  if (userEntity != null)
+	  {
+		userEntity.PasswordHash = _passwordService.HashPassword(userEntity.Ssn.ToString()); // user ssn will be his password
+	  }
+	  var staffEntity = _mapper.Map<Staff>(model);
+
+	  UnitOfWork.UserRepo.Add(userEntity);
+	  UnitOfWork.StaffRepo.Add(staffEntity);
+
+	  var numOfRowsAffected = UnitOfWork.Complete();
+
+	  return numOfRowsAffected == 2 ;
 	}
 
   }

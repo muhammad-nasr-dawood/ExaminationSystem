@@ -158,17 +158,28 @@ namespace ExaminationSystem.EF.Repositories
             return await _context.Set<T>().Where(criteria).Skip(skip).Take(take).ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> FindAllAsync(int? take, int? skip, Expression<Func<T, bool>> criteria = null, Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending)
+        public PaginatedResult<T> FindAllAsync(
+             int? take = 10,
+             int? skip = 0,
+             Expression<Func<T, bool>> criteria = null,
+             Expression<Func<T, object>> orderBy = null,
+             string orderByDirection = OrderBy.Ascending
+            )
         {
             IQueryable<T> query = _context.Set<T>().AsQueryable();
+            var totalItemsInTable = query.Count();
+
             if (criteria != null)
                 query = query.Where(criteria);
 
-            if (take.HasValue)
-                query = query.Take(take.Value);
+            var totalFilteredItems = query.Count();
+            var totalPages = (int)Math.Ceiling(totalFilteredItems / (double)take.GetValueOrDefault(10));
 
             if (skip.HasValue)
                 query = query.Skip(skip.Value);
+
+            if (take.HasValue)
+                query = query.Take(take.Value);
 
             if (orderBy != null)
             {
@@ -178,7 +189,17 @@ namespace ExaminationSystem.EF.Repositories
                     query = query.OrderByDescending(orderBy);
             }
 
-            return await query.ToListAsync();// the query will be only executed at that moment anything above is just building the query
+            var items = query.ToList();
+
+            return new PaginatedResult<T>
+            {
+                Items = items,
+                CurrentPage = (skip.GetValueOrDefault(0) / take.GetValueOrDefault(10)) + 1,
+                PageSize = take.GetValueOrDefault(10),
+                TotalPages = totalPages,
+                TotalFilteredItems = totalFilteredItems,
+                TotalItemsInTable = totalItemsInTable
+            };
         }
 
         public T Add(T entity)

@@ -9,6 +9,7 @@ namespace ExaminationSystem.MVC.ViewModels.StaffViewModels
   public class StaffAddViewModel
   {
 	[Remote("IsSSNExist", "Staff", ErrorMessage = "SSN already exists", AdditionalFields = "Email")]
+	[Required]
 	public long Ssn { get; set; }
 
 	[Required]
@@ -25,14 +26,6 @@ namespace ExaminationSystem.MVC.ViewModels.StaffViewModels
 	[Remote("IsEmailExist", "Staff", ErrorMessage = "Email already exists", AdditionalFields = "Ssn")]
 	public string Email { get; set; }
 
-	[Required]
-	[StringLength(100)]
-	[DataType(DataType.Password)]
-	public string Password { get; set; }
-	[DataType(DataType.Password)]
-	[Compare("Password")]
-	[NotMapped]
-	public string ConfirmPassword { get; set; }
 
 	[Required]
 	[StringLength(6)]

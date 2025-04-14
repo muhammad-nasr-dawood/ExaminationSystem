@@ -1,5 +1,6 @@
 using ExaminationSystem.Core.Consts;
 using ExaminationSystem.MVC.Services;
+using ExaminationSystem.MVC.ViewModels;
 using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +22,10 @@ public class StaffController : Controller
   public IActionResult Index()
   {
 	// Get branches and departments for filters
-	//ViewBag.Branches = _branchService.GetAllBranches();
-	//ViewBag.Departments = _departmentService.GetAllDepartments();
+	ViewBag.Branches = _staffService.UnitOfWork.BranchesRepo.GetAll();
+	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
+
+	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
 
 	return View();
   }
@@ -86,59 +89,77 @@ public class StaffController : Controller
 	}
   }
 
-  public IActionResult Add()
+  [HttpPost]
+  public JsonResult Add(StaffAddViewModel model)
   {
-	return View();
+	if (ModelState.IsValid)
+	{
+	  try
+	  {
+		var IsSucceeded = _staffService.Add(model);
+		if (!IsSucceeded)
+		  return Json(new { success = false, message = "Something went very wrong!" });
+
+		return Json(new { success = true, message = "Staff added successfully!" });
+	  }
+	  catch (Exception ex)
+	  {
+		return Json(new { success = false, message = ex.Message });
+	  }
+	}
+
+	return Json(new { success = false, message = "Invalid data." });
   }
 
+
   //[HttpPost]
- // public IActionResult Delete(string id)
- // {
-	//try
-	//{
-	//  var result = _staffService.DeleteStaff(id);
-	//  return Json(new { success = result.IsSuccess, message = result.Message });
-	//}
-	//catch (Exception ex)
-	//{
-	//  return Json(new { success = false, message = "An error occurred while deleting the staff member." });
-	//}
- // }
+  // public IActionResult Delete(string id)
+  // {
+  //try
+  //{
+  //  var result = _staffService.DeleteStaff(id);
+  //  return Json(new { success = result.IsSuccess, message = result.Message });
+  //}
+  //catch (Exception ex)
+  //{
+  //  return Json(new { success = false, message = "An error occurred while deleting the staff member." });
+  //}
+  // }
 
- // [HttpGet]
- // public IActionResult Edit(string id)
- // {
-	//var staff = _staffService.GetStaffById(id);
-	//if (staff == null)
-	//{
-	//  return NotFound();
-	//}
+  // [HttpGet]
+  // public IActionResult Edit(string id)
+  // {
+  //var staff = _staffService.GetStaffById(id);
+  //if (staff == null)
+  //{
+  //  return NotFound();
+  //}
 
-	//ViewBag.Branches = _branchService.GetAllBranches();
-	//ViewBag.Departments = _departmentService.GetAllDepartments();
+  //ViewBag.Branches = _branchService.GetAllBranches();
+  //ViewBag.Departments = _departmentService.GetAllDepartments();
 
-	//return View(staff);
- // }
+  //return View(staff);
+  // }
 
- // [HttpPost]
- // public IActionResult Edit(StaffUpdateVM model)
- // {
-	//if (!ModelState.IsValid)
-	//{
-	//  ViewBag.Branches = _branchService.GetAllBranches();
-	//  ViewBag.Departments = _departmentService.GetAllDepartments();
-	//  return View(model);
-	//}
+  // [HttpPost]
+  // public IActionResult Edit(StaffUpdateVM model)
+  // {
+  //if (!ModelState.IsValid)
+  //{
+  //  ViewBag.Branches = _branchService.GetAllBranches();
+  //  ViewBag.Departments = _departmentService.GetAllDepartments();
+  //  return View(model);
+  //}
 
-	//var result = _staffService.UpdateStaff(model);
-	//if (result.IsSuccess)
-	//{
-	//  return RedirectToAction(nameof(Index));
-	//}
+  //var result = _staffService.UpdateStaff(model);
+  //if (result.IsSuccess)
+  //{
+  //  return RedirectToAction(nameof(Index));
+  //}
 
-	//ModelState.AddModelError("", result.Message);
-	//ViewBag.Branches = _branchService.GetAllBranches();
-	//ViewBag.Departments = _departmentService.GetAllDepartments();
-	//return View(model);
- // }
+  //ModelState.AddModelError("", result.Message);
+  //ViewBag.Branches = _branchService.GetAllBranches();
+  //ViewBag.Departments = _departmentService.GetAllDepartments();
+  //return View(model);
+  // }
 }

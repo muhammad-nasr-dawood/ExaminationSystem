@@ -25,6 +25,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IPasswordService, PasswordService>(); // singleton no need for more than one object for this servcie since it's a stateless utility service and there's no shared state or data (and our code will be also loosly coupled better than using static class which will make our code tightly coupled)
 
 builder.Services.AddScoped<IBaseRepo<Staff>, BaseRepo<Staff>>(); // staff repo using the generic repo
+builder.Services.AddScoped<IBaseRepo<User>, BaseRepo<User>>();
+builder.Services.AddScoped<IBaseRepo<Branch>, BaseRepo<Branch>>();
+builder.Services.AddScoped<IBaseRepo<Department>, BaseRepo<Department>>();
+builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();	
 builder.Services.AddScoped<IStaffService, StaffService>();
 
 builder.Services.AddDbContext<ExaminationDBContext>(

@@ -18,5 +18,9 @@ namespace ExaminationSystem.MVC.Services
 		string columnOrderBy = null,
 		string orderByDirection = OrderBy.Ascending,
 		string searchTerm = null);
+
+	bool Add(StaffAddViewModel model);
   }
+
+
 }
