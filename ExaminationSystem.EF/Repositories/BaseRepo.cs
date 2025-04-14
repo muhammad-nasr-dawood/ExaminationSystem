@@ -271,5 +271,39 @@ namespace ExaminationSystem.EF.Repositories
         {
             return await _context.Set<T>().CountAsync(criteria);
         }
+
+        public async Task<IEnumerable<T>> FindAllAsync(int? take, int? skip, Expression<Func<T, bool>> criteria = null, Expression<Func<T, object>> orderBy = null, string orderByDirection = "ASC", params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _context.Set<T>().AsQueryable();
+
+            // Apply includes
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            // Apply filtering
+            if (criteria != null)
+                query = query.Where(criteria);
+
+            // Apply ordering
+            if (orderBy != null)
+            {
+                query = orderByDirection == OrderBy.Ascending
+                    ? query.OrderBy(orderBy)
+                    : query.OrderByDescending(orderBy);
+            }
+
+            // Apply pagination
+            if (skip.HasValue)
+                query = query.Skip(skip.Value);
+            if (take.HasValue)
+                query = query.Take(take.Value);
+
+            return await query.ToListAsync();
+        }
     }
 }
