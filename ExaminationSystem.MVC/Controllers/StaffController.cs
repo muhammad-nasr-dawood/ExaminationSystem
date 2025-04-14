@@ -86,6 +86,11 @@ public class StaffController : Controller
 	}
   }
 
+  public IActionResult Add()
+  {
+	return View();
+  }
+
   //[HttpPost]
  // public IActionResult Delete(string id)
  // {
