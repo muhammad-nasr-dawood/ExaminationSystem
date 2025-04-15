@@ -17,6 +17,11 @@ namespace ExaminationSystem.Core
 
         IAuthRepo AuthRepo { get; }
         IBaseRepo<Staff> StaffRepo { get; }
+        IBaseRepo<User> UserRepo { get; }
+
+        IBaseRepo<Location> LocationRepo { get; }
+        IBaseRepo<Department> DepartmentRepo { get; }
+        IBaseRepo<Branch> BranchesRepo { get; }
 
         int Complete();
     }

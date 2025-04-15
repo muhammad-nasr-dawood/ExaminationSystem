@@ -6,23 +6,30 @@ using ExaminationSystem.EF;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq.Expressions;
 using LinqKit;
+using AutoMapper;
+using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 
 namespace ExaminationSystem.MVC.Services
 {
   public class StaffService : IStaffService
   {
 	public IUnitOfWork UnitOfWork { get;  }
-	public StaffService(IUnitOfWork unitOfWork)
+	private readonly IMapper _mapper;
+	private readonly IPasswordService _passwordService;
+	public StaffService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordService passwordService)
 	{
 	  UnitOfWork = unitOfWork;
+	  _mapper = mapper;
+	  _passwordService = passwordService;
 	}
 
 
-	public PaginatedResult<Staff> FindAll(
+	public PaginatedResult<StaffGeneralDisplayVM> FindAll(
 		int? pageNumber,
 		int? pageSize,
 		int? branchIdFilter,
 		int? departmentIdFilter,
+		bool? StatusFilter,
 		string columnOrderBy = null,
 		string orderByDirection = OrderBy.Ascending,
 		string searchTerm = null)
@@ -39,6 +46,11 @@ namespace ExaminationSystem.MVC.Services
 	  if (departmentIdFilter.HasValue)
 	  {
 		criteria = criteria.And(staff => staff.StaffBranchDepartmentWorksFors.Any(w => w.DepartmentId == departmentIdFilter));
+	  }
+
+	  if (StatusFilter.HasValue)
+	  {
+		criteria = criteria.And(staff => staff.SsnNavigation.IsActive == StatusFilter);
 	  }
 
 	  if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -59,13 +71,43 @@ namespace ExaminationSystem.MVC.Services
 		}
 	  }
 
-	  return UnitOfWork.StaffRepo.FindAll(
+	  PaginatedResult<Staff> tempRes = UnitOfWork.StaffRepo.FindAll(
 		  take: pageSize,
 		  skip: (pageNumber - 1) * pageSize,
 		  criteria: criteria,
 		  orderBy: orderBy,
 		  orderByDirection: orderByDirection
 	  );
+
+	  PaginatedResult<StaffGeneralDisplayVM> res = new PaginatedResult<StaffGeneralDisplayVM>()
+	  {
+		Items = _mapper.Map<List<StaffGeneralDisplayVM>>(tempRes.Items),
+		PageSize = tempRes.PageSize,
+		CurrentPage = tempRes.CurrentPage,
+		TotalPages = tempRes.TotalPages,
+		TotalFilteredItems = tempRes.TotalFilteredItems,
+		TotalItemsInTable = tempRes.TotalItemsInTable,
+	  };
+
+	  return res;
+	}
+
+
+	public bool Add(StaffAddViewModel model)
+	{
+	  var userEntity = _mapper.Map<User>(model);
+	  if (userEntity != null)
+	  {
+		userEntity.PasswordHash = _passwordService.HashPassword(userEntity.Ssn.ToString()); // user ssn will be his password
+	  }
+	  var staffEntity = _mapper.Map<Staff>(model);
+
+	  UnitOfWork.UserRepo.Add(userEntity);
+	  UnitOfWork.StaffRepo.Add(staffEntity);
+
+	  var numOfRowsAffected = UnitOfWork.Complete();
+
+	  return numOfRowsAffected == 2 ;
 	}
 
   }

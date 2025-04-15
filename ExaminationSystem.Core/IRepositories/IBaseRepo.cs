@@ -30,8 +30,13 @@ namespace ExaminationSystem.Core.IRepositories
 
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria);
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, int skip, int take);
-        Task<IEnumerable<T>> FindAllAsync(int? take, int? skip, Expression<Func<T, bool>> criteria = null,
-            Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending);
+        public PaginatedResult<T> FindAllAsync(
+             int? take = 10,
+             int? skip = 0,
+             Expression<Func<T, bool>> criteria = null,
+             Expression<Func<T, object>> orderBy = null,
+             string orderByDirection = OrderBy.Ascending
+            );
         T Add(T entity);
         Task<T> AddAsync(T entity);
         IEnumerable<T> AddRange(IEnumerable<T> entities);
@@ -45,5 +50,16 @@ namespace ExaminationSystem.Core.IRepositories
         int Count(Expression<Func<T, bool>> criteria);
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<T, bool>> criteria);
+
+
+        Task<IEnumerable<T>> FindAllAsync(
+                int? take, int? skip, 
+                Expression<Func<T, bool>> criteria = null,
+                Expression<Func<T, object>> orderBy = null,
+                string orderByDirection = OrderBy.Ascending,
+                params Expression<Func<T, object>>[] includes);
+
+
+
     }
 }
