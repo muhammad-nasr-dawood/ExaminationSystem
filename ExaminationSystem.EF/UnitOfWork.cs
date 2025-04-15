@@ -13,17 +13,24 @@ namespace ExaminationSystem.EF
     {
         ExaminationDBContext _dbContext;
         public IStudentRepo Students {  get; }
+        public IBranchRepo Branches { get; }
+        public IDepartmentRepo Departments { get; }
+        public ILocationRepo Locations { get; }
 
         public IAuthRepo AuthRepo {  get; }
 
         public IBaseRepo<Staff> StaffRepo { get; }
 
-        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo)
+        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBranchRepo branches, IDepartmentRepo departments, ILocationRepo locations)
         {
             _dbContext = dbContext;
             Students = students;
             AuthRepo = authRepo;
             StaffRepo = staffRepo;
+            Branches = branches;
+            Departments = departments;
+            Locations = locations;
+
         }
 
         public int Complete()

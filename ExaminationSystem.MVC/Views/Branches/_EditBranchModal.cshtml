@@ -1,0 +1,78 @@
+@model ExaminationSystem.MVC.ViewModels.BranchViewModels.BranchEditViewModel
+
+<div class="modal fade" id="editBranchModal-@Model.Id" tabindex="-1" aria-labelledby="editBranchModalLabel-@Model.Id" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBranchModalLabel-@Model.Id" >Edit Branch - @Model.LocationName</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editBranchForm" method="post" asp-action="Edit" asp-route-id="@Model.Id">
+                    <input type="hidden" name="Id" value="@Model.Id" />
+
+                    <!-- Location (Zip Code) -->
+                    <div class="mb-3">
+                        <label for="ZipCode" class="form-label">Location (Zip Code)</label>
+                        <select id="ZipCode" name="ZipCode" class="form-select" required>
+                            <option value="" disabled>Select a location</option>
+                            @foreach (var location in Model.Locations)
+                            {
+                                <option value="@location.ZipCode" selected="@(location.ZipCode == Model.ZipCode)">
+                                    @location.LocationName
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Street Number -->
+                    <div class="mb-3">
+                        <label for="StreetNo" class="form-label">Street Number</label>
+                        <input type="number" class="form-control" id="StreetNo" name="StreetNo" value="@Model.StreetNo" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#editBranchForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: formData,
+                success: function (response) {
+					console.log(response);
+
+
+
+					if (response.success) {
+                        $('#editBranchModal-' + response.id).modal('hide');
+
+                        
+                        $('#branch-' + response.id + ' .location').text(response.branch.zipCode);
+                        $('#branch-' + response.id + ' .streetNo').text(response.branch.streetNo);
+						 $('#branch-' + response.id + ' .locName').text(response.branch.locationName+" Branch");
+
+
+
+						
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while updating the branch.');
+                }
+            });
+        });
+    });
+</script>

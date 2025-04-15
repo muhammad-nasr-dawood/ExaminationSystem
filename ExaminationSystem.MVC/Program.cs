@@ -19,7 +19,12 @@ builder.Services.AddScoped<IStudentRepo, StudentRepo>(); // new object will be c
 
 builder.Services.AddAutoMapper(typeof(Program)); // regiseration for auto mapper (uses refelection)
 builder.Services.AddScoped<IStudentService, StudentService>(); // this is the only layer that can deal with the controller directly (any other dirty work like auto-mapping etc will be within it)
+builder.Services.AddScoped<IBranchService, BranchService>();
+builder.Services.AddScoped<IDepartmentService, DeparmentService>();
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
+builder.Services.AddScoped<IBranchRepo, BranchRepo>();
+builder.Services.AddScoped<IDepartmentRepo, DepartmentRepo>();
+builder.Services.AddScoped<ILocationRepo, LocationRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddSingleton<IPasswordService, PasswordService>(); // singleton no need for more than one object for this servcie since it's a stateless utility service and there's no shared state or data (and our code will be also loosly coupled better than using static class which will make our code tightly coupled)

@@ -249,5 +249,10 @@ namespace ExaminationSystem.EF.Repositories
         {
             return await _context.Set<T>().CountAsync(criteria);
         }
+
+        public T GetById(int id)
+        {
+            return _context.Set<T>().Find(id);
+        }
     }
 }
