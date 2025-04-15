@@ -20,14 +20,14 @@ namespace ExaminationSystem.MVC.Services
 
 	public List<BranchViewModel> GetAll()
 	{
-	  var branches = _unitOfWork.Branches.GetAll().ToList();
+	  var branches = _unitOfWork.BranchesRepo.GetAll().ToList();
 	  return _mapper.Map<List<BranchViewModel>>(branches);
 	}
 
 	
 	public BranchEditViewModel GetById(int id)
 	{
-	  var branch = _unitOfWork.Branches.GetById(id); 
+	  var branch = _unitOfWork.BranchesRepo.GetById(id); 
 	  if (branch == null)
 	  {
 		return null; 
@@ -38,7 +38,7 @@ namespace ExaminationSystem.MVC.Services
 
 	public void Update(BranchEditViewModel viewModel)
 	{
-	  var branch = _unitOfWork.Branches.GetById(viewModel.Id); 
+	  var branch = _unitOfWork.BranchesRepo.GetById(viewModel.Id); 
 	  if (branch != null)
 	  {
 		
@@ -60,7 +60,7 @@ namespace ExaminationSystem.MVC.Services
 	public List<LocationViewModel> GetLocations()
 	{
 	  
-	  var locations = _unitOfWork.Locations.GetAll();
+	  var locations = _unitOfWork.LocationRepo.GetAll();
 	  return _mapper.Map<List<LocationViewModel>>(locations);
 	}
 

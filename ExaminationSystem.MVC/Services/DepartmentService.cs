@@ -18,7 +18,7 @@ namespace ExaminationSystem.MVC.Services
 	public List<DepartmentViewModel> GetAll()
 	{
 
-	  var departments = _unitOfWork.Departments.GetAll().ToList();
+	  var departments = _unitOfWork.DepartmentRepo.GetAll().ToList();
 	  return _mapper.Map<List<DepartmentViewModel>>(departments);
 	}
 

@@ -11,9 +11,7 @@ namespace ExaminationSystem.Core
     public interface IUnitOfWork: IDisposable
     {
         IStudentRepo Students { get; }
-        IBranchRepo Branches { get; }
-        IDepartmentRepo Departments { get; }
-        ILocationRepo Locations { get; }
+
 
         IAuthRepo AuthRepo { get; }
         IBaseRepo<Staff> StaffRepo { get; }
