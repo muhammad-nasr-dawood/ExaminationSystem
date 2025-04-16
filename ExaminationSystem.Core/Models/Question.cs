@@ -31,6 +31,9 @@ public partial class Question
     public byte IsDeleted { get; set; }
 
     [InverseProperty("Question")]
+    public virtual AnswerTf AnswerTf { get; set; }
+
+    [InverseProperty("Question")]
     public virtual ICollection<Choice> Choices { get; set; } = new List<Choice>();
 
     [InverseProperty("Question")]

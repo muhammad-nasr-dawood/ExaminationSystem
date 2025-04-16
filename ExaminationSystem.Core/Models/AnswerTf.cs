@@ -8,14 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExaminationSystem.Core.Models;
 
-[Keyless]
 [Table("AnswerTF")]
 public partial class AnswerTf
 {
+    [Key]
     public int QuestionId { get; set; }
 
     public bool IsTrue { get; set; }
 
     [ForeignKey("QuestionId")]
+    [InverseProperty("AnswerTf")]
     public virtual Question Question { get; set; }
 }

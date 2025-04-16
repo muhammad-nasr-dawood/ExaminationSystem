@@ -33,6 +33,7 @@ namespace ExaminationSystem.Core.Models
         Task<int> DeleteQuestionAsync(long? staffId, int? questionId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> DeleteStaffBranchManageAsync(long? staffSSN, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> GenerateExamModelsAsync(int? poolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<GetActivePoolResult>> GetActivePoolAsync(long? staffId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetAllBranchesResult>> GetAllBranchesAsync(int? pageNumber, int? pageSize, string sortOrder, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetAllCoursesResult>> GetAllCoursesAsync(int? pageSize, int? pageNumber, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetAllDepartmentsResult>> GetAllDepartmentsAsync(string search, int? pageNumber, int? pageSize, string sortOrder, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -42,6 +43,8 @@ namespace ExaminationSystem.Core.Models
         Task<List<GetCourseByIdResult>> GetCourseByIdAsync(int? id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetCoursesByTopicResult>> GetCoursesByTopicAsync(int? topicId, int? pageSize, int? pageNumber, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetDepartmentByIdResult>> GetDepartmentByIdAsync(int? id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<GetPoolQuestionsResult>> GetPoolQuestionsAsync(int? poolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<GetPoolsResult>> GetPoolsAsync(int? courseId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> GetQuestionsAsync(int? topicId, byte? order, byte? qType, int? page, int? limit, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetStaffBranchManageByBranchIdResult>> GetStaffBranchManageByBranchIdAsync(int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetTopicByIdResult>> GetTopicByIdAsync(int? topicId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -107,6 +110,7 @@ namespace ExaminationSystem.Core.Models
         Task<int> UpdateDepartmentAsync(int? id, string name, string disc, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UpdateStaffBranchManageAsync(long? staffSSN, int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UpdateTopicAsync(int? topicId, string newTopicName, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<UsePoolResult>> UsePoolAsync(long? staffId, int? srcPoolId, int? destPoolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> ValidateSessionDataAsync(long? staffId, int? poolId, DateOnly? date, TimeOnly? startingTime, TimeOnly? endingTime, int? duration, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
     }
 }

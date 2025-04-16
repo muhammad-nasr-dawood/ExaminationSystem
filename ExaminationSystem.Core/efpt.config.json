@@ -231,6 +231,10 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[GetActivePool]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[GetAllBranches]",
          "ObjectType": 1
       },
@@ -264,6 +268,14 @@
       },
       {
          "Name": "[dbo].[GetDepartmentById]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetPoolQuestions]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetPools]",
          "ObjectType": 1
       },
       {
@@ -524,6 +536,10 @@
       },
       {
          "Name": "[dbo].[UpdateTopic]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UsePool]",
          "ObjectType": 1
       },
       {
