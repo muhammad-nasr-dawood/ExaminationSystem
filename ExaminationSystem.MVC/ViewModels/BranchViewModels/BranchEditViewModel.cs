@@ -10,11 +10,12 @@ namespace ExaminationSystem.MVC.ViewModels.BranchViewModels
 	[Required]
 	public string ZipCode { get; set; } 
 
-	public List<LocationViewModel>? Locations { get; set; }
 	public string? LocationName { get; set; }
 
 	[Required]
 	[StringLength(5, ErrorMessage = "Street Number must be 5 characters long.")]
-	public string StreetNo { get; set; } 
+	[Range(1, int.MaxValue, ErrorMessage = "Street Number must be greater than 0.")]
+	public string StreetNo { get; set; }
+
   }
 }

@@ -25,7 +25,6 @@ namespace ExaminationSystem.MVC.MappingProfiles
 	  CreateMap<Branch, BranchEditViewModel>()
 				 .ForMember(dest => dest.ZipCode, opt => opt.MapFrom(src => src.ZipCode))
 				 .ForMember(dest => dest.StreetNo, opt => opt.MapFrom(src => src.StreetNo))
-				 .ForMember(dest => dest.Locations, opt => opt.Ignore())
 				 .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => src.ZipCodeNavigation.Governate)); 
 
 	  CreateMap<BranchEditViewModel, Branch>()

@@ -63,6 +63,21 @@ namespace ExaminationSystem.MVC.Services
 	  var locations = _unitOfWork.LocationRepo.GetAll();
 	  return _mapper.Map<List<LocationViewModel>>(locations);
 	}
+	public void Delete(int id)
+	{
+	  var branch = _unitOfWork.BranchesRepo.GetById(id);
 
+	  if (branch == null)
+	  {
+		throw new KeyNotFoundException("Branch not found.");
+	  }
+	  else
+	  {
+		branch.IsDeleted = true;
+		_unitOfWork.Complete();
+
+	  }
+
+	}
   }
 }
