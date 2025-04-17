@@ -32,6 +32,36 @@ namespace ExaminationSystem.MVC.MappingProfiles
 	  {
 		des.Salary = 60000;
 	  });
+
+	  /* for staff details model*/
+	  CreateMap<Staff, StaffDisplayDetailViewModel>().AfterMap((src, des) =>
+	  {
+		des.Fname = src.SsnNavigation.Fname;
+		des.Lname = src.SsnNavigation.Lname;
+		des.Location = src.SsnNavigation.ZipCodeNavigation.Governate;
+		des.StreetNo = src.SsnNavigation.StreetNo;
+		des.Email = src.SsnNavigation.Email;
+		des.PhoneNumber = src.SsnNavigation.PhoneNumber;
+		des.Bd = src.SsnNavigation.Bd;
+		des.Gender = src.SsnNavigation.Gender;
+		des.IsActive = src.SsnNavigation.IsActive;
+		des.ZipCode = src.SsnNavigation.ZipCode;
+		if (src.SsnNavigation.Image != null)
+		  des.ImageURL = $"{src.SsnNavigation.Image.ImageUrl}";
+		else des.ImageURL = "/img/defaultImages/defaultImage.png";
+		if (src.Roles != null)
+		{
+		  foreach (var role in src.Roles)
+		  {
+			des.Roles.Add(role.Name);
+		  }
+
+		}
+	  });
+	  // Prevent overwrite;  for IsActive
+	  CreateMap<StaffDisplayDetailViewModel, User>().ForMember(dest => dest.IsActive, opt => opt.Ignore()).ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); 
+
+	  CreateMap<StaffDisplayDetailViewModel, Staff>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); // This ensures that null values from the DTO won’t overwrite existing values in the entity.
 	}
   }
 }

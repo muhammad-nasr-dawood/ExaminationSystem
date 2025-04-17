@@ -20,6 +20,10 @@ namespace ExaminationSystem.MVC.Services
 		string searchTerm = null);
 
 	bool Add(StaffAddViewModel model);
+
+	StaffDisplayDetailViewModel GetById(long id);
+
+	bool UpdateById(StaffDisplayDetailViewModel staffDisplayDetailViewModeldel);
   }
 
 

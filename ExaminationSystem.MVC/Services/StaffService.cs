@@ -110,5 +110,26 @@ namespace ExaminationSystem.MVC.Services
 	  return numOfRowsAffected == 2 ;
 	}
 
+	public StaffDisplayDetailViewModel GetById(long id)
+	{
+	  var staff = UnitOfWork.StaffRepo.GetById(id);
+	  var staffMapped = _mapper.Map<StaffDisplayDetailViewModel>(staff);
+
+	  return staffMapped;
+	}
+
+	public bool UpdateById(StaffDisplayDetailViewModel staffDisplayDetailViewModeldel)
+	{
+	  var user = UnitOfWork.UserRepo.GetById(staffDisplayDetailViewModeldel.Ssn);
+	  var staff = UnitOfWork.StaffRepo.GetById(staffDisplayDetailViewModeldel.Ssn);
+
+	  _mapper.Map(staffDisplayDetailViewModeldel, user); // will only update the values in the automapper configuration and leave every thing else as they are --> that's why i passed the two models the source and the destiantion
+	  _mapper.Map(staffDisplayDetailViewModeldel, staff);
+
+	  UnitOfWork.Complete(); // it will save changes in the user and staff that you get by id and they will be updated according to the mapped values in auto mapper
+
+	  return true;
+	}
+
   }
 }

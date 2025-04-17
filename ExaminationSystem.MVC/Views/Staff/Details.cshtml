@@ -1,0 +1,423 @@
+@model StaffDisplayDetailViewModel
+@{
+	// ViewData["Title"] = "User View - Account";
+}
+
+@section VendorStyles {
+	<link rel="stylesheet" href="~/vendor/libs/datatables-bs5/datatables.bootstrap5.css">
+		<link rel="stylesheet" href="~/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
+			<link rel="stylesheet" href="~/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css">
+			<link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css" />
+			<link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
+			<link rel="stylesheet" href="~/vendor/libs/select2/select2.css" />
+			<link rel="stylesheet" href="~/vendor/libs/&#64;form-validation/form-validation.css" />
+}
+
+@section VendorScripts {
+<script src="~/vendor/libs/moment/moment.js"></script>
+<script src="~/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+<script src="~/vendor/libs/sweetalert2/sweetalert2.js"></script>
+<script src="~/vendor/libs/cleavejs/cleave.js"></script>
+<script src="~/vendor/libs/cleavejs/cleave-phone.js"></script>
+<script src="~/vendor/libs/select2/select2.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/popular.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/bootstrap5.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/auto-focus.js"></script>
+
+
+}
+@section PageStyles {
+<link rel="stylesheet" href="~/vendor/css/pages/page-user-view.css" />
+}
+@* ************** Content ************** *@
+<div class="row">
+	<!-- User Sidebar -->
+	<div class="col-xl-4 col-lg-5 order-1 order-md-0">
+		<!-- User Card -->
+		<div class="card mb-6">
+			<div class="card-body pt-12">
+				<div class="user-avatar-section">
+					<div class=" d-flex align-items-center flex-column">
+						<img class="img-fluid rounded mb-4" src="@Model.ImageURL" height="120" width="120" alt="User avatar" />
+						<div class="user-info text-center">
+							<h5>@Model.Fname @Model.Lname</h5>
+							@if(Model.Roles != null && Model.Roles.Count > 0)
+							{
+								<span class="badge bg-label-secondary">@Model.Roles[1]</span>
+							}
+							else
+							{
+								<span class="badge bg-label-secondary">Not Assigned Yet</span>
+							}
+
+						</div>
+					</div>
+				</div>
+				<div class="d-flex justify-content-around flex-wrap my-6 gap-0 gap-md-3 gap-lg-4">
+					<div class="d-flex align-items-center me-5 gap-4">
+						<div class="avatar">
+							<div class="avatar-initial bg-label-primary rounded">
+								<i class='ti ti-checkbox ti-lg'></i>
+							</div>
+						</div>
+						<div>
+							<h5 class="mb-0">1.23k</h5>
+							<span>Task Done</span>
+						</div>
+					</div>
+					<div class="d-flex align-items-center gap-4">
+						<div class="avatar">
+							<div class="avatar-initial bg-label-primary rounded">
+								<i class='ti ti-briefcase ti-lg'></i>
+							</div>
+						</div>
+						<div>
+							<h5 class="mb-0">568</h5>
+							<span>Project Done</span>
+						</div>
+					</div>
+				</div>
+				<h5 class="pb-4 border-bottom mb-4">Details</h5>
+				<div class="info-container">
+					<ul class="list-unstyled mb-6">
+						<li class="mb-2">
+							<span class="h6">Username:</span>
+							<span>&#64;@Model.Email.Split("@")[0]</span>
+						</li>
+						<li class="mb-2">
+							<span class="h6">Email:</span>
+							<span>@Model.Email</span>
+						</li>
+						<li class="mb-2">
+							<span class="h6">Status:</span>
+							@if (Model.IsActive)
+							{
+								<span>Active</span>
+							}
+							else
+							{
+								<span>In Active</span>
+							}
+						</li>
+						<li class="mb-2">
+							<span class="h6">Role:</span>
+							@if(Model.Roles == null || Model.Roles.Count == 0)
+							{
+								<span>Not Assinged Yet</span>
+							}
+							else
+							{
+								var tempRoles = "";
+								for(int i = 1; i < Model.Roles.Count; i++)
+								{
+									tempRoles += Model.Roles[i] + (i + 1 == Model.Roles.Count ? "" : ", ");
+								}
+
+								<span>@tempRoles</span>
+							}
+						</li>
+						<li class="mb-2">
+							<span class="h6">Salary:</span>
+							<span>@Model.Salary</span>
+						</li>
+						<li class="mb-2">
+							<span class="h6">Contact:</span>
+							<span>(+2) @Model.PhoneNumber</span>
+						</li>
+						<li class="mb-2">
+							<span class="h6">Languages:</span>
+							<span>French</span>
+						</li>
+						<li class="mb-2">
+							<span class="h6">Location:</span>
+							<span>@Model.Location</span>
+						</li>
+					</ul>
+					<div class="d-flex justify-content-center">
+						<a href="javascript:;" class="btn btn-primary me-4" data-bs-target="#largeModal" data-bs-toggle="modal">Edit</a>
+						<a href="javascript:;" class="btn btn-label-danger suspend-user">Suspend</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /User Card -->
+	</div>
+	<!--/ User Sidebar -->
+	<!-- User Content -->
+	<div class="col-xl-8 col-lg-7 order-0 order-md-1">
+		<!-- User Pills -->
+		
+		<!-- Project table -->
+		<div class="card mb-6">
+			<div class="card-datatable table-responsive">
+				<table class="datatables-projects table border-top">
+					<thead>
+						<tr>
+							<th></th>
+							<th></th>
+							<th>Project</th>
+							<th>Leader</th>
+							<th>Team</th>
+							<th class="w-px-200">Progress</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<!-- /Project table -->
+		
+		
+	</div>
+	<!--/ User Content -->
+</div>
+
+
+<!-- /Modal -->
+<!-- Large Modal -->
+<div class="modal fade" id="largeModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel3">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<!-- my de7k from here--->
+			@* <div class="col-12 mb-6"  > *@
+			@* <small class="text-light fw-medium">Basic</small> *@
+			<div class="bs-stepper wizard-numbered mt-2">
+				<div class="bs-stepper-header row">
+					<div class="step col-5" data-target="#account-details">
+						<button type="button" class="step-trigger">
+							<span class="bs-stepper-circle">1</span>
+							<span class="bs-stepper-label">
+								<span class="bs-stepper-title">Account Details</span>
+								<span class="bs-stepper-subtitle">Setup Account Details</span>
+							</span>
+						</button>
+					</div>
+					<div class="line">
+						<i class="ti ti-chevron-right"></i>
+					</div>
+					<div class="step col-5" data-target="#personal-info">
+						<button type="button" class="step-trigger">
+							<span class="bs-stepper-circle">2</span>
+							<span class="bs-stepper-label">
+								<span class="bs-stepper-title">Personal Info</span>
+								<span class="bs-stepper-subtitle">Add personal info</span>
+							</span>
+
+						</button>
+					</div>
+					@* <div class="line"> *@
+					@* 	<i class="ti ti-chevron-right"></i> *@
+					@* </div> *@
+					@* <div class="step" data-target="#social-links"> *@
+					@* 	<button type="button" class="step-trigger"> *@
+					@* 		<span class="bs-stepper-circle">3</span> *@
+					@* 		<span class="bs-stepper-label"> *@
+					@* 			<span class="bs-stepper-title">Social Links</span> *@
+					@* 			<span class="bs-stepper-subtitle">Add social links</span> *@
+					@* 		</span> *@
+					@* 	</button> *@
+					@* </div> *@
+				</div>
+				<div class="bs-stepper-content">
+					<form onSubmit="return false">
+						<!-- Account Details -->
+						<div id="account-details" class="content">
+							<div class="content-header mb-4">
+								<h6 class="mb-0">Account Details</h6>
+								<small>Enter Your Account Details.</small>
+							</div>
+							<div class="row g-6">
+								
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Fname">First Name</label>
+									<input type="text" asp-for="Fname" class="form-control" placeholder="johndoe" />
+									<span asp-validation-for="Fname"></span>
+								</div>
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Lname">Last Name</label>
+									<input type="text" asp-for="Lname" class="form-control" placeholder="johndoe" />
+									<span asp-validation-for="Lname"></span>
+								</div>
+								
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Email">Email</label>
+									<input type="email" asp-for="Email" class="form-control" placeholder="john.doe&#64;email.com" aria-label="john.doe" />
+									<span asp-validation-for="Email"></span>
+								</div>
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Ssn">SSN</label>
+									<input disabled type="number" asp-for="Ssn" class="form-control" placeholder="john.doe&#64;email.com" aria-label="john.doe" />
+									<span asp-validation-for="Ssn"></span>
+								</div>
+								@* <div class="col-sm-6 form-password-toggle"> *@
+								@* 	<label class="form-label" for="password">Password</label> *@
+								@* 	<div class="input-group input-group-merge"> *@
+								@* 		<input type="password" id="password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password2" /> *@
+								@* 		<span class="input-group-text cursor-pointer" id="password2"><i class="ti ti-eye-off"></i></span> *@
+								@* 	</div> *@
+								@* </div> *@
+								@* <div class="col-sm-6 form-password-toggle"> *@
+								@* 	<label class="form-label" for="confirm-password">Confirm Password</label> *@
+								@* 	<div class="input-group input-group-merge"> *@
+								@* 		<input type="password" id="confirm-password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="confirm-password2" /> *@
+								@* 		<span class="input-group-text cursor-pointer" id="confirm-password2"><i class="ti ti-eye-off"></i></span> *@
+								@* 	</div> *@
+								@* </div> *@
+								<div class="col-12 d-flex justify-content-between">
+									<button class="btn btn-label-secondary btn-prev" disabled>
+										<i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
+										<span class="align-middle d-sm-inline-block d-none">Previous</span>
+									</button>
+									<button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-2">Next</span> <i class="ti ti-arrow-right ti-xs"></i></button>
+								</div>
+							</div>
+						</div>
+						<!-- Personal Info -->
+						<div id="personal-info" class="content">
+							<div class="content-header mb-4">
+								<h6 class="mb-0">Personal Info</h6>
+								<small>Enter Your Personal Info.</small>
+							</div>
+							<div class="row g-6">
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="PhoneNumber">Phone Number</label>
+									<input type="number" asp-for="PhoneNumber" class="form-control" placeholder="John" />
+									<span asp-validation-for="PhoneNumber"></span>
+								</div>
+								@* <div class="col-sm-6"> *@
+								@* 	<label class="form-label" for="last-name">Last Name</label> *@
+								@* 	<input type="text" id="last-name" class="form-control" placeholder="Doe" /> *@
+								@* </div> *@
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Gender">Gender</label>
+									<select class="selectpicker w-auto" asp-for="Gender" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white">
+										<option value="M">Male</option>
+										<option value="F">Female</option>
+									</select>
+									<span asp-validation-for="Gender"></span>
+								</div>
+								<div class="col-12 mb-0">
+									<label for="dobBasic" asp-for="Bd" class="form-label">DOB</label>
+									<input type="date" asp-for="Bd" class="form-control">
+									<span asp-validation-for="Bd"></span>
+								</div>
+								
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="ZipCode">Location</label>
+									<select class="select2 form-select  w-auto" data-allow-clear="true" asp-for="ZipCode" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white">
+											  @foreach (var item in ViewBag.Locations) 
+											   { 
+												  <option value="@item.ZipCode">@item.Governate</option> 
+											   } 
+											</select>
+											<span asp-validation-for="ZipCode"></span>
+										</div>
+										
+										<div class="col-sm-6">
+											<label class="form-label" asp-for="StreetNo">Street Number</label>
+											<input type="text" asp-for="StreetNo" class="form-control" placeholder="Doe" />
+											<span asp-validation-for="StreetNo"></span>
+										</div>
+										
+										@* <div class="col-12 d-flex justify-content-between"> *@
+										@* 	<button class="btn btn-label-secondary btn-prev"> *@
+										@* 		<i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i> *@
+										@* 		<span class="align-middle d-sm-inline-block d-none">Previous</span> *@
+										@* 	</button> *@
+										@* 	<button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-2">Next</span> <i class="ti ti-arrow-right ti-xs"></i></button> *@
+										@* </div> *@
+										<div class="col-12 d-flex justify-content-between">
+										  <button class="btn btn-label-secondary btn-prev">
+											  <i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
+											  <span class="align-middle d-sm-inline-block d-none">Previous</span>
+										  </button>
+										  <button class="btn btn-success btn-submit">Submit</button>
+										</div>
+									</div>
+								</div>
+								<!-- Social Links -->
+								@* <div id="social-links" class="content"> *@
+								@* 	<div class="content-header mb-4"> *@
+								@* 		<h6 class="mb-0">Social Links</h6> *@
+								@* 		<small>Enter Your Social Links.</small> *@
+								@* 	</div> *@
+								@* 	<div class="row g-6"> *@
+								@* 		<div class="col-sm-6"> *@
+								@* 			<label class="form-label" for="twitter">Twitter</label> *@
+								@* 			<input type="text" id="twitter" class="form-control" placeholder="https://twitter.com/abc" /> *@
+								@* 		</div> *@
+								@* 		<div class="col-sm-6"> *@
+								@* 			<label class="form-label" for="facebook">Facebook</label> *@
+								@* 			<input type="text" id="facebook" class="form-control" placeholder="https://facebook.com/abc" /> *@
+								@* 		</div> *@
+								@* 		<div class="col-sm-6"> *@
+								@* 			<label class="form-label" for="google">Google+</label> *@
+								@* 			<input type="text" id="google" class="form-control" placeholder="https://plus.google.com/abc" /> *@
+								@* 		</div> *@
+								@* 		<div class="col-sm-6"> *@
+								@* 			<label class="form-label" for="linkedin">LinkedIn</label> *@
+								@* 			<input type="text" id="linkedin" class="form-control" placeholder="https://linkedin.com/abc" /> *@
+								@* 		</div> *@
+								@* 		<div class="col-12 d-flex justify-content-between"> *@
+								@* 			<button class="btn btn-label-secondary btn-prev"> *@
+								@* 				<i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i> *@
+								@* 				<span class="align-middle d-sm-inline-block d-none">Previous</span> *@
+								@* 			</button> *@
+								@* 			<button class="btn btn-success btn-submit">Submit</button> *@
+								@* 		</div> *@
+								@* 	</div> *@
+								@* </div> *@
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- /Default Wizard -->
+			@* </div> *@
+	</div>
+</div>
+@section PageScripts {
+	<script src="~/js/modal-edit-user.js"></script>
+<script src="~/js/app-user-view.js"></script>
+<script src="~/js/app-user-view-account.js"></script>
+<script src="~/js/pages-profile.js"></script>
+<script>
+	$(document).ready(function () {
+    $(".btn-submit").on("click", function () {
+        const formData = {
+            Fname: $("#Fname").val(),
+            Lname: $("#Lname").val(),
+            Email: $("#Email").val(),
+            PhoneNumber: $("#PhoneNumber").val(),
+            Gender: $("#Gender").val(),
+            Bd: $("#Bd").val(),
+            ZipCode: $("#ZipCode").val(),
+            StreetNo: $("#StreetNo").val(),
+			Ssn: $("#Ssn").val(),
+            // add more fields if needed
+        };
+
+        $.ajax({
+            url: '/Staff/Update', // replace with your actual endpoint
+            type: 'POST',
+            data: formData,
+            success: function (res) {
+                // Close modal and maybe refresh sidebar info
+                $('#largeModal').modal('hide');
+                // Optionally show a SweetAlert success message
+                Swal.fire('Success', 'User updated successfully!', 'success').then(() => location.reload());
+                // Optional: update user card with new info using JS
+            },
+            error: function (xhr) {
+                // Show validation errors or a general message
+                Swal.fire('Error', 'Something went wrong!', 'error');
+            }
+        });
+    });
+});
+
+</script>
+}

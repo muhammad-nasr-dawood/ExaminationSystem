@@ -344,7 +344,7 @@
 								</div>
 								<div class="col-sm-6">
 									<label class="form-label" asp-for="ZipCode">Location</label>
-									<select class="selectpicker w-auto" asp-for="ZipCode" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white" >
+									<select class="select2 form-select  w-auto" data-allow-clear="true" asp-for="ZipCode" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white">
 											  @foreach (var item in ViewBag.Locations)
 											  {
 												  <option value="@item.ZipCode">@item.Governate</option>
@@ -518,10 +518,10 @@
                                     <i class="ti ti-dots-vertical"></i>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/Staff/Edit/${data.Ssn}">
-                                        <i class="ti ti-pencil me-1"></i> Edit
+                                    <a class="dropdown-item" href="/Staff/Details/${data.ssn}">
+                                        <i class="ti ti-pencil me-1"></i> Details
                                     </a>
-                                    <a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('${data.Ssn}')">
+                                    <a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('${data.ssn}')">
                                         <i class="ti ti-trash me-1"></i> Delete
                                     </a>
                                 </div>

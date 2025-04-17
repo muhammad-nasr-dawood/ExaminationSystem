@@ -112,6 +112,30 @@ public class StaffController : Controller
   }
 
 
+  public IActionResult Details(long id)
+  {
+	ViewBag.Branches = _staffService.UnitOfWork.BranchesRepo.GetAll();
+	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
+
+	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
+	var staffDetail = _staffService.GetById(id);
+	return View(staffDetail);
+  }
+
+  [HttpPost]
+  public IActionResult Update(StaffDisplayDetailViewModel model)
+  {
+	if (!ModelState.IsValid)
+	{
+	  return BadRequest(ModelState);
+	}
+	_staffService.UpdateById(model);
+	// Save changes to DB...
+
+	return Ok(new { message = "User updated" });
+  }
+
+
   //[HttpPost]
   // public IActionResult Delete(string id)
   // {
