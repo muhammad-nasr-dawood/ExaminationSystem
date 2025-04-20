@@ -19,6 +19,11 @@ namespace ExaminationSystem.Core
         IBaseRepo<Department> DepartmentRepo { get; }
         IBaseRepo<Branch> BranchesRepo { get; }
 
+
+        IPoolRepo PoolRepo { get; } // Added PoolRepo to UnitOfWork
+
+
+
         int Complete();
     }
 }

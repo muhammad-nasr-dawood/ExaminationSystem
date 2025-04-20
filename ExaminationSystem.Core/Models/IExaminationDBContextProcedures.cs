@@ -13,6 +13,7 @@ namespace ExaminationSystem.Core.Models
 {
     public partial interface IExaminationDBContextProcedures
     {
+        Task<List<ActivePoolsResult>> ActivePoolsAsync(long? staffId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> AddBranchAsync(string zipCode, string streetNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> AddCourseAsync(string crsName, int? crsDuration, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> AddDepartmentAsync(string name, string disc, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -33,7 +34,6 @@ namespace ExaminationSystem.Core.Models
         Task<int> DeleteQuestionAsync(long? staffId, int? questionId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> DeleteStaffBranchManageAsync(long? staffSSN, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> GenerateExamModelsAsync(int? poolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<GetActivePoolResult>> GetActivePoolAsync(long? staffId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetAllBranchesResult>> GetAllBranchesAsync(int? pageNumber, int? pageSize, string sortOrder, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetAllCoursesResult>> GetAllCoursesAsync(int? pageSize, int? pageNumber, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetAllDepartmentsResult>> GetAllDepartmentsAsync(string search, int? pageNumber, int? pageSize, string sortOrder, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -63,6 +63,7 @@ namespace ExaminationSystem.Core.Models
         Task<int> LocationsDeleteAsync(string zipCode, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<LocationsGetResult>> LocationsGetAsync(string zipCode, string governorate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> LocationsUpdateAsync(string oldZipCode, string newZipCode, string newGovernorate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<ProcessedPoolsResult>> ProcessedPoolsAsync(long? staffId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> RemoveQuestionFromPoolAsync(long? staffId, int? poolId, DataTable questionsIds, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> RoleCreateAsync(string name, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<RoleGetAllResult>> RoleGetAllAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -82,7 +83,7 @@ namespace ExaminationSystem.Core.Models
         Task<int> StaffBranchIntakeDeptCourseTeachDeleteAsync(long? staffSSN, int? branchId, int? deptID, int? courseId, int? intakeId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<StaffBranchIntakeDeptCourseTeachGetResult>> StaffBranchIntakeDeptCourseTeachGetAsync(long? staffSSN, int? branchId, int? deptID, int? courseId, int? intakeId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> StaffBranchIntakeDeptCourseTeachUpdateAsync(long? oldStaffSSN, int? oldBranchId, int? oldDeptID, int? oldCourseId, int? oldIntakeId, long? newStaffSSN, int? newBranchId, int? newDeptID, int? newCourseId, int? newIntakeId, DateTime? newStartingDate, DateTime? newEndingDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<int> StaffCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string imageId, string phoneNumber, bool? isActive, decimal? salary, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<StaffCreateResult>> StaffCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string imageId, string phoneNumber, bool? isActive, decimal? salary, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> StaffDeleteAsync(long? sSN, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<StaffGetAllResult>> StaffGetAllAsync(string searchterm, decimal? mingpa, decimal? maxgpa, string gender, bool? isactive, int? pagenumber, int? pagesize, string sortorder, int? roleId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<StaffGetByEmailResult>> StaffGetByEmailAsync(string email, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -91,7 +92,7 @@ namespace ExaminationSystem.Core.Models
         Task<int> StaffRolesDeleteAsync(long? staffssn, int? roleid, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> StaffUpdateAsync(long? ssn, string fname, string lname, string email, string zipcode, string streetno, DateOnly? bd, string gender, string imageId, string phonenumber, decimal? salary, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<StartExamResult>> StartExamAsync(long? studentId, int? examId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<int> StudentCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string imageId, string phoneNumber, bool? isActive, string faculty, int? grad_Year, decimal? gPA, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<StudentCreateResult>> StudentCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string imageId, string phoneNumber, bool? isActive, string faculty, int? grad_Year, decimal? gPA, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> StudentDeleteAsync(long? ssn, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<StudentGetAllResult>> StudentGetAllAsync(string searchterm, string faculty, int? grad_year, decimal? mingpa, decimal? maxgpa, string gender, bool? isactive, int? pagenumber, int? pagesize, string sortorder, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<StudentGetByEmailResult>> StudentGetByEmailAsync(string email, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

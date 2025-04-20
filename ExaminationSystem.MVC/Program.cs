@@ -3,6 +3,7 @@ using ExaminationSystem.Core.IRepositories;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.EF;
 using ExaminationSystem.EF.Repositories;
+using ExaminationSystem.MVC.MappingProfiles;
 using ExaminationSystem.MVC.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,16 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); // new object will be cre
 builder.Services.AddScoped<IStudentRepo, StudentRepo>(); // new object will be created for each request 
 
 builder.Services.AddAutoMapper(typeof(Program)); // regiseration for auto mapper (uses refelection)
+
+
+builder.Services.AddAutoMapper(cfg =>
+{
+  cfg.AddProfile<GenericPoolStateProfile<ProcessedPoolsResult>>();
+  cfg.AddProfile<GenericPoolStateProfile<ActivePoolsResult>>();
+
+});
+
+
 builder.Services.AddScoped<IStudentService, StudentService>(); // this is the only layer that can deal with the controller directly (any other dirty work like auto-mapping etc will be within it)
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -25,11 +36,22 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddSingleton<IPasswordService, PasswordService>(); // singleton no need for more than one object for this servcie since it's a stateless utility service and there's no shared state or data (and our code will be also loosly coupled better than using static class which will make our code tightly coupled)
 
 builder.Services.AddScoped<IBaseRepo<Staff>, BaseRepo<Staff>>(); // staff repo using the generic repo
+
 builder.Services.AddScoped<IBaseRepo<User>, BaseRepo<User>>();
+
 builder.Services.AddScoped<IBaseRepo<Branch>, BaseRepo<Branch>>();
+
 builder.Services.AddScoped<IBaseRepo<Department>, BaseRepo<Department>>();
-builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();	
+
+builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();
+
 builder.Services.AddScoped<IStaffService, StaffService>();
+
+
+builder.Services.AddScoped<IPoolRepo,PoolRepo>();
+builder.Services.AddScoped<IPoolService, PoolService>();
+
+
 
 builder.Services.AddDbContext<ExaminationDBContext>(
             options => options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped // will create a new object for each request

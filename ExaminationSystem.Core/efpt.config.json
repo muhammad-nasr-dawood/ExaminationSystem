@@ -147,8 +147,8 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Session]",
-         "ObjectType": 3
+         "Name": "[dbo].[ActivePools]",
+         "ObjectType": 1
       },
       {
          "Name": "[dbo].[AddBranch]",
@@ -228,10 +228,6 @@
       },
       {
          "Name": "[dbo].[GenerateExamModels]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GetActivePool]",
          "ObjectType": 1
       },
       {
@@ -348,6 +344,10 @@
       },
       {
          "Name": "[dbo].[LocationsUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[ProcessedPools]",
          "ObjectType": 1
       },
       {

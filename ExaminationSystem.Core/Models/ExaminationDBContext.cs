@@ -49,8 +49,6 @@ public partial class ExaminationDBContext : DbContext
 
     public virtual DbSet<Role> Roles { get; set; }
 
-    public virtual DbSet<Session> Sessions { get; set; }
-
     public virtual DbSet<Staff> Staff { get; set; }
 
     public virtual DbSet<StaffBranchDepartmentManagement> StaffBranchDepartmentManagements { get; set; }
@@ -186,6 +184,8 @@ public partial class ExaminationDBContext : DbContext
         {
             entity.HasKey(e => new { e.DeptId, e.CourseId, e.IntakeId }).HasName("PK_DeptCourses");
 
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
             entity.HasOne(d => d.Course).WithMany(p => p.IntakeDeptCourses)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_DeptCourses_Course");
@@ -300,11 +300,6 @@ public partial class ExaminationDBContext : DbContext
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC070065C3C5");
-        });
-
-        modelBuilder.Entity<Session>(entity =>
-        {
-            entity.ToView("Session");
         });
 
         modelBuilder.Entity<Staff>(entity =>

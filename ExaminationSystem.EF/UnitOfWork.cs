@@ -1,6 +1,7 @@
 ﻿using ExaminationSystem.Core;
 using ExaminationSystem.Core.IRepositories;
 using ExaminationSystem.Core.Models;
+using ExaminationSystem.EF.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,16 @@ namespace ExaminationSystem.EF
 
         public IBaseRepo<Branch> BranchesRepo { get; }
 
-        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo)
+        /*nasser*/
+        public IPoolRepo PoolRepo { get; } // Added PoolRepo to UnitOfWork
+
+        /*nasser*/
+
+        public UnitOfWork(ExaminationDBContext dbContext,
+            IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo,
+            IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, 
+            IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo,
+            IPoolRepo _poolRepo)
         {
             _dbContext = dbContext;
             Students = students;
@@ -36,6 +46,7 @@ namespace ExaminationSystem.EF
             BranchesRepo = branchRepo;
             DepartmentRepo = departmentRepo;    
             UserRepo = userRepo;
+            PoolRepo = _poolRepo;
         }
 
         public int Complete()

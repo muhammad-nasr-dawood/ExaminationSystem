@@ -1,0 +1,97 @@
+@model ExaminationSystem.MVC.ViewModels.PoolViewModels.TeachAtViewModel
+@{
+    ViewData["Title"] = "Teaching Locations";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Teaching Locations and Courses</h2>
+
+    <form id="teachingForm">
+        <!-- Branch Dropdown -->
+        <div class="form-group mb-3">
+            <label for="branchSelect">Select Branch</label>
+            <select class="form-control" id="branchSelect" onchange="loadDepartments()">
+                <option value="">-- Select Branch --</option>
+                @foreach (var branch in Model.Branches.Values)
+                {
+                    <option value="@branch.Id">@branch.Location</option>
+                }
+            </select>
+        </div>
+
+        <!-- Department Dropdown -->
+        <div class="form-group mb-3" id="deptGroup" style="display:none;">
+            <label for="departmentSelect">Select Department</label>
+            <select class="form-control" id="departmentSelect" onchange="loadCourses()">
+                <option value="">-- Select Department --</option>
+            </select>
+        </div>
+
+        <!-- Course Dropdown -->
+        <div class="form-group mb-3" id="courseGroup" style="display:none;">
+            <label for="courseSelect">Select Course</label>
+            <select class="form-control" id="courseSelect">
+                <option value="">-- Select Course --</option>
+            </select>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Better approach: Serialize the model to JSON
+        var modelData = @Html.Raw(Json.Serialize(Model))
+
+        function loadDepartments() {
+            const branchId = document.getElementById('branchSelect').value;
+            const deptSelect = document.getElementById('departmentSelect');
+            const deptGroup = document.getElementById('deptGroup');
+            const courseGroup = document.getElementById('courseGroup');
+
+            // Reset downstream dropdowns
+            deptSelect.innerHTML = '<option value="">-- Select Department --</option>';
+            document.getElementById('courseSelect').innerHTML = '<option value="">-- Select Course --</option>';
+            courseGroup.style.display = 'none';
+
+            if (!branchId) {
+                deptGroup.style.display = 'none';
+                return;
+            }
+
+            // Populate departments
+            const branch = modelData.branches[branchId];
+            if (branch && branch.departments) {
+                for (const deptId in branch.departments) {
+                    const dept = branch.departments[deptId];
+                    deptSelect.add(new Option(dept.name, dept.id));
+                }
+                deptGroup.style.display = 'block';
+            }
+        }
+
+        function loadCourses() {
+            const branchId = document.getElementById('branchSelect').value;
+            const deptId = document.getElementById('departmentSelect').value;
+            const courseSelect = document.getElementById('courseSelect');
+            const courseGroup = document.getElementById('courseGroup');
+
+            // Reset course dropdown
+            courseSelect.innerHTML = '<option value="">-- Select Course --</option>';
+
+            if (!branchId || !deptId) {
+                courseGroup.style.display = 'none';
+                return;
+            }
+
+            // Populate courses
+            const dept = modelData.branches[branchId].departments[deptId];
+            if (dept && dept.courses) {
+                for (const courseId in dept.courses) {
+                    const course = dept.courses[courseId];
+                    courseSelect.add(new Option(course.name, course.id));
+                }
+                courseGroup.style.display = 'block';
+            }
+        }
+    </script>
+}
