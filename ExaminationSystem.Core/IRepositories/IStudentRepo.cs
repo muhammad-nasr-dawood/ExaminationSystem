@@ -8,8 +8,8 @@ using ExaminationSystem.Core.Models;
 
 namespace ExaminationSystem.Core.IRepositories
 {
-    public interface IStudentRepo: IBaseRepo<Student>
-    {
-        public List<Student> GetByName(string name);
-    }
+    //public interface IStudentRepo 
+    //{
+    //    public List<Student> GetByName(string name);
+    //}
 }

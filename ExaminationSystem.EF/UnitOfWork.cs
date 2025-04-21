@@ -12,7 +12,7 @@ namespace ExaminationSystem.EF
     public class UnitOfWork : IUnitOfWork
     {
         ExaminationDBContext _dbContext;
-        public IStudentRepo Students {  get; }
+        //public IStudentRepo Students {  get; }
 
         public IAuthRepo AuthRepo {  get; }
 
@@ -26,17 +26,34 @@ namespace ExaminationSystem.EF
 
         public IBaseRepo<Branch> BranchesRepo { get; }
 
-        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo)
+        public IBaseRepo<Student> StudentRepo { get; }
+
+        public UnitOfWork(ExaminationDBContext dbContext, IBaseRepo<Student> studentRepo, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo)
         {
             _dbContext = dbContext;
-            Students = students;
+            //Students = students;
+            StudentRepo = studentRepo;
             AuthRepo = authRepo;
             StaffRepo = staffRepo;
-            LocationRepo = locationRepo;    
+            LocationRepo = locationRepo;
             BranchesRepo = branchRepo;
-            DepartmentRepo = departmentRepo;    
+            DepartmentRepo = departmentRepo;
             UserRepo = userRepo;
         }
+
+
+        //public UnitOfWork(ExaminationDBContext dbContext, IAuthRepo authRepo,IBaseRepo<Student> _StudentRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo)
+        //{
+        //    StudentRepo = _StudentRepo;
+        //    _dbContext = dbContext;
+        //    //Students = students;
+        //    AuthRepo = authRepo;
+        //    StaffRepo = staffRepo;
+        //    LocationRepo = locationRepo;
+        //    BranchesRepo = branchRepo;
+        //    DepartmentRepo = departmentRepo;
+        //    UserRepo = userRepo;
+        //}
 
         public int Complete()
         {
