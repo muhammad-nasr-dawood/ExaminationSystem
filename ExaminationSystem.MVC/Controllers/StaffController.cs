@@ -122,6 +122,13 @@ public class StaffController : Controller
 	return View(staffDetail);
   }
 
+  public IActionResult GetUserSidebar(long userId)
+  {
+	var staffDetail = _staffService.GetById(userId); // fetch updated data
+	return PartialView("_StaffSidebar", staffDetail);
+  }
+
+
   [HttpPost]
   public IActionResult Update(StaffDisplayDetailViewModel model)
   {
