@@ -28,7 +28,9 @@ builder.Services.AddScoped<IBaseRepo<Staff>, BaseRepo<Staff>>(); // staff repo u
 builder.Services.AddScoped<IBaseRepo<User>, BaseRepo<User>>();
 builder.Services.AddScoped<IBaseRepo<Branch>, BaseRepo<Branch>>();
 builder.Services.AddScoped<IBaseRepo<Department>, BaseRepo<Department>>();
-builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();	
+builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();
+builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeDepartmentCourseTeach>, BaseRepo<StaffBranchIntakeDepartmentCourseTeach>>();
+builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
 builder.Services.AddScoped<IStaffService, StaffService>();
 
 builder.Services.AddDbContext<ExaminationDBContext>(

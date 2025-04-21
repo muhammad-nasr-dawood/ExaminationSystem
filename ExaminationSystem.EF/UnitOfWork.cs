@@ -26,7 +26,11 @@ namespace ExaminationSystem.EF
 
         public IBaseRepo<Branch> BranchesRepo { get; }
 
-        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo)
+        public IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> TeachingRepo {  get; }
+
+        public IBaseRepo<Course> CoursesRepo { get; }
+
+        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo, IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> teachRepo, IBaseRepo<Course> coursesRepo)
         {
             _dbContext = dbContext;
             Students = students;
@@ -36,6 +40,8 @@ namespace ExaminationSystem.EF
             BranchesRepo = branchRepo;
             DepartmentRepo = departmentRepo;    
             UserRepo = userRepo;
+            TeachingRepo = teachRepo;
+            CoursesRepo = coursesRepo;
         }
 
         public int Complete()

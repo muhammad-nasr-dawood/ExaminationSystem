@@ -6,14 +6,14 @@
 @section VendorStyles {
 
 	<link rel="stylesheet" href="~/vendor/libs/datatables-bs5/datatables.bootstrap5.css">
-		<link rel="stylesheet" href="~/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
-			<link rel="stylesheet" href="~/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css">
+	<link rel="stylesheet" href="~/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
+	<link rel="stylesheet" href="~/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css">
 	<link rel="stylesheet" href="~/vendor/libs/&#64;form-validation/form-validation.css" />
 	<link rel="stylesheet" href="~/vendor/libs/bs-stepper/bs-stepper.css" />
-			<link rel="stylesheet" href="~/vendor/libs/select2/select2.css" />
+	<link rel="stylesheet" href="~/vendor/libs/select2/select2.css" />
 	<link rel="stylesheet" href="~/vendor/libs/bootstrap-select/bootstrap-select.css" />
-			<link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
-			<link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css" />
+	<link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
+	<link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css" />
 }
 
 @section VendorScripts {
@@ -62,24 +62,116 @@
 		<!-- User Pills -->
 		
 		<!-- Project table -->
-		<div class="card mb-6">
-			<div class="card-datatable table-responsive">
-				<table class="datatables-projects table border-top">
-					<thead>
-						<tr>
-							<th></th>
-							<th></th>
-							<th>Project</th>
-							<th>Leader</th>
-							<th>Team</th>
-							<th class="w-px-200">Progress</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-				</table>
-			</div>
-		</div>
+		@* <div class="card mb-6"> *@
+		@* 	<div class="card-datatable table-responsive"> *@
+		@* 		<table class="datatables-projects table border-top"> *@
+		@* 			<thead> *@
+		@* 				<tr> *@
+		@* 					<th></th> *@
+		@* 					<th></th> *@
+		@* 					<th>Project</th> *@
+		@* 					<th>Leader</th> *@
+		@* 					<th>Team</th> *@
+		@* 					<th class="w-px-200">Progress</th> *@
+		@* 					<th>Action</th> *@
+		@* 				</tr> *@
+		@* 			</thead> *@
+		@* 		</table> *@
+		@* 	</div> *@
+		@* </div> *@
 		<!-- /Project table -->
+		<div class="card">
+			<div class="card-header border-bottom">
+				<h5 class="card-title mb-0">Filters</h5>
+				<div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
+					<div class="col-md-4 user_role"></div>
+					<div class="col-md-4 user_plan"></div>
+					<div class="col-md-4 user_status"></div>
+					<div class="col-md-3">
+						<select id="branchFilter" class="form-select">
+							<option value="">Filter by Branch</option>
+							@foreach (var branch in ViewBag.Branches)
+							{
+								<option value="@branch.Id">@branch.Location</option>
+							}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<select id="departmentFilter" class="form-select">
+							<option value="">Filter by Department</option>
+							@foreach (var dept in ViewBag.Departments)
+							{
+								<option value="@dept.Id">@dept.Name</option>
+							}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<select id="courseFilter" class="form-select">
+							<option value="">Filter by Course</option>
+							@foreach (var crs in ViewBag.Courses)
+							{
+								<option value="@crs.Id">@crs.Name</option>
+							}
+						</select>
+					</div>
+					<div class="col-md-3"> 
+						<select id="statusFilter" class="form-select">
+							<option value="">Filter by Status</option>
+							<option value="true">Finished</option>
+							<option value="false">Not Finished</option>
+						</select> 
+					</div> 
+					@* <div class="col-md-3">  *@
+						@* <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">  *@
+					@* 		Add Staff *@
+					@* 	</button> *@
+					@* </div> *@
+				</div>
+				<div class="table-responsive text-nowrap">
+					<table id="teachingCourseTable" class="table table-hover">
+						<thead>
+							<tr>
+								<th>course</th>
+								<th>Internal/Exteranl</th>
+								<th>Start Date</th>
+								<th>End Date</th>
+							</tr>
+						</thead>
+						<tbody class="table-border-bottom-0">
+						</tbody>
+
+						@* @foreach (var item in Model) *@
+						@* { *@
+						@* 	<tr> *@
+						@* 		<td> *@
+						@* 			<ul class="list-unstyled m-0 avatar-group d-flex align-items-center"> *@
+						@* 				<li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-xs pull-up" title="Christina Parker"> *@
+						@* 					<img src="@item.ImageURL" alt="Avatar" class="rounded-circle"> *@
+						@* 					<span>@item.FullName</span> *@
+						@* 				</li> *@
+						@* 			</ul> *@
+						@* 		</td> *@
+						@* 		<td>@item.Ssn</td> *@
+						@* 		<td> *@
+						@* 			@item.Salary *@
+						@* 		</td> *@
+						@* 		<td><span class="badge bg-label-primary me-1">Active</span></td> *@
+						@* 		<td> *@
+						@* 			<div class="dropdown"> *@
+						@* 				<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i></button> *@
+						@* 				<div class="dropdown-menu"> *@
+						@* 					<a class="dropdown-item" href="javascript:void(0);"><i class="ti ti-pencil me-1"></i> Edit</a> *@
+						@* 					<a class="dropdown-item" href="javascript:void(0);"><i class="ti ti-trash me-1"></i> Delete</a> *@
+						@* 				</div> *@
+						@* 			</div> *@
+						@* 		</td> *@
+						@* 	</tr> *@
+						@* } *@
+					</table>
+				</div>
+			</div>
+			<!-- Offcanvas to add new user -->
+		</div>
 		
 		
 	</div>
@@ -308,8 +400,97 @@
 <script>
 
 	$(document).ready(function () {
-				
-    $(".btn-submit").on("click", function () {
+				window.alert = function () {
+					// Do nothing or log it for debug
+					console.log("Default alert suppressed."); // stop the default alert
+				};
+
+					var table = $('#teachingCourseTable').DataTable({
+					processing: true,
+					serverSide: true,
+					ajax: {
+								url: '/Staff/GetAllRegisteredCourses',
+						type: 'POST',
+						data: function (d) {
+							d.branchId = $('#branchFilter').val();
+							d.DeptId = $('#departmentFilter').val();
+							d.staffSsn = '@Model.Ssn';
+							d.courseId = $('#courseFilter').val();
+							d.status = $('#statusFilter').val();
+						},
+						dataSrc: function (json) {
+							if (!json.data || json.data.length === 0) {
+								console.log("No data returned from server.");
+							} else {
+								console.log("Returned data:", json.data);
+							}
+							return json.data;
+						}
+						},
+					columns: [
+						// {
+						// 	data: null,
+						// 	render: function(data) {
+						// 		return `
+						// 			<ul class="list-unstyled m-0 avatar-group d-flex align-items-center">
+						// 				<li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top"
+						// 					class="avatar avatar-xs pull-up" title="${data.fullName}">
+						// 					<img src="${data.imageURL}" alt="Avatar" class="rounded-circle">
+						// 					<span>${data.fullName}</span>
+						// 				</li>
+						// 			</ul>`;
+						// 	}
+						// },
+						{data: 'course'},
+						{
+							data: null,
+							render: function(data) {
+										if(data.isInstructorCurrentBranch == true)
+								  return '<span class="badge bg-label-primary me-1">Internal Course</span>';
+								else
+									  return '<span class="badge bg-label-danger me-1">External Course</span>'
+							}
+						},
+						{ data: 'startingDate' },
+						{ data: 'endingDate' },
+						// {
+						// 	data: null,
+						// 	render: function(data) {
+						// 		return `
+						// 			<div class="dropdown">
+						// 				<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+						// 					<i class="ti ti-dots-vertical"></i>
+						// 				</button>
+						// 				<div class="dropdown-menu">
+						// 					<a class="dropdown-item" href="/Staff/Details/${data.ssn}">
+						// 						<i class="ti ti-pencil me-1"></i> Details
+						// 					</a>
+						// 					<a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('${data.ssn}')">
+						// 						<i class="ti ti-trash me-1"></i> Delete
+						// 					</a>
+						// 				</div>
+						// 			</div>`;
+						// 	}
+						// }
+					],
+					language: {
+						paginate: {
+							previous: '<span aria-hidden="true">⟨</span>',
+							next: '<span aria-hidden="true">⟩</span>'
+						}
+					}
+				});
+
+				$('#searchTerm').on('input', function () {
+					table.search($(this).val()).draw();
+				});
+
+				$('#branchFilter, #departmentFilter, #courseFilter, #statusFilter').change(function () {
+					table.draw();
+				});
+
+
+			$(".btn-submit").on("click", function () {
         const formData = {
             Fname: $("#Fname").val(),
             Lname: $("#Lname").val(),
@@ -342,6 +523,114 @@
             }
         });
     });
+
+
+
+				$(document).on('click', '.suspend-user', function () {
+			const button = $(this);
+			const isActive = button.data('active') === true || button.data('active') === 'true';
+			const ssn = button.data('ssn');
+			const action = isActive ? 'deactivate' : 'activate';
+
+			Swal.fire({
+				title: 'Are you sure?',
+				text: isActive
+					? "You're about to deactivate this user."
+					: "You're about to activate this user.",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#696cff', // Your theme primary color
+				cancelButtonColor: '#8592a3',
+				confirmButtonText: `Yes, ${action.charAt(0).toUpperCase() + action.slice(1)} user!`,
+				customClass: {
+					confirmButton: 'btn btn-primary me-2',
+					cancelButton: 'btn btn-outline-secondary'
+				},
+				buttonsStyling: false
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.post('/Staff/ToggleUserStatus', { ssn: ssn }, function (response) {
+						if (response.success) {
+							// Update UI
+							const newIsActive = response.isActive;
+							button
+								.text(newIsActive ? 'Deactivate' : 'Activate')
+								.toggleClass('btn-label-danger btn-label-success')
+								.data('active', newIsActive);
+
+							Swal.fire({
+								icon: 'success',
+								title: 'Success!',
+								text: `User has been ${newIsActive ? 'activated' : 'deactivated'}.`,
+								timer: 1500,
+								showConfirmButton: false,
+								customClass: {
+									popup: 'animated fadeIn'
+								}
+							});
+
+						$("#userSidebarContainer").load(`/Staff/GetUserSidebar?userId=${@Model.Ssn}`); // reload teh partial view
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: response.message || 'Something went wrong.',
+								customClass: {
+									confirmButton: 'btn btn-primary'
+								},
+								buttonsStyling: false
+							});
+						}
+					});
+				}
+			});
+		});
+
+
+				$(document).on('click', '.reset-password', function () {
+			const ssn = $(this).data('ssn');
+
+			Swal.fire({
+				title: 'Reset Password?',
+				text: 'A new password will be generated and sent to the user.',
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonColor: '#ffab00',
+				cancelButtonColor: '#8592a3',
+				confirmButtonText: 'Yes, reset it!',
+				customClass: {
+					confirmButton: 'btn btn-warning me-2',
+					cancelButton: 'btn btn-outline-secondary'
+				},
+				buttonsStyling: false
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.post('/Staff/ResetPassword', { ssn: ssn }, function (response) {
+						if (response.success) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Done!',
+								text: 'Password has been reset.',
+								timer: 1500,
+								showConfirmButton: false
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Failed',
+								text: response.message || 'An error occurred.',
+								customClass: {
+									confirmButton: 'btn btn-primary'
+								},
+								buttonsStyling: false
+							});
+						}
+					});
+				}
+			});
+		});
+
+
 });
 
 </script>

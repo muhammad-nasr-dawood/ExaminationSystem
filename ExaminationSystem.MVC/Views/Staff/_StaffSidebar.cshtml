@@ -10,7 +10,7 @@
 					<h5>@Model.Fname @Model.Lname</h5>
 					@if (Model.Roles != null && Model.Roles.Count > 0)
 					{
-						<span class="badge bg-label-secondary">@Model.Roles[1]</span>
+						<span class="badge bg-label-secondary text-uppercase">@Model.Roles[1]</span>
 					}
 					else
 					{
@@ -101,8 +101,20 @@
 				</li>
 			</ul>
 			<div class="d-flex justify-content-center">
-				<a href="javascript:;" class="btn btn-primary me-4" data-bs-target="#largeModal" data-bs-toggle="modal">Edit</a>
-				<a href="javascript:;" class="btn btn-label-danger suspend-user">Suspend</a>
+				<a href="javascript:;" class="btn btn-primary me-3" data-bs-target="#largeModal" data-bs-toggle="modal">Edit</a>
+
+				<a href="javascript:;"
+				   class="btn @(Model.IsActive ? "btn-label-danger" : "btn-label-success") suspend-user me-3"
+				   data-active="@Model.IsActive.ToString().ToLower()"
+				   data-ssn="@Model.Ssn">
+				   @(Model.IsActive ? "Deactivate" : "Activate")
+				</a>
+
+				<a href="javascript:;"
+				   class="btn btn-label-warning reset-password"
+				   data-ssn="@Model.Ssn">
+				   Reset Password
+				</a>
 			</div>
 		</div>
 	</div>

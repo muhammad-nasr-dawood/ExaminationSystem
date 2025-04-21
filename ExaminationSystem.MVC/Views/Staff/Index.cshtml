@@ -140,7 +140,7 @@
 					<option value="">Filter by Branch</option>
 					@foreach (var branch in ViewBag.Branches) 
 					{ 
-						<option value="@branch.Id">@branch.ZipCode</option> 
+						<option value="@branch.Id">@branch.Location</option> 
 					} 
 				</select>
 			</div>
@@ -428,7 +428,12 @@
 	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <script>
     $(document).ready(function () {
-				$('.btn-submit').on('click', function (e) {
+
+			window.alert = function () {
+						// Do nothing or log it for debug
+						console.log("Default alert suppressed."); // stop the default alert
+					};
+  		$('.btn-submit').on('click', function (e) {
 			e.preventDefault();
 
 			let formData = {
@@ -523,9 +528,7 @@
                                     <a class="dropdown-item" href="/Staff/Details/${data.ssn}">
                                         <i class="ti ti-pencil me-1"></i> Details
                                     </a>
-                                    <a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('${data.ssn}')">
-                                        <i class="ti ti-trash me-1"></i> Delete
-                                    </a>
+                                    
                                 </div>
                             </div>`;
                     }

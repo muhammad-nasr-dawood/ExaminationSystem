@@ -4,10 +4,10 @@ using ExaminationSystem.Core.Helpers;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 
-namespace ExaminationSystem.MVC.Services
+namespace ExaminationSystem.MVC.Services;
+
+public interface IStaffService
 {
-  public interface IStaffService
-  {
 	IUnitOfWork UnitOfWork { get; }
 	PaginatedResult<StaffGeneralDisplayVM> FindAll(
 		int? pageNumber,
@@ -19,12 +19,26 @@ namespace ExaminationSystem.MVC.Services
 		string orderByDirection = OrderBy.Ascending,
 		string searchTerm = null);
 
+	public PaginatedResult<TeachingDisplayViewModel> FindAllRegisteredCourses(
+		int? pageNumber,
+		int? pageSize,
+		int? branchIdFilter,
+		int? departmentIdFilter,
+		int? courseFilter,
+		long StaffSnn,
+		bool? status,
+		string columnOrderBy = null,
+		string orderByDirection = OrderBy.Ascending,
+		string searchTerm = null);
+
 	bool Add(StaffAddViewModel model);
 
 	StaffDisplayDetailViewModel GetById(long id);
 
 	bool UpdateById(StaffDisplayDetailViewModel staffDisplayDetailViewModeldel);
-  }
 
+	public User ToggleUserStatus(long userId);
+
+  public User ResetPassword(long userId);
 
 }

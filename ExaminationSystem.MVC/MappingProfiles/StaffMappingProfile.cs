@@ -1,12 +1,13 @@
 using AutoMapper;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.Services;
+using ExaminationSystem.MVC.ViewModels.BranchViewModels;
 using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 
-namespace ExaminationSystem.MVC.MappingProfiles
+namespace ExaminationSystem.MVC.MappingProfiles;
+
+public class StaffMappingProfile: Profile
 {
-  public class StaffMappingProfile: Profile
-  {
 	private readonly IPasswordService _passwordService;
 	public StaffMappingProfile()
 	{
@@ -62,6 +63,11 @@ namespace ExaminationSystem.MVC.MappingProfiles
 	  CreateMap<StaffDisplayDetailViewModel, User>().ForMember(dest => dest.IsActive, opt => opt.Ignore()).ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); 
 
 	  CreateMap<StaffDisplayDetailViewModel, Staff>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); // This ensures that null values from the DTO won’t overwrite existing values in the entity.
+
+	  CreateMap<Branch, BranchDisplayViewModel>().AfterMap((src, des) =>
+	  {
+		des.Location = src.ZipCodeNavigation.Governate;
+	  });
 	}
-  }
+
 }

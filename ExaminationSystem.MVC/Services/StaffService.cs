@@ -8,11 +8,12 @@ using System.Linq.Expressions;
 using LinqKit;
 using AutoMapper;
 using ExaminationSystem.MVC.ViewModels.StaffViewModels;
+using ExaminationSystem.MVC.ViewModels.TeachingViewModels;
 
-namespace ExaminationSystem.MVC.Services
+namespace ExaminationSystem.MVC.Services;
+
+public class StaffService : IStaffService
 {
-  public class StaffService : IStaffService
-  {
 	public IUnitOfWork UnitOfWork { get;  }
 	private readonly IMapper _mapper;
 	private readonly IPasswordService _passwordService;
@@ -22,6 +23,7 @@ namespace ExaminationSystem.MVC.Services
 	  _mapper = mapper;
 	  _passwordService = passwordService;
 	}
+
 
 
 	public PaginatedResult<StaffGeneralDisplayVM> FindAll(
@@ -61,13 +63,13 @@ namespace ExaminationSystem.MVC.Services
 	  Expression<Func<Staff, object>> orderBy = null;
 	  if (!string.IsNullOrEmpty(columnOrderBy))
 	  {
-		if (columnOrderBy.Equals("First Name", StringComparison.OrdinalIgnoreCase))
+		if (columnOrderBy.Equals("FullName", StringComparison.OrdinalIgnoreCase))
 		{
 		  orderBy = staff => staff.SsnNavigation.Fname;
 		}
-		else if (columnOrderBy.Equals("Last Name", StringComparison.OrdinalIgnoreCase))
+		else if (columnOrderBy.Equals("Salary", StringComparison.OrdinalIgnoreCase))
 		{
-		  orderBy = staff => staff.SsnNavigation.Lname;
+		  orderBy = staff => staff.Salary;
 		}
 	  }
 
@@ -131,5 +133,105 @@ namespace ExaminationSystem.MVC.Services
 	  return true;
 	}
 
+
+	public PaginatedResult<TeachingDisplayViewModel> FindAllRegisteredCourses(
+		int? pageNumber,
+		int? pageSize,
+		int? branchIdFilter,
+		int? departmentIdFilter,
+		int? courseFilter,
+		long StaffSnn,
+		bool? status,
+		string columnOrderBy = null,
+		string orderByDirection = OrderBy.Ascending,
+		string searchTerm = null)
+	{
+	  pageNumber ??= 1;
+	  pageSize ??= 10;
+	  Expression<Func<StaffBranchIntakeDepartmentCourseTeach, bool>> criteria = teach => true;
+
+	  criteria = criteria.And(teach => teach.StaffSsn == StaffSnn);
+
+	  if (courseFilter.HasValue)
+	  {
+		criteria = criteria.And(teach => teach.CourseId == courseFilter);
+	  }
+	  if (branchIdFilter.HasValue)
+	  {
+		criteria = criteria.And(teach => teach.BranchId == branchIdFilter);
+	  }
+
+	  if (departmentIdFilter.HasValue)
+	  {
+		criteria = criteria.And(teach => teach.DepartmentId == departmentIdFilter);
+	  }
+	  if (status.HasValue)
+	  {
+		if(status == true) // finished
+		{
+		  criteria = criteria.And(teach => teach.EndingDate != null);
+		}
+		else
+		{
+		  criteria = criteria.And(teach => teach.EndingDate == null);
+		}
+	  }
+
+	  if (!string.IsNullOrWhiteSpace(searchTerm))
+	  {
+		criteria = criteria.And(teach => teach.Department.Name.Contains(searchTerm) || teach.Branch.ZipCodeNavigation.Governate.Contains(searchTerm) || teach.Course.Name.Contains(searchTerm));
+	  }
+
+	  Expression<Func<StaffBranchIntakeDepartmentCourseTeach, object>> orderBy = null;
+	  if (!string.IsNullOrEmpty(columnOrderBy))
+	  {
+		if (columnOrderBy.Equals("Course", StringComparison.OrdinalIgnoreCase))
+		{
+		  orderBy = teach => teach.Course.Name;
+		}
+		else if (columnOrderBy.Equals("StartingDate", StringComparison.OrdinalIgnoreCase))
+		{
+		  orderBy = teach => teach.StartingDate;
+		}
+	  }
+
+	  PaginatedResult<StaffBranchIntakeDepartmentCourseTeach> tempRes = UnitOfWork.TeachingRepo.FindAll(
+		  take: pageSize,
+		  skip: (pageNumber - 1) * pageSize,
+		  criteria: criteria,
+		  orderBy: orderBy,
+		  orderByDirection: orderByDirection
+	  );
+
+	  PaginatedResult<TeachingDisplayViewModel> res = new PaginatedResult<TeachingDisplayViewModel>()
+	  {
+		Items = _mapper.Map<List<TeachingDisplayViewModel>>(tempRes.Items),
+		PageSize = tempRes.PageSize,
+		CurrentPage = tempRes.CurrentPage,
+		TotalPages = tempRes.TotalPages,
+		TotalFilteredItems = tempRes.TotalFilteredItems,
+		TotalItemsInTable = tempRes.TotalItemsInTable,
+	  };
+
+	  return res;
+	}
+
+	public User ToggleUserStatus(long userId)
+	{
+	  var user = UnitOfWork.UserRepo.GetById(userId);
+
+	  user.IsActive = !user.IsActive;
+
+	  UnitOfWork.Complete();
+	  return user;
+	}
+
+  public User ResetPassword(long userId)
+  {
+	var user = UnitOfWork.UserRepo.GetById(userId);
+	user.PasswordHash = _passwordService.HashPassword(userId.ToString());
+	UnitOfWork.Complete();
+	return user;
   }
+
 }
