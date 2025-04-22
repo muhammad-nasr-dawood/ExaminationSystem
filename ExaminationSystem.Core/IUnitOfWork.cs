@@ -10,9 +10,11 @@ namespace ExaminationSystem.Core
 {
     public interface IUnitOfWork: IDisposable
     {
-        IStudentRepo Students { get; }
+        //IStudentRepo Students { get; }
+        //IBaseRepo<Student> StudentRepo { get; }
         IAuthRepo AuthRepo { get; }
         IBaseRepo<Staff> StaffRepo { get; }
+        IBaseRepo<Student> StudentRepo { get; }
         IBaseRepo<User> UserRepo { get; }
 
         IBaseRepo<Location> LocationRepo { get; }

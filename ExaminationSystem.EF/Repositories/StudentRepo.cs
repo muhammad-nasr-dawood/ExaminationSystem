@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace ExaminationSystem.EF.Repositories
 {
-    public class StudentRepo : BaseRepo<Student>, IStudentRepo
-    {
-        public StudentRepo(ExaminationDBContext dBContext) : base(dBContext)
-        {
-        }
+    //public class StudentRepo : BaseRepo<Student>, IStudentRepo
+    //{
+    //    public StudentRepo(ExaminationDBContext dBContext) : base(dBContext)
+    //    {
+    //    }
 
-        public List<Student> GetByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    //    public List<Student> GetByName(string name)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
 }
