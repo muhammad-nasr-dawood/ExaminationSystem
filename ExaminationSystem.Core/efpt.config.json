@@ -151,6 +151,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[ActivePools]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[AddBranch]",
          "ObjectType": 1
       },
@@ -267,6 +271,14 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[GetPoolQuestions]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetPools]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[GetQuestions]",
          "ObjectType": 1
       },
@@ -336,6 +348,10 @@
       },
       {
          "Name": "[dbo].[LocationsUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[ProcessedPools]",
          "ObjectType": 1
       },
       {
@@ -524,6 +540,10 @@
       },
       {
          "Name": "[dbo].[UpdateTopic]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UsePool]",
          "ObjectType": 1
       },
       {

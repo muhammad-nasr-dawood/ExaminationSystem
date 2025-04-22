@@ -1,6 +1,7 @@
 using ExaminationSystem.Core.Consts;
 using ExaminationSystem.MVC.Services;
 using ExaminationSystem.MVC.ViewModels;
+using ExaminationSystem.MVC.ViewModels.BranchViewModels;
 using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,17 +13,17 @@ namespace ExaminationSystem.MVC.Controllers;
 public class StaffController : Controller
 {
   private readonly IStaffService _staffService;
-
+  private readonly IMapper _mapper;
   public StaffController(
-	  IStaffService staffService)
+	  IStaffService staffService, IMapper mapper)
   {
 	_staffService = staffService;
+	_mapper = mapper;
   }
 
   public IActionResult Index()
   {
-	// Get branches and departments for filters
-	ViewBag.Branches = _staffService.UnitOfWork.BranchesRepo.GetAll();
+	ViewBag.Branches = _mapper.Map<List<BranchDisplayViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll()) ;
 	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
 
 	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
@@ -110,6 +111,133 @@ public class StaffController : Controller
 
 	return Json(new { success = false, message = "Invalid data." });
   }
+
+
+  public IActionResult Details(long id)
+  {
+	ViewBag.Branches = _mapper.Map<List<BranchDisplayViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
+	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
+
+	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
+	ViewBag.Courses = _staffService.UnitOfWork.CoursesRepo.GetAll();
+	var staffDetail = _staffService.GetById(id);
+	return View(staffDetail);
+  }
+
+  public IActionResult GetUserSidebar(long userId)
+  {
+	var staffDetail = _staffService.GetById(userId); // fetch updated data
+	return PartialView("_StaffSidebar", staffDetail);
+  }
+
+
+  [HttpPost]
+  public IActionResult Update(StaffDisplayDetailViewModel model)
+  {
+	if (!ModelState.IsValid)
+	{
+	  return BadRequest(ModelState);
+	}
+	_staffService.UpdateById(model);
+	// Save changes to DB...
+
+	return Ok(new { message = "User updated" });
+  }
+
+  [HttpPost]
+  public IActionResult GetAllRegisteredCourses()
+  {
+	try
+	{
+	  var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "1");
+	  var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+	  var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "10");
+
+	  var searchValue = Request.Form["search[value]"].FirstOrDefault();
+	  var filterStatus = bool.TryParse(Request.Form["status"].FirstOrDefault(), out var fStatus) ? fStatus : (bool?)null;
+	  var branchId = int.TryParse(Request.Form["branchId"].FirstOrDefault(), out var bId) ? bId : (int?)null;
+	  var deptId = int.TryParse(Request.Form["DeptId"].FirstOrDefault(), out var dId) ? dId : (int?)null;
+	  var crsId = int.TryParse(Request.Form["courseId"].FirstOrDefault(), out var cId) ? cId : (int?)null;
+
+	  var staffSsn = long.Parse(Request.Form["staffSsn"].FirstOrDefault()); // required
+
+	  var orderColumnIndex = int.Parse(Request.Form["order[0][column]"].FirstOrDefault() ?? "0");
+	  var orderDir = Request.Form["order[0][dir]"].FirstOrDefault() ?? "asc";
+
+	  // Match column index to actual property names in your model or query
+	  string[] columnNames = { "Course", "IsInstructorCurrentBranch", "StartingDate", "EndingDate" };
+	  string orderBy = columnNames.ElementAtOrDefault(orderColumnIndex) ?? "Course";
+
+
+	  int pageNumber = (start / length) + 1;
+	  int pageSize = length;
+
+	  var courseResult = _staffService.FindAllRegisteredCourses(
+		  pageNumber: pageNumber,
+		  pageSize: pageSize,
+		  branchIdFilter: branchId,
+		  departmentIdFilter: deptId,
+		  courseFilter: crsId,
+		  StaffSnn: staffSsn,
+		  status: filterStatus,
+		  columnOrderBy: orderBy,
+		  orderByDirection: orderDir == "asc" ? OrderBy.Ascending : OrderBy.Descending,
+		  searchTerm: searchValue
+	  );
+
+	  return Json(new
+	  {
+		draw = draw,
+		recordsTotal = courseResult.TotalItemsInTable,
+		recordsFiltered = courseResult.TotalFilteredItems,
+		data = courseResult.Items
+	  });
+	}
+	catch (Exception ex)
+	{
+	  // You can optionally log the exception here for debugging
+
+	  return Json(new
+	  {
+		draw = 1,
+		recordsTotal = 0,
+		recordsFiltered = 0,
+		data = new List<TeachingDisplayViewModel>()
+	  });
+	}
+  }
+
+  [HttpPost]
+  public IActionResult ToggleUserStatus(long ssn)
+  {
+	try
+	{
+	  var user = _staffService.ToggleUserStatus(ssn);
+
+	  return Json(new { success = true, isActive = user.IsActive });
+	}
+	catch (Exception ex)
+	{
+	  // log the error if needed
+	  return Json(new { success = false, message = "An error occurred while toggling status." });
+	}
+  }
+
+  [HttpPost]
+  public IActionResult ResetPassword(long ssn)
+  {
+
+	var user = _staffService.ResetPassword(ssn);
+
+	// Send email or return password (you can change this)
+	// For demo purposes, we'll return it directly
+	return Json(new
+	{
+	  success = true,
+	  message = "Password reset successfully.",
+	});
+  }
+
 
 
   //[HttpPost]

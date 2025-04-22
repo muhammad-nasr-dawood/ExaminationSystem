@@ -79,7 +79,11 @@ public partial class ExaminationDBContext : DbContext
     {
         modelBuilder.Entity<AnswerTf>(entity =>
         {
-            entity.HasOne(d => d.Question).WithMany().HasConstraintName("FK_AnswerTF_Quesstion");
+            entity.HasKey(e => e.QuestionId).HasName("PK_AnswerTf_QuestionId");
+
+            entity.Property(e => e.QuestionId).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Question).WithOne(p => p.AnswerTf).HasConstraintName("FK_AnswerTF_Quesstion");
         });
 
         modelBuilder.Entity<Branch>(entity =>
@@ -181,6 +185,8 @@ public partial class ExaminationDBContext : DbContext
         modelBuilder.Entity<IntakeDeptCourse>(entity =>
         {
             entity.HasKey(e => new { e.DeptId, e.CourseId, e.IntakeId }).HasName("PK_DeptCourses");
+
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
 
             entity.HasOne(d => d.Course).WithMany(p => p.IntakeDeptCourses)
                 .OnDelete(DeleteBehavior.ClientSetNull)

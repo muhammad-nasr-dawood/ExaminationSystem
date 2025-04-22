@@ -33,6 +33,8 @@ builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();
 
 builder.Services.AddScoped<IStudentService, StudentService>(); // this is the only layer that can deal with the controller directly (any other dirty work like auto-mapping etc will be within it)
 builder.Services.AddScoped<IStaffService, StaffService>();
+builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeDepartmentCourseTeach>, BaseRepo<StaffBranchIntakeDepartmentCourseTeach>>();
+builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
 
 builder.Services.AddDbContext<ExaminationDBContext>(
             options => options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped // will create a new object for each request
