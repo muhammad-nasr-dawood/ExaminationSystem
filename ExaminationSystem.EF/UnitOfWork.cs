@@ -30,13 +30,16 @@ namespace ExaminationSystem.EF
         /*nasser*/
         public IPoolRepo PoolRepo { get; } // Added PoolRepo to UnitOfWork
 
+        public IQuestionRepo QuestionRepo { get; } // Added QuestionRepo to UnitOfWork
+
         /*nasser*/
 
         public UnitOfWork(ExaminationDBContext dbContext,
             IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo,
             IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, 
             IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo,
-            IPoolRepo _poolRepo)
+            IPoolRepo _poolRepo,
+            IQuestionRepo _QuestionRepo)
         {
             _dbContext = dbContext;
             Students = students;
@@ -47,6 +50,7 @@ namespace ExaminationSystem.EF
             DepartmentRepo = departmentRepo;    
             UserRepo = userRepo;
             PoolRepo = _poolRepo;
+            QuestionRepo = _QuestionRepo;
         }
 
         public int Complete()

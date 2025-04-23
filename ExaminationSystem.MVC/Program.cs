@@ -17,6 +17,8 @@ builder.Services.AddControllersWithViews();
 // Register services in the Dependency Injection container (DIC)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); // new object will be created for each request
 builder.Services.AddScoped<IStudentRepo, StudentRepo>(); // new object will be created for each request 
+builder.Services.AddScoped<IQuestionRepo, QuestionRepo>(); // new object will be created for each request
+builder.Services.AddScoped<IQuestionService, QuestionService>();
 
 builder.Services.AddAutoMapper(typeof(Program)); // regiseration for auto mapper (uses refelection)
 

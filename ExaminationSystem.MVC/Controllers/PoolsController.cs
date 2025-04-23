@@ -57,7 +57,26 @@ namespace ExaminationSystem.MVC.Controllers
 	}
 
 
+	[HttpGet]
+	public async Task<IActionResult> Archived(int CourseId, int page, int limit, int order)
+	{
+	  try
+	  {
+		PaginatedArchivedPoolsViewModel paginatedArchivedPoolsViewModel = await _poolService.ArchivedPools(CourseId, page, limit, order);
+		if (paginatedArchivedPoolsViewModel == null)
+		  return BadRequest("No Archived Pools Found");
+		return View(paginatedArchivedPoolsViewModel);
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+
+	}
 
 
-  }
-}
+
+  }//end of calss
+
+
+}//end of namespace

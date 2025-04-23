@@ -229,6 +229,7 @@ public partial class ExaminationDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Pools__3214EC075BC0AABE");
 
+            entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.IsActive).HasDefaultValue((byte)1);
 
             entity.HasOne(d => d.Branch).WithMany(p => p.Pools)

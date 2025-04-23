@@ -17,5 +17,7 @@ namespace ExaminationSystem.MVC.Services
 
 	public Task<List<GenaricPoolState<ProcessedPoolsResult>>?> ProcessedPools(long staffId);
 
+	public Task<PaginatedArchivedPoolsViewModel> ArchivedPools(int c, int p, int l, int o);
+
   }
 }

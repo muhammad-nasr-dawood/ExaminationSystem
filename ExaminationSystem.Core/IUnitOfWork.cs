@@ -22,7 +22,7 @@ namespace ExaminationSystem.Core
 
         IPoolRepo PoolRepo { get; } // Added PoolRepo to UnitOfWork
 
-
+        IQuestionRepo QuestionRepo { get; } // Added QuestionRepo to UnitOfWork
 
         int Complete();
     }

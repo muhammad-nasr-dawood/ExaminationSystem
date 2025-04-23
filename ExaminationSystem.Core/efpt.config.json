@@ -251,6 +251,10 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[GetArchivedPools]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[GetBranchById]",
          "ObjectType": 1
       },

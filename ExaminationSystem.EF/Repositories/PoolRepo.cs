@@ -22,9 +22,19 @@ namespace ExaminationSystem.EF.Repositories
              return await _dbContext.Procedures.ActivePoolsAsync(StaffId);
         }
 
+        public async Task<List<GetArchivedPoolsResult>> ArchivedPools(int CourseId, int page, int limit, int ordder)
+        {
+            return await _dbContext.Procedures.GetArchivedPoolsAsync(CourseId, page, limit, ordder);
+        }
+
         public async Task<List<ProcessedPoolsResult>> ProcessedPools(long StaffId)
         {
             return await _dbContext.Procedures.ProcessedPoolsAsync(StaffId);
+        }
+
+        public async Task<List<GetQuestionsResult>> Questions(int topicId, byte order, byte type, byte level, int page, int limit)
+        {
+             return await _dbContext.Procedures.GetQuestionsAsync(topicId,order,type,level , page,limit);
         }
 
         public async Task<List<TeachAtResult>> TeachAt(long StaffId)

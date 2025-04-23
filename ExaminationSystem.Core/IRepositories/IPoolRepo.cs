@@ -15,6 +15,10 @@ namespace ExaminationSystem.Core.IRepositories
 
         public Task<List<ProcessedPoolsResult>> ProcessedPools(long StaffId);
 
+        public Task<List<GetArchivedPoolsResult>> ArchivedPools(int CourseId, int page, int limit, int ordder);
+
+        public Task<List<GetQuestionsResult>> Questions(int tId , byte o , byte t, byte lvl , int p , int l);
+
 
     }
 }
