@@ -23,6 +23,8 @@ builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<IDepartmentService, DeparmentService>();
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
 builder.Services.AddScoped<IBranchRepo, BranchRepo>();
+builder.Services.AddScoped<IStaffBranchManageRepo, StaffBranchManageRepo>();
+
 builder.Services.AddScoped<IDepartmentRepo, DepartmentRepo>();
 builder.Services.AddScoped<ILocationRepo, LocationRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();

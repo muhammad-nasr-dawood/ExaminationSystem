@@ -19,7 +19,8 @@ namespace ExaminationSystem.Core
 
         IBaseRepo<Location> LocationRepo { get; }
         IBaseRepo<Department> DepartmentRepo { get; }
-        IBaseRepo<Branch> BranchesRepo { get; }
+        IStaffBranchManageRepo StaffBranchManageRepo { get; }
+        IBranchRepo BranchesRepo { get; }
 
         int Complete();
     }

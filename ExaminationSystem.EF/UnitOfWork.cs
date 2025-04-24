@@ -26,14 +26,17 @@ namespace ExaminationSystem.EF
 
         public IBaseRepo<Department> DepartmentRepo { get; }
 
-        public IBaseRepo<Branch> BranchesRepo { get; }
+        public IBranchRepo BranchesRepo { get; }
 
-        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo)
+        public IStaffBranchManageRepo StaffBranchManageRepo { get; }
+
+        public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBranchRepo branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo,IStaffBranchManageRepo staffBranchManageRepo)
         {
             _dbContext = dbContext;
             Students = students;
             AuthRepo = authRepo;
             StaffRepo = staffRepo;
+            StaffBranchManageRepo = staffBranchManageRepo;
            
 
             LocationRepo = locationRepo;    

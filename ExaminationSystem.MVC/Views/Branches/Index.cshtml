@@ -9,7 +9,7 @@
 					<div>
 						<h5 class="fw-bold text-primary mb-2 locName">@branch.LocationName</h5>
 						<p class="text-muted mb-1">Street No: <strong class="streetNo">@branch.StreetNo</strong></p>
-						<p class="text-muted mb-1">Manager: <strong>@branch.BranchManagerName</strong></p>
+						<p class="text-muted mb-1 branch-manager">Manager: <strong>@branch.BranchManagerName</strong></p>
 						<p class="text-muted mb-1">
 							Departments: <strong>@branch.NumberOfDepartments</strong>
 							<div class="d-flex justify-content-end">
@@ -21,7 +21,7 @@
 					</div>
 
 					<div class="d-flex align-items-center mb-3">
-						<button class="btn btn-sm btn-outline-primary edit-branch-btn" data-id="@branch.Id">
+						<button class="btn btn-sm btn-outline-primary assign-branch-btn" data-id="@branch.Id">
 							<i class="bi bi-pencil-fill"></i>
 							@(branch.BranchManagerName == "Not Assigned" ? "Assign Manager" : "Change Manager")
 						</button>
@@ -63,6 +63,39 @@
 
 <script>
 	$(document).ready(function () {
+
+				$(".assign-branch-btn").on('click', function (e) {
+			e.preventDefault();
+			var branchId = $(this).data("id");
+			; 
+
+			
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("AssignManager", "Branches")/' + branchId,  
+				success: function (data) {
+					
+					$('#modalContainer').html(data);
+
+					
+					var modal = new bootstrap.Modal(document.getElementById('assignManagerModal'));
+					modal.show();
+
+					
+					$(document).on('shown.bs.modal', '#assignManagerModal', function () {
+						$('#staffSelect').select2({
+							placeholder: "Select a staff member",
+							allowClear: true,
+							dropdownParent: $('#assignManagerModal') 
+						}).trigger('change');
+					});
+				},
+				error: function () {
+					alert("An error occurred while loading the modal.");
+				}
+			});
+		});
+
 		$(".edit-branch-btn").on('click', function (e) {
 			e.preventDefault();
 			var branchId = $(this).data("id");
@@ -97,7 +130,7 @@
 			e.preventDefault();
 
 			var branchId = $(this).data("id");
-
+			
 			$.ajax({
 				type: "GET",
 				url: '@Url.Action("Delete", "Branches")/' + branchId,

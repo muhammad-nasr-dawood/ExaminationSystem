@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace ExaminationSystem.Core.IRepositories
 {
-    public interface IBranchRepo:IBaseRepo<Branch>
+    public interface IStaffBranchManageRepo:IBaseRepo<StaffBranchManage>
     {
-        Task<IEnumerable<Staff>> GetUnassignedStaffAsync(int branchId);
-         
-
+        Task<StaffBranchManage> AddBranchManager(int branchId, long staffId);
     }
 }

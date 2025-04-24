@@ -1,6 +1,8 @@
 using AutoMapper;
 using ExaminationSystem.Core;
+using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.ViewModels.BranchViewModels;
+using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +27,7 @@ namespace ExaminationSystem.MVC.Services
 	}
 
 	
-	public BranchEditViewModel GetById(int id)
+	public BranchEditViewModel GetBranchForEdit(int id)
 	{
 	  var branch = _unitOfWork.BranchesRepo.GetById(id); 
 	  if (branch == null)
@@ -43,15 +45,6 @@ namespace ExaminationSystem.MVC.Services
 	  {
 		
 		_mapper.Map(viewModel, branch);
-		Console.WriteLine(branch.ZipCodeNavigation.Governate);
-
-
-
-		Console.WriteLine();
-
-
-
-
 		_unitOfWork.Complete(); 
 	  }
 	}
@@ -79,5 +72,38 @@ namespace ExaminationSystem.MVC.Services
 	  }
 
 	}
-  }
+
+
+	public async Task<BranchManagerViewModel> GetUnassignedStaffAsync(int branchId)
+	{
+	 
+	  var unassignedStaff = await _unitOfWork.BranchesRepo.GetUnassignedStaffAsync(branchId);
+
+	
+	  var assignedStaff = await _unitOfWork.StaffBranchManageRepo
+		  .FindAsync(sbm => sbm.BranchId == branchId); 
+
+	  var model = new BranchManagerViewModel
+	  {
+		UnassignedStaff = _mapper.Map<IEnumerable<StaffGeneralDisplayVM>>(unassignedStaff),
+		AssignedStaffSsn = assignedStaff?.StaffSsn 
+	  };
+
+	  return model;
+	}
+
+
+
+
+	public async Task<bool> AddBranchManager(int branchId, long staffSsn)
+	{
+
+	  var rec = await _unitOfWork.StaffBranchManageRepo.AddBranchManager(branchId, staffSsn);
+
+	  _unitOfWork.Complete();
+
+	  return rec != null;
+
+	}
+	}
 }

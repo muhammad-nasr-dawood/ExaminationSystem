@@ -14,6 +14,8 @@ namespace ExaminationSystem.Core.IRepositories
         T GetById(long id);
         T GetById(int id);
         Task<T> GetByIdAsync(long id);
+        Task<bool> FindAsync(int id);
+
         IEnumerable<T> GetAll();
         Task<IEnumerable<T>> GetAllAsync();
         T Find(Expression<Func<T, bool>> criteria);

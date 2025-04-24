@@ -31,6 +31,12 @@ namespace ExaminationSystem.EF.Repositories
             return await _context.Set<T>().ToListAsync();
         }
 
+        public async Task<bool> FindAsync(int id)
+        {
+            var entity = await _context.Set<T>().FindAsync(id);
+            return entity != null; 
+        }
+
         public T GetById(long id)
         {
             return _context.Set<T>().Find(id); // find search for the value passed in the primary key column no matter its name is

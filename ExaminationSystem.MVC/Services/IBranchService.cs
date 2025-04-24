@@ -1,5 +1,8 @@
+using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.ViewModels.BranchViewModels;
+using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 using ExaminationSystem.MVC.ViewModels.StudentViewModels;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace ExaminationSystem.MVC.Services
 {
@@ -7,9 +10,13 @@ namespace ExaminationSystem.MVC.Services
   {
 	List<BranchViewModel> GetAll();
 	List<LocationViewModel> GetLocations();
-	BranchEditViewModel GetById(int id);
+	BranchEditViewModel GetBranchForEdit(int id);
 	void Update(BranchEditViewModel viewModel);
 	void Delete(int id);
+	Task<bool> AddBranchManager(int branchId, long staffSsn);
+
+	Task<BranchManagerViewModel> GetUnassignedStaffAsync(int branchId);
+
   }
 
   } 

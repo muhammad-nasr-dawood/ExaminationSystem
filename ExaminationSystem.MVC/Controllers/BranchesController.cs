@@ -21,7 +21,7 @@ public class BranchesController : Controller
 
   public IActionResult Edit(int id)
   {
-	var branch = _branchService.GetById(id);
+	var branch = _branchService.GetBranchForEdit(id);
 	if (branch == null)
 	{
 	  return NotFound();
@@ -45,7 +45,7 @@ public class BranchesController : Controller
 	  _branchService.Update(viewModel);
 
 	
-	  var updatedBranch = _branchService.GetById(viewModel.Id);
+	  var updatedBranch = _branchService.GetBranchForEdit(viewModel.Id);
 
 	 
 	  return Json(new { success = true, id = updatedBranch.Id, branch = updatedBranch });
@@ -57,55 +57,82 @@ public class BranchesController : Controller
   }
 
 
-  // GET: Show the Delete Confirmation Modal
+  
   [HttpGet]
   public IActionResult Delete(int id)
   {
-	var branch = _branchService.GetById(id);
+	var branch = _branchService.GetBranchForEdit(id);
 
-	// If branch is not found, return a failure message
+	
 	if (branch == null)
 	{
 	  return Json(new { success = false, message = "Branch not found." });
 	}
 
-
-
-
-	// Return the delete modal as a partial view with the branch data
 	return PartialView("DeleteBranchModel", branch);
   }
 
-  // POST: Delete the branch
+ 
   [HttpPost]
   public IActionResult DeleteConfirmed(int id)
   {
 	try
 	{
-	  // Call the service to delete the branch by ID
-	  var branch = _branchService.GetById(id);
+	  
+	  var branch = _branchService.GetBranchForEdit(id);
 
 	  if (branch == null)
 	  {
 		return Json(new { success = false, message = "Branch not found." });
 	  }
 
-	  // Delete the branch
 	  _branchService.Delete(id);
 
 	  return Json(new { success = true, message = "Branch deleted successfully" });
 	}
 	catch (KeyNotFoundException ex)
 	{
-	  // Handle the case where the branch ID is not found
+	  
 	  return Json(new { success = false, message = ex.Message });
 	}
 	catch (Exception ex)
 	{
-	  // Handle any other exceptions
+	  
 	  return Json(new { success = false, message = "An error occurred while deleting the branch." });
 	}
   }
+
+
+  [HttpGet]
+  public async Task<IActionResult> AssignManager(int id)
+  {
+	
+	var unassignedStaff = await _branchService.GetUnassignedStaffAsync(id);
+
+
+	return PartialView("AssignBranchManagerModal", unassignedStaff);
+  }
+
+
+
+ [HttpPost]
+public async Task<IActionResult> AssignManager(int id, long staffSsn)
+{
+
+
+    var success = await _branchService.AddBranchManager(id, staffSsn);
+
+    if (success)
+    {
+       
+       var branch =  _branchService.GetBranchForEdit(id);
+	  
+
+        return Json(new { success = true,Id=id, message = "Manager assigned successfully.", managerName = branch?.BranchManagerName });
+    }
+
+    return Json(new { success = false, message = "Error: Could not assign manager." });
+}
 
 
 
