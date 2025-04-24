@@ -400,6 +400,12 @@
 <script>
 
 	$(document).ready(function () {
+
+			 // Alternative: Validate when any field loses focus
+			$("form").validate();
+			$("form input").keyup(function() {
+				$(this).valid();
+			});
 				window.alert = function () {
 					// Do nothing or log it for debug
 					console.log("Default alert suppressed."); // stop the default alert

@@ -32,6 +32,7 @@ public class AuthController : Controller
 	  UserLoginViewModel user = _authService.ValidateLoginByEmailAndPassword(model.Email, model.Password);
 	  if (user != null)
 	  {
+		Claim idClaim = new Claim(ClaimTypes.NameIdentifier, user.Ssn.ToString());
 		Claim nameClaim = new Claim(ClaimTypes.Name, $"{user.Fname} {user.Lname}");
 		Claim emailClaim = new Claim(ClaimTypes.Email, user.Email);
 		List<Claim> rolesClaims = new List<Claim>();
@@ -42,6 +43,7 @@ public class AuthController : Controller
 			rolesClaims.Add(new Claim(ClaimTypes.Role, role));
 		}
 		ClaimsIdentity card = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+		card.AddClaim(idClaim);
 		card.AddClaim(nameClaim);
 		card.AddClaim(emailClaim);
 

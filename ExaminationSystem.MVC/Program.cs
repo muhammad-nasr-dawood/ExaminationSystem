@@ -20,8 +20,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); // new object will be cre
 builder.Services.AddAutoMapper(typeof(Program)); // regiseration for auto mapper (uses refelection)
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+
+
 
 builder.Services.AddSingleton<IPasswordService, PasswordService>(); // singleton no need for more than one object for this servcie since it's a stateless utility service and there's no shared state or data (and our code will be also loosly coupled better than using static class which will make our code tightly coupled)
+builder.Services.AddScoped<IImageService, ImageKitService>();
 
 builder.Services.AddScoped<IBaseRepo<Staff>, BaseRepo<Staff>>(); // staff repo using the generic repo
 builder.Services.AddScoped<IBaseRepo<Student>, BaseRepo<Student>>();
@@ -35,6 +39,7 @@ builder.Services.AddScoped<IStudentService, StudentService>(); // this is the on
 builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeDepartmentCourseTeach>, BaseRepo<StaffBranchIntakeDepartmentCourseTeach>>();
 builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
+builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();  
 
 builder.Services.AddDbContext<ExaminationDBContext>(
             options => options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped // will create a new object for each request

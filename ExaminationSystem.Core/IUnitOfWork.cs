@@ -22,6 +22,8 @@ namespace ExaminationSystem.Core
         IBaseRepo<Branch> BranchesRepo { get; }
         IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> TeachingRepo { get; }
 
+        IBaseRepo<ProfileImage> ProfileImageRepo { get; }
+
         IBaseRepo<Course> CoursesRepo { get; }
         int Complete();
     }
