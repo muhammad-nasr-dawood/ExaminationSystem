@@ -73,6 +73,20 @@ namespace ExaminationSystem.MVC.Services
 
 	}
 
+	public async Task< bool> DeleteManagerByBranchId(int id)
+	{
+	  var Branch = await _unitOfWork.StaffBranchManageRepo.GetByBranchId(id);
+	  if (Branch == null)
+		return false;
+	  
+	  else
+	  {
+		_unitOfWork.StaffBranchManageRepo.Delete(Branch);
+		_unitOfWork.Complete();
+		return (Branch!=null);
+	  }
+	}
+
 
 	public async Task<BranchManagerViewModel> GetUnassignedStaffAsync(int branchId)
 	{
@@ -105,5 +119,12 @@ namespace ExaminationSystem.MVC.Services
 	  return rec != null;
 
 	}
+
+	public async Task<StaffBranchManage> GetBranchThatOwnStaffByID(int branchId)
+	{
+	  return await _unitOfWork.StaffBranchManageRepo.GetByBranchId(branchId);
 	}
+
+
+  }
 }

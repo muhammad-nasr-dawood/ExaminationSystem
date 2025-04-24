@@ -52,6 +52,13 @@ namespace ExaminationSystem.EF.Repositories
 
             return staffBranchManage;
         }
+        public async Task<StaffBranchManage?> GetByBranchId(int branchId)
+        {
+            return await _dBContext.StaffBranchManages
+                                   .Where(sbm => sbm.BranchId == branchId)
+                                   .FirstOrDefaultAsync();
+        }
+
 
 
     }

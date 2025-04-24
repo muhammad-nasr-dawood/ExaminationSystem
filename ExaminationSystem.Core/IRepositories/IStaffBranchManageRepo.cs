@@ -10,5 +10,6 @@ namespace ExaminationSystem.Core.IRepositories
     public interface IStaffBranchManageRepo:IBaseRepo<StaffBranchManage>
     {
         Task<StaffBranchManage> AddBranchManager(int branchId, long staffId);
+        Task<StaffBranchManage> GetByBranchId(int branchId);
     }
 }

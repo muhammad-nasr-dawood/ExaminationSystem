@@ -134,6 +134,42 @@ public async Task<IActionResult> AssignManager(int id, long staffSsn)
     return Json(new { success = false, message = "Error: Could not assign manager." });
 }
 
+  [HttpGet]
+  public async Task< IActionResult> DeleteManager(int id)
+  {
+	var branch = await _branchService.GetBranchThatOwnStaffByID(id);
+
+	if (branch == null)
+	{
+	  return Json(new { success = false, message = "Branch not found." });
+	}
+
+
+	return PartialView("DeleteManagerModal", branch);
+  }
+
+  [HttpPost]
+  public async Task<IActionResult> DeleteManagerConfirmed(int id)
+  {
+	
+	  var branch = await _branchService.GetBranchThatOwnStaffByID(id); 
+	  if (branch == null)
+	  {
+		return Json(new { success = false, message = "Branch not found." });
+	  }
+
+	  bool ok = await _branchService.DeleteManagerByBranchId(id);
+	  if (ok)
+	  {
+		return Json(new { success = true, message = "Staff deleted successfully" });
+	  }
+	  else
+	  {
+		return Json(new { success = false, message = "An error occurred while deleting the staff." });
+	  }
+
+  }
+
 
 
 }

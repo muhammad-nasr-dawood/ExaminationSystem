@@ -59,6 +59,14 @@
 					
 						$('#assignManagerModal').modal('hide');
 						$('#branch-' + response.id + ' .branch-manager').html('Manager: <strong>' + response.managerName + '</strong>');
+						$('#branch-' + response.id).find('.delete-manager-btn').removeClass('hide-delete-button');
+						$('#branch-' + response.id).find('.delete-manager-btn').addClass('show-delete-button');
+
+
+
+
+						 $('#branch-' + response.id).find('.assign-branch-btn').text('Change Manager');
+
 
 					} else {
 						alert('Error: ' + response.message);

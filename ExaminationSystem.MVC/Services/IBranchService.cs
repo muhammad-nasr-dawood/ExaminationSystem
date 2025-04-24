@@ -13,8 +13,9 @@ namespace ExaminationSystem.MVC.Services
 	BranchEditViewModel GetBranchForEdit(int id);
 	void Update(BranchEditViewModel viewModel);
 	void Delete(int id);
+	public Task<bool> DeleteManagerByBranchId(int id);
 	Task<bool> AddBranchManager(int branchId, long staffSsn);
-
+	Task<StaffBranchManage> GetBranchThatOwnStaffByID(int branchId);
 	Task<BranchManagerViewModel> GetUnassignedStaffAsync(int branchId);
 
   }
