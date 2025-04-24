@@ -11,11 +11,13 @@ public class AccountService: IAccountService
   public IUnitOfWork UnitOfWork {  get; }
   private readonly IMapper _mapper;
   private readonly IImageService _imageService;
-  public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IImageService imageService	)
+  private readonly IPasswordService _passwordService;
+  public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IImageService imageService, IPasswordService passwordService	)
   {
 	UnitOfWork = unitOfWork;
 	_mapper = mapper;
 	_imageService = imageService;
+	_passwordService = passwordService;
   }
 
   public AccountEditViewModel GetAccount(long id)
@@ -78,5 +80,54 @@ public class AccountService: IAccountService
 
 	return true;
 
+  }
+
+  public async Task<bool> VerifyOldPassword(long userId, string oldPassword)
+  {
+	var user = await UnitOfWork.UserRepo.GetByIdAsync(userId);
+	var isSuccess = _passwordService.VerifyPassword(oldPassword, user.PasswordHash);
+	return isSuccess;
+  }
+
+  public async Task<bool> ChangePassword(long userId, string oldPassword, string newPassword)
+  {
+	var isSuccess = await VerifyOldPassword(userId, oldPassword);
+	if(isSuccess)
+	{
+	  var newHashedPassword = _passwordService.HashPassword(newPassword);
+	  var user = await UnitOfWork.UserRepo.GetByIdAsync(userId);
+	  user.PasswordHash = newHashedPassword;
+	  UnitOfWork.Complete();
+	  return true;
+	}
+	return false;
+  }
+
+  public async Task<bool> VerifyEmail(long userId, string email)
+  {
+	Expression<Func<User, bool>> criteria = user => user.Email == email; // we used expression in order to deal with the database --> cannot use delgates directly when dealing with database
+	var user = await UnitOfWork.UserRepo.FindAsync(criteria);
+
+	if(user is not null && user.Ssn != userId) return false; // it means that email already taken by another user
+
+	return true;
+  }
+
+  public async Task<bool> VerifyPhone(long userId, string phoneNumber)
+  {
+	Expression<Func<User, bool>> criteria = user => user.PhoneNumber == phoneNumber; // we used expression in order to deal with the database --> cannot use delgates directly when dealing with database
+	var user = await UnitOfWork.UserRepo.FindAsync(criteria);
+
+	if (user is not null && user.Ssn != userId) return false; // it means that email already taken by another user
+
+	return true;
+  }
+
+
+  public async Task<bool> VerifySSN(long userId)
+  {
+	var user = await UnitOfWork.UserRepo.GetByIdAsync(userId);
+	if (user is null) return true;
+	return false;
   }
 }

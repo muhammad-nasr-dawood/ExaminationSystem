@@ -57,7 +57,7 @@ public class StaffService : IStaffService
 
 	  if (!string.IsNullOrWhiteSpace(searchTerm))
 	  {
-		criteria = criteria.And(staff => staff.SsnNavigation.Fname.Contains(searchTerm) || staff.SsnNavigation.Lname.Contains(searchTerm));
+		criteria = criteria.And(staff => staff.SsnNavigation.Fname.Contains(searchTerm) || staff.SsnNavigation.Lname.Contains(searchTerm) || staff.SsnNavigation.Ssn.ToString().Contains(searchTerm.ToString())); // search is done by name and ssn 
 	  }
 
 	  Expression<Func<Staff, object>> orderBy = null;
@@ -67,7 +67,11 @@ public class StaffService : IStaffService
 		{
 		  orderBy = staff => staff.SsnNavigation.Fname;
 		}
-		else if (columnOrderBy.Equals("Salary", StringComparison.OrdinalIgnoreCase))
+		else if (columnOrderBy.Equals("Ssn", StringComparison.OrdinalIgnoreCase))
+		{
+		  orderBy = staff => staff.SsnNavigation.Ssn;
+		}
+	  else if (columnOrderBy.Equals("Salary", StringComparison.OrdinalIgnoreCase))
 		{
 		  orderBy = staff => staff.Salary;
 		}

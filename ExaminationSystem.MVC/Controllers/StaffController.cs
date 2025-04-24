@@ -13,12 +13,33 @@ namespace ExaminationSystem.MVC.Controllers;
 public class StaffController : Controller
 {
   private readonly IStaffService _staffService;
+  private readonly IAccountService _accountService;
   private readonly IMapper _mapper;
   public StaffController(
-	  IStaffService staffService, IMapper mapper)
+	  IStaffService staffService, IMapper mapper, IAccountService accountService)
   {
 	_staffService = staffService;
 	_mapper = mapper;
+	_accountService = accountService;
+  }
+  [HttpGet]
+  public async Task<IActionResult> IsEmailExist(string Email, long Ssn)
+  {
+	var isSuccess = await _accountService.VerifyEmail(Ssn, Email);
+	return Json(isSuccess);
+  }
+  [HttpGet]
+  public async Task<IActionResult> IsPhoneNumberExist(string PhoneNumber, long Ssn)
+  {
+	 var isSuccess = await _accountService.VerifyPhone(Ssn, PhoneNumber);
+	return Json(isSuccess);
+  }
+
+  [HttpGet]
+  public async Task<IActionResult> IsSSNExist(long Ssn)
+  {
+	var isSuccess = await _accountService.VerifySSN(Ssn);
+	return Json(isSuccess);
   }
 
   public IActionResult Index()

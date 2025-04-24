@@ -12,4 +12,13 @@ public interface IAccountService
 
   Task<string> DeleteImage(long id);
   Task<bool> UpdateAccount(long userId, List<string> roles, AccountEditViewModel model);
+
+  Task<bool> VerifyOldPassword(long userId, string oldPassword);
+
+  Task<bool> ChangePassword(long userId, string oldPassword, string newPassword);
+
+  Task<bool> VerifyEmail(long userId, string email);
+
+  Task<bool> VerifyPhone(long userId, string phoneNumber);
+  Task<bool> VerifySSN(long userId);
 }
