@@ -12,14 +12,14 @@ public class ImageKitService : IImageService
 {
     private readonly ImagekitClient _client;
 
-    public ImageKitService()
-    {
-        _client = new ImagekitClient(
-            publicKey: "public_htDZr6lVSyVC4al4m3BxfvhTu4g=",
-            privateKey: "private_8QfxhC8wwInvxq7rFu0ZGV5+OwE=",
-            urlEndPoint: "https://ik.imagekit.io/nl6nawbsq/"
-        );
-    }
+	public ImageKitService(IConfiguration configuration) // no need to register it it will be registerd automatically and will get what we need from the appsettings file
+	{
+	  _client = new ImagekitClient(
+		  publicKey: configuration["ImageKit:PublicKey"],
+		  privateKey: configuration["ImageKit:PrivateKey"],
+		  urlEndPoint: configuration["ImageKit:UrlEndpoint"]
+	  );
+	}
 
   public async Task<(string fileId, string url)> UploadImageAsync(IFormFile file, string folder = "/ExaminationImagesFolder")
   {

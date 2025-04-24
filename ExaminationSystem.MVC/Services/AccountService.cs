@@ -73,11 +73,6 @@ public class AccountService: IAccountService
 	  var student = await UnitOfWork.StudentRepo.GetByIdAsync(userId);
 	  _mapper.Map(model, student);
 	}
-	else
-	{
-	  var staff = await UnitOfWork.StaffRepo.GetByIdAsync(userId);
-	  _mapper.Map(model, staff);
-	}
 
 	UnitOfWork.Complete();
 
