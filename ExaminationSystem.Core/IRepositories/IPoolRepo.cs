@@ -20,5 +20,7 @@ namespace ExaminationSystem.Core.IRepositories
         public Task<List<GetQuestionsResult>> Questions(int tId , byte o , byte t, byte lvl , int p , int l);
 
 
+        public Task<List<GetPoolQuestionsResult>>PoolQuestions(int PoolId, int Page , int Limit ,byte QType , byte OTypre );
+
     }
 }

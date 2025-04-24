@@ -1182,7 +1182,7 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<List<GetPoolQuestionsResult>> GetPoolQuestionsAsync(int? poolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<GetPoolQuestionsResult>> GetPoolQuestionsAsync(int? poolId, int? page, int? limit, byte? filter, int? oType, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -1199,9 +1199,33 @@ namespace ExaminationSystem.Core.Models
                     Value = poolId ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Int,
                 },
+                new SqlParameter
+                {
+                    ParameterName = "Page",
+                    Value = page ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "Limit",
+                    Value = limit ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "Filter",
+                    Value = filter ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.TinyInt,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "OType",
+                    Value = oType ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<GetPoolQuestionsResult>("EXEC @returnValue = [dbo].[GetPoolQuestions] @PoolId = @PoolId", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<GetPoolQuestionsResult>("EXEC @returnValue = [dbo].[GetPoolQuestions] @PoolId = @PoolId, @Page = @Page, @Limit = @Limit, @Filter = @Filter, @OType = @OType", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

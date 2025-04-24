@@ -19,5 +19,7 @@ namespace ExaminationSystem.MVC.Services
 
 	public Task<PaginatedArchivedPoolsViewModel> ArchivedPools(int c, int p, int l, int o);
 
+	public Task<PaginatedPoolQsViewModel> PoolQuestions(int PoolId, int Page, int Limit, byte QType, byte OTypre);
+
   }
 }

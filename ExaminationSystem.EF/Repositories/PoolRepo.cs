@@ -41,7 +41,11 @@ namespace ExaminationSystem.EF.Repositories
         {
             return await _dbContext.Procedures.TeachAtAsync(StaffId);
         }
-    
+
+        public async Task<List<GetPoolQuestionsResult>> PoolQuestions(int PoolId, int Page, int Limit, byte QType, byte OTypre)
+        {
+            return await _dbContext.Procedures.GetPoolQuestionsAsync(PoolId,Page,Limit,QType,OTypre);
+        }
 
     }
 }

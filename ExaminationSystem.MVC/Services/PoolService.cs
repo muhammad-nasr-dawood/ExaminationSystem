@@ -3,13 +3,15 @@ using Newtonsoft.Json;
 using ExaminationSystem.Core;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.ViewModels.PoolViewModels;
- 
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Text;
+
 namespace ExaminationSystem.MVC.Services
 {
   public class PoolService : IPoolService
   {
 	public IUnitOfWork UnitOfWork { get; set; }
-	public IMapper Map { get  ; set ; }
+	public IMapper Map { get; set; }
 
 	public PoolService(IUnitOfWork unitOfWork, IMapper map)
 	{
@@ -19,10 +21,10 @@ namespace ExaminationSystem.MVC.Services
 
 	public async Task<TeachAtViewModel?> TeachAt(long staffId)
 	{
-		List<TeachAtResult> TAL=await UnitOfWork.PoolRepo.TeachAt(staffId);
+	  List<TeachAtResult> TAL = await UnitOfWork.PoolRepo.TeachAt(staffId);
 
 	  if (TAL == null)
-		  return null;
+		return null;
 
 	  return Map.Map<TeachAtViewModel>(TAL);
 	}
@@ -39,17 +41,16 @@ namespace ExaminationSystem.MVC.Services
 
 	public async Task<List<GenaricPoolState<ProcessedPoolsResult>>?> ProcessedPools(long staffId)
 	{
-	   List<ProcessedPoolsResult> processedPoolsList = await UnitOfWork.PoolRepo.ProcessedPools(staffId);
+	  List<ProcessedPoolsResult> processedPoolsList = await UnitOfWork.PoolRepo.ProcessedPools(staffId);
 
-	  if(processedPoolsList == null)
+	  if (processedPoolsList == null)
 		return null;
 
 	  return Map.Map<List<GenaricPoolState<ProcessedPoolsResult>>>(processedPoolsList);
 	}
 
 
-
-	public async Task<PaginatedArchivedPoolsViewModel> ArchivedPools(int CourseId , int page , int limit,int order)
+	public async Task<PaginatedArchivedPoolsViewModel> ArchivedPools(int CourseId, int page, int limit, int order)
 	{
 	  //validate params
 
@@ -63,23 +64,85 @@ namespace ExaminationSystem.MVC.Services
 		if (jsonList == null || jsonList.Count == 0)
 		  throw new Exception("No data found");
 
+
+		StringBuilder AllPools = new StringBuilder(500);
+
+		foreach (var pool in jsonList)
+		{
+		  AllPools.Append(pool);
+		}
 		// Map the result to the desired view model  
 		PaginatedArchivedPoolsViewModel? result =
-		  JsonConvert.DeserializeObject<PaginatedArchivedPoolsViewModel>(jsonList[0].JSON_F52E2B6118A111d1B10500805F49916B);
+		  JsonConvert.DeserializeObject<PaginatedArchivedPoolsViewModel>(AllPools.ToString());
 
-		if(result == null)
+		if (result == null)
 		  throw new Exception("Mapping failed");
 
 		return result;
 	  }
-	  catch (Exception ex) {
+	  catch (JsonException jsonEx)
+	  {
+		// Log JSON-specific errors
+		throw new Exception($"JSON Error: {jsonEx.Message}");
+	  }
+	  catch (Exception ex)
+	  {
 		throw new Exception(ex.Message);
 	  }
-	   
-	   
+
+
 
 	}
 
+
+ 
+	public async Task<PaginatedPoolQsViewModel> PoolQuestions(int PoolId, int Page, int Limit, byte QType, byte OType)
+	{
+    try
+    {
+
+
+		if (PoolId < 1 || Page < 1 || Limit < 1 || QType < 0 || QType > 1 || OType < 0 || QType > 1)
+		  throw new Exception("invalid params");
+
+        // Fetch data from the repository
+        List<GetPoolQuestionsResult> poolQuestions = await UnitOfWork.PoolRepo.PoolQuestions(PoolId,Page,Limit,QType,OType);
+
+        if (poolQuestions == null || poolQuestions.Count == 0)
+            throw new Exception("Data not found");
+
+		StringBuilder allQuestions = new StringBuilder(500);
+
+		foreach (var poolQuestion in poolQuestions)
+		{
+			allQuestions.Append( poolQuestion.JSON_F52E2B6118A111d1B10500805F49916B);
+		}
+
+        // Deserialize JSON
+        PaginatedPoolQsViewModel? result = JsonConvert.DeserializeObject<PaginatedPoolQsViewModel>(allQuestions.ToString());
+
+        if (result == null)
+            throw new Exception("Mapping failed");
+
+		result.Page = Page;
+		result.Limit = Limit;
+
+		return result;
+    }
+    catch (JsonException jsonEx)
+    {
+        // Log JSON-specific errors
+        throw new Exception($"JSON Error: {jsonEx.Message}");
+    }
+    catch (Exception ex)
+    {
+        // Log general errors
+        throw new Exception(ex.Message);
+    }
+}
+
+
   }
-  
+
+ 
 }

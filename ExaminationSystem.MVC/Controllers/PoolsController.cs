@@ -74,8 +74,20 @@ namespace ExaminationSystem.MVC.Controllers
 
 	}
 
+	[HttpGet]
+	public async Task<IActionResult> PoolQuestions(int PoolId, int Page, int Limit, byte QType, byte OType)
+	{
+	  try
+	  {
+		PaginatedPoolQsViewModel poolQuestions = await _poolService.PoolQuestions(PoolId,Page,Limit,QType,OType);
 
-
+		return View(poolQuestions);
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+	}
   }//end of calss
 
 
