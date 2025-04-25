@@ -12,7 +12,7 @@ namespace ExaminationSystem.EF
     public class UnitOfWork : IUnitOfWork
     {
         ExaminationDBContext _dbContext;
-        public IStudentRepo Students {  get; }
+        //public IStudentRepo Students {  get; }
 
 
         public IAuthRepo AuthRepo {  get; }
@@ -30,20 +30,47 @@ namespace ExaminationSystem.EF
 
         public IStaffBranchManageRepo StaffBranchManageRepo { get; }
 
+        public IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> TeachingRepo {  get; }
+
+        public IBaseRepo<Course> CoursesRepo { get; }
+
+        public IBaseRepo<Student> StudentRepo { get; }
+        public IBaseRepo<ProfileImage> ProfileImageRepo { get; }  
+
+        public UnitOfWork(ExaminationDBContext dbContext, IBaseRepo<Student> studentRepo, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo, IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> teachRepo, IBaseRepo<Course> coursesRepo, IBaseRepo<ProfileImage> profileImageRepo)
         public UnitOfWork(ExaminationDBContext dbContext, IStudentRepo students, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBranchRepo branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo,IStaffBranchManageRepo staffBranchManageRepo)
         {
             _dbContext = dbContext;
-            Students = students;
+            //Students = students;
+            StudentRepo = studentRepo;
             AuthRepo = authRepo;
             StaffRepo = staffRepo;
+            LocationRepo = locationRepo;
             StaffBranchManageRepo = staffBranchManageRepo;
            
 
             LocationRepo = locationRepo;    
             BranchesRepo = branchRepo;
-            DepartmentRepo = departmentRepo;    
+            DepartmentRepo = departmentRepo;
             UserRepo = userRepo;
+            TeachingRepo = teachRepo;
+            CoursesRepo = coursesRepo;
+            ProfileImageRepo = profileImageRepo;
         }
+
+
+        //public UnitOfWork(ExaminationDBContext dbContext, IAuthRepo authRepo,IBaseRepo<Student> _StudentRepo, IBaseRepo<Staff> staffRepo, IBaseRepo<Location> locationRepo, IBaseRepo<Branch> branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo)
+        //{
+        //    StudentRepo = _StudentRepo;
+        //    _dbContext = dbContext;
+        //    //Students = students;
+        //    AuthRepo = authRepo;
+        //    StaffRepo = staffRepo;
+        //    LocationRepo = locationRepo;
+        //    BranchesRepo = branchRepo;
+        //    DepartmentRepo = departmentRepo;
+        //    UserRepo = userRepo;
+        //}
 
         public int Complete()
         {

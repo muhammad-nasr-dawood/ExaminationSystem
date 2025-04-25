@@ -30,7 +30,7 @@ public partial class User
     public string Email { get; set; }
 
     [Required]
-    [StringLength(100)]
+    [StringLength(250)]
     public string PasswordHash { get; set; }
 
     [Required]

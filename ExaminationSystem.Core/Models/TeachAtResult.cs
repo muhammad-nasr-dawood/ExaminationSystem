@@ -8,14 +8,18 @@ namespace ExaminationSystem.Core.Models
 {
     public partial class TeachAtResult
     {
-        public int BId { get; set; }
+        public int BranchId { get; set; }
         [StringLength(50)]
-        public string BLoc { get; set; }
-        public int DId { get; set; }
+        public string LGovernate { get; set; }
+        [StringLength(6)]
+        public string LZipCode { get; set; }
+        public int DeptId { get; set; }
         [StringLength(10)]
-        public string DName { get; set; }
-        public int CId { get; set; }
+        public string DeptName { get; set; }
+        public int CourseId { get; set; }
         [StringLength(30)]
-        public string CName { get; set; }
+        public string CourseName { get; set; }
+        public DateTime StartingDate { get; set; }
+        public DateTime? EndingDate { get; set; }
     }
 }

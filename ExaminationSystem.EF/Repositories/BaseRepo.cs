@@ -21,6 +21,11 @@ namespace ExaminationSystem.EF.Repositories
             _context = context;
         }
 
+        public T GetById(string id)
+        {
+            return _context.Set<T>().Find(id);
+        }
+
         public IEnumerable<T> GetAll()
         {
             return _context.Set<T>().ToList();

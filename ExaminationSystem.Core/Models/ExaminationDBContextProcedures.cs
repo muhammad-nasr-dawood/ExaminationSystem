@@ -43,6 +43,32 @@ namespace ExaminationSystem.Core.Models
             _context = context;
         }
 
+        public virtual async Task<List<ActivePoolsResult>> ActivePoolsAsync(long? staffId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "StaffId",
+                    Value = staffId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.BigInt,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<ActivePoolsResult>("EXEC @returnValue = [dbo].[ActivePools] @StaffId = @StaffId", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
         public virtual async Task<int> AddBranchAsync(string zipCode, string streetNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
@@ -1112,6 +1138,58 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
+        public virtual async Task<List<GetPoolQuestionsResult>> GetPoolQuestionsAsync(int? poolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "PoolId",
+                    Value = poolId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<GetPoolQuestionsResult>("EXEC @returnValue = [dbo].[GetPoolQuestions] @PoolId = @PoolId", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<GetPoolsResult>> GetPoolsAsync(int? courseId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "CourseId",
+                    Value = courseId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<GetPoolsResult>("EXEC @returnValue = [dbo].[GetPools] @CourseId = @CourseId", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
         public virtual async Task<int> GetQuestionsAsync(int? topicId, byte? order, byte? qType, int? page, int? limit, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
@@ -1746,6 +1824,32 @@ namespace ExaminationSystem.Core.Models
                 parameterreturnValue,
             };
             var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[LocationsUpdate] @OldZipCode = @OldZipCode, @NewZipCode = @NewZipCode, @NewGovernorate = @NewGovernorate", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<ProcessedPoolsResult>> ProcessedPoolsAsync(long? staffId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "StaffId",
+                    Value = staffId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.BigInt,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<ProcessedPoolsResult>("EXEC @returnValue = [dbo].[ProcessedPools] @StaffId = @StaffId", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -2642,7 +2746,7 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<int> StaffCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string imageId, string phoneNumber, bool? isActive, decimal? salary, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<StaffCreateResult>> StaffCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string imageId, string phoneNumber, bool? isActive, decimal? salary, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -2751,7 +2855,7 @@ namespace ExaminationSystem.Core.Models
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StaffCreate] @SSN = @SSN, @Fname = @Fname, @Lname = @Lname, @Email = @Email, @PasswordHash = @PasswordHash, @Salt = @Salt, @ZipCode = @ZipCode, @StreetNo = @StreetNo, @BD = @BD, @Gender = @Gender, @ImageId = @ImageId, @PhoneNumber = @PhoneNumber, @IsActive = @IsActive, @Salary = @Salary", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StaffCreateResult>("EXEC @returnValue = [dbo].[StaffCreate] @SSN = @SSN, @Fname = @Fname, @Lname = @Lname, @Email = @Email, @PasswordHash = @PasswordHash, @Salt = @Salt, @ZipCode = @ZipCode, @StreetNo = @StreetNo, @BD = @BD, @Gender = @Gender, @ImageId = @ImageId, @PhoneNumber = @PhoneNumber, @IsActive = @IsActive, @Salary = @Salary", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -3110,7 +3214,7 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<int> StudentCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string imageId, string phoneNumber, bool? isActive, string faculty, int? grad_Year, decimal? gPA, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<StudentCreateResult>> StudentCreateAsync(long? sSN, string fname, string lname, string email, string passwordHash, byte[] salt, string zipCode, string streetNo, DateOnly? bD, string gender, string imageId, string phoneNumber, bool? isActive, string faculty, int? grad_Year, decimal? gPA, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -3232,7 +3336,7 @@ namespace ExaminationSystem.Core.Models
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[StudentCreate] @SSN = @SSN, @Fname = @Fname, @Lname = @Lname, @Email = @Email, @PasswordHash = @PasswordHash, @Salt = @Salt, @ZipCode = @ZipCode, @StreetNo = @StreetNo, @BD = @BD, @Gender = @Gender, @ImageId = @ImageId, @PhoneNumber = @PhoneNumber, @IsActive = @IsActive, @Faculty = @Faculty, @Grad_Year = @Grad_Year, @GPA = @GPA", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<StudentCreateResult>("EXEC @returnValue = [dbo].[StudentCreate] @SSN = @SSN, @Fname = @Fname, @Lname = @Lname, @Email = @Email, @PasswordHash = @PasswordHash, @Salt = @Salt, @ZipCode = @ZipCode, @StreetNo = @StreetNo, @BD = @BD, @Gender = @Gender, @ImageId = @ImageId, @PhoneNumber = @PhoneNumber, @IsActive = @IsActive, @Faculty = @Faculty, @Grad_Year = @Grad_Year, @GPA = @GPA", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -4058,6 +4162,44 @@ namespace ExaminationSystem.Core.Models
                 parameterreturnValue,
             };
             var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[UpdateTopic] @TopicId = @TopicId, @NewTopicName = @NewTopicName", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<UsePoolResult>> UsePoolAsync(long? staffId, int? srcPoolId, int? destPoolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "staffId",
+                    Value = staffId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.BigInt,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "srcPoolId",
+                    Value = srcPoolId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "destPoolId",
+                    Value = destPoolId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<UsePoolResult>("EXEC @returnValue = [dbo].[UsePool] @staffId = @staffId, @srcPoolId = @srcPoolId, @destPoolId = @destPoolId", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

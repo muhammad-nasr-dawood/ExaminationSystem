@@ -20,6 +20,8 @@ public partial class IntakeDeptCourse
     [Key]
     public int IntakeId { get; set; }
 
+    public bool? IsDeleted { get; set; }
+
     [ForeignKey("CourseId")]
     [InverseProperty("IntakeDeptCourses")]
     public virtual Course Course { get; set; }
