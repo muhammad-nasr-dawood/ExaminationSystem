@@ -40,7 +40,7 @@ builder.Services.AddScoped<IBaseRepo<Staff>, BaseRepo<Staff>>(); // staff repo u
 builder.Services.AddScoped<IBaseRepo<Student>, BaseRepo<Student>>();
 //builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 builder.Services.AddScoped<IBaseRepo<User>, BaseRepo<User>>();
-builder.Services.AddScoped<IBaseRepo<Branch>, BaseRepo<Branch>>();
+
 builder.Services.AddScoped<IBaseRepo<Department>, BaseRepo<Department>>();
 builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();
 

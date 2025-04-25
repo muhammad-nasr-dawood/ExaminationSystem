@@ -19,7 +19,7 @@ namespace ExaminationSystem.Core
 
         IBaseRepo<Location> LocationRepo { get; }
         IBaseRepo<Department> DepartmentRepo { get; }
-        IBaseRepo<Branch> BranchesRepo { get; }
+       
         IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> TeachingRepo { get; }
 
         IBaseRepo<ProfileImage> ProfileImageRepo { get; }
