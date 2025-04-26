@@ -186,6 +186,8 @@ public partial class ExaminationDBContext : DbContext
         {
             entity.HasKey(e => new { e.DeptId, e.CourseId, e.IntakeId }).HasName("PK_DeptCourses");
 
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+
             entity.HasOne(d => d.Course).WithMany(p => p.IntakeDeptCourses)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_DeptCourses_Course");

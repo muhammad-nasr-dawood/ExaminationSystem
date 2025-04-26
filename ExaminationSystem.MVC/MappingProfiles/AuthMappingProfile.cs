@@ -2,10 +2,10 @@ using ExaminationSystem.MVC.ViewModels.AuthViewModels;
 using ExaminationSystem.Core.Models;
 using AutoMapper;
 
-namespace ExaminationSystem.MVC.MappingProfiles
+namespace ExaminationSystem.MVC.MappingProfiles;
+
+public class AuthMappingProfile: Profile
 {
-  public class AuthMappingProfile: Profile
-  {
 	public AuthMappingProfile()
 	{
 	  CreateMap<User, UserLoginViewModel>().AfterMap((src, des) =>
@@ -26,5 +26,4 @@ namespace ExaminationSystem.MVC.MappingProfiles
 		// to be continued
 	  });
 	}
-  }
 }

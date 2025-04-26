@@ -151,6 +151,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[ActivePools]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[AddBranch]",
          "ObjectType": 1
       },
@@ -348,6 +352,10 @@
       },
       {
          "Name": "[dbo].[LocationsUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[ProcessedPools]",
          "ObjectType": 1
       },
       {

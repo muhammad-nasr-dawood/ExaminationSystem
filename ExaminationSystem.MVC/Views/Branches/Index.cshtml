@@ -1,0 +1,205 @@
+@model List<ExaminationSystem.MVC.ViewModels.BranchViewModels.BranchViewModel>
+<style>
+.show-delete-button {
+    display: block !important;
+}
+.hide-delete-button {
+    display: none !important;
+}
+
+
+</style>
+<div class="row g-4">
+	@foreach (var branch in Model.Where(b => !b.IsDeleted))
+	{
+		<div class="col-lg-4 col-md-6" id="branch-@branch.Id">
+			<div class="card shadow-lg border-0 rounded-3 h-100">
+				<div class="card-body p-4 d-flex flex-column justify-content-between">
+					<div>
+						<h5 class="fw-bold text-primary mb-2 locName">@branch.LocationName</h5>
+						<p class="text-muted mb-1">Street No: <strong class="streetNo">@branch.StreetNo</strong></p>
+
+						
+						<div class="d-flex justify-content-between align-items-center mb-1">
+							<p class="text-muted mb-0 branch-manager">Manager: <strong>@branch.BranchManagerName</strong></p>
+							<button class="btn btn-sm btn-outline-primary assign-branch-btn" data-id="@branch.Id">
+								<i class="bi bi-pencil-fill"></i>
+								@(branch.BranchManagerName == "Not Assigned" ? "Assign Manager" : "Change Manager")
+							</button>
+
+						</div>
+						<div class="d-flex justify-content-start mb-1 mt-2">
+							<p class="text-muted mb-0 flex-grow-1">
+								Departments: <strong>@branch.NumberOfDepartments</strong>
+							</p>
+							@if (branch.BranchManagerName != "Not Assigned")
+							{
+								
+								<div class="d-flex justify-content-end mb-2">
+									<button class="btn btn-sm btn-outline-danger delete-manager-btn show-delete-button" data-id="@branch.Id">
+										<i class="bi bi-trash"></i> Delete Manager
+									</button>
+								</div>
+							}
+							else
+							{
+								<div class="d-flex justify-content-end mb-2">
+									<button class="btn btn-sm btn-outline-danger delete-manager-btn hide-delete-button" data-id="@branch.Id">
+										<i class="bi bi-trash"></i> Delete Manager
+									</button>
+								</div>
+							}
+							
+		
+						</div>
+
+					</div>
+					<div class="d-flex justify-content-end mt-2 mb-2">
+						
+						<button class="btn btn-info btn-sm w-100" type="button">
+							Show Departments
+						</button>
+					</div>
+	
+					<div class="dropdown position-absolute top-0 end-0 m-3">
+						<button class="btn btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="ti ti-dots-vertical"></i>
+						</button>
+						<ul class="dropdown-menu">
+							<li>
+								<a class="dropdown-item text-warning edit-branch-btn" href="javascript:void(0);" data-id="@branch.Id">
+									<i class="ti ti-pencil me-2"></i>Edit
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item text-danger" href="javascript:void(0);" data-id="@branch.Id" id="deleteBranchBtn">
+									<i class="ti ti-trash me-2"></i>Delete
+								</a>
+							</li>
+						</ul>
+					</div>
+
+					<div class="mt-3 d-flex align-items-center justify-content-between">
+						<span class="badge px-3 py-2 rounded-pill bg-success text-white">
+							Active
+						</span>
+						<small class="text-secondary ">Location Code: <strong class="location">@branch.ZipCode.ToUpper()</strong></small>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+<div id="modalContainer"></div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+	$(document).ready(function () {
+	$(".delete-manager-btn").on('click', function (e) {
+		e.preventDefault();
+		var branchId = $(this).data("id"); 
+
+	$.ajax({
+		type: "GET",
+		url: '@Url.Action("DeleteManager", "Branches")/' + branchId,
+		success: function (data) {
+			$('#modalContainer').html(data); 
+			console.log('Modal content loaded:', data); 
+
+			var deleteModal = new bootstrap.Modal(document.getElementById('deleteManagerModal'));
+			deleteModal.show(); 
+		},
+		error: function (xhr, status, error) {
+			console.error("Error details: ", status, error);
+			alert("An error occurred while loading the delete manager modal.\n" +
+				  "Status: " + status + "\n" + "Error: " + error);
+		}
+	});
+
+	});
+
+
+				$(".assign-branch-btn").on('click', function (e) {
+			e.preventDefault();
+			var branchId = $(this).data("id");
+			;
+
+
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("AssignManager", "Branches")/' + branchId,
+				success: function (data) {
+
+					$('#modalContainer').html(data);
+
+
+					var modal = new bootstrap.Modal(document.getElementById('assignManagerModal'));
+					modal.show();
+
+
+					$(document).on('shown.bs.modal', '#assignManagerModal', function () {
+						$('#staffSelect').select2({
+							placeholder: "Select a staff member",
+							allowClear: true,
+							dropdownParent: $('#assignManagerModal')
+						}).trigger('change');
+					});
+				},
+				error: function () {
+					alert("An error occurred while loading the modal.");
+				}
+			});
+		});
+
+		$(".edit-branch-btn").on('click', function (e) {
+			e.preventDefault();
+			var branchId = $(this).data("id");
+
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("Edit", "Branches")/' + branchId,
+				success: function (data) {
+					$('#modalContainer').html(data);
+
+
+					var modal = new bootstrap.Modal(document.getElementById('editBranchModal-' + branchId));
+					modal.show();
+
+
+					$(document).on('shown.bs.modal', '#editBranchModal-' + branchId, function () {
+						$('#ZipCode').select2({
+							placeholder: "Select a location",
+							allowClear: true,
+							dropdownParent: $('#editBranchModal-' + branchId)
+						}).trigger('change');
+					});
+				},
+				error: function () {
+					alert("An error occurred while loading the modal.");
+				}
+			});
+		});
+
+
+		$(".dropdown-item.text-danger").on('click', function (e) {
+			e.preventDefault();
+
+			var branchId = $(this).data("id");
+
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("Delete", "Branches")/' + branchId,
+				success: function (data) {
+					$('#modalContainer').html(data);
+					var deleteModal = new bootstrap.Modal(document.getElementById('deleteBranchModal'));
+					deleteModal.show();
+				},
+				error: function () {
+					alert("An error occurred while loading the delete modal.");
+				}
+			});
+		});
+	});
+</script>

@@ -1,0 +1,122 @@
+@model StaffDisplayDetailViewModel
+
+<!-- User Sidebar -->
+<div class="card mb-6">
+	<div class="card-body pt-12">
+		<div class="user-avatar-section">
+			<div class=" d-flex align-items-center flex-column">
+				<img class="img-fluid rounded mb-4" src="@Model.ImageURL" height="120" width="120" alt="User avatar" />
+				<div class="user-info text-center">
+					<h5>@Model.Fname @Model.Lname</h5>
+					@if (Model.Roles != null && Model.Roles.Count > 0)
+					{
+						<span class="badge bg-label-secondary text-uppercase">@Model.Roles[1]</span>
+					}
+					else
+					{
+						<span class="badge bg-label-secondary">Not Assigned Yet</span>
+					}
+
+				</div>
+			</div>
+		</div>
+		<div class="d-flex justify-content-around flex-wrap my-6 gap-0 gap-md-3 gap-lg-4">
+			<div class="d-flex align-items-center me-5 gap-4">
+				<div class="avatar">
+					<div class="avatar-initial bg-label-primary rounded">
+						<i class='ti ti-checkbox ti-lg'></i>
+					</div>
+				</div>
+				<div>
+					<h5 class="mb-0">1.23k</h5>
+					<span>Task Done</span>
+				</div>
+			</div>
+			<div class="d-flex align-items-center gap-4">
+				<div class="avatar">
+					<div class="avatar-initial bg-label-primary rounded">
+						<i class='ti ti-briefcase ti-lg'></i>
+					</div>
+				</div>
+				<div>
+					<h5 class="mb-0">568</h5>
+					<span>Project Done</span>
+				</div>
+			</div>
+		</div>
+		<h5 class="pb-4 border-bottom mb-4">Details</h5>
+		<div class="info-container">
+			<ul class="list-unstyled mb-6">
+				<li class="mb-2">
+					<span class="h6">Username:</span>
+					<span>&#64;@Model.Email.Split("@")[0]</span>
+				</li>
+				<li class="mb-2">
+					<span class="h6">Email:</span>
+					<span>@Model.Email</span>
+				</li>
+				<li class="mb-2">
+					<span class="h6">Status:</span>
+					@if (Model.IsActive)
+					{
+						<span>Active</span>
+					}
+					else
+					{
+						<span>In Active</span>
+					}
+				</li>
+				<li class="mb-2">
+					<span class="h6">Role:</span>
+					@if (Model.Roles == null || Model.Roles.Count == 0)
+					{
+						<span>Not Assinged Yet</span>
+					}
+					else
+					{
+						var tempRoles = "";
+						for (int i = 1; i < Model.Roles.Count; i++)
+						{
+							tempRoles += Model.Roles[i] + (i + 1 == Model.Roles.Count ? "" : ", ");
+						}
+
+						<span>@tempRoles</span>
+					}
+				</li>
+				<li class="mb-2">
+					<span class="h6">Salary:</span>
+					<span>@Model.Salary</span>
+				</li>
+				<li class="mb-2">
+					<span class="h6">Contact:</span>
+					<span>(+2) @Model.PhoneNumber</span>
+				</li>
+				<li class="mb-2">
+					<span class="h6">Languages:</span>
+					<span>French</span>
+				</li>
+				<li class="mb-2">
+					<span class="h6">Location:</span>
+					<span>@Model.Location</span>
+				</li>
+			</ul>
+			<div class="d-flex justify-content-center">
+				<a href="javascript:;" class="btn btn-primary me-3" data-bs-target="#largeModal" data-bs-toggle="modal">Edit</a>
+
+				<a href="javascript:;"
+				   class="btn @(Model.IsActive ? "btn-label-danger" : "btn-label-success") suspend-user me-3"
+				   data-active="@Model.IsActive.ToString().ToLower()"
+				   data-ssn="@Model.Ssn">
+				   @(Model.IsActive ? "Deactivate" : "Activate")
+				</a>
+
+				<a href="javascript:;"
+				   class="btn btn-label-warning reset-password"
+				   data-ssn="@Model.Ssn">
+				   Reset Password
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!--/ User Sidebar -->

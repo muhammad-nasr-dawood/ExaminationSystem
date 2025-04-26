@@ -21,6 +21,11 @@ namespace ExaminationSystem.EF.Repositories
             _context = context;
         }
 
+        public T GetById(string id)
+        {
+            return _context.Set<T>().Find(id);
+        }
+
         public IEnumerable<T> GetAll()
         {
             return _context.Set<T>().ToList();
@@ -29,6 +34,12 @@ namespace ExaminationSystem.EF.Repositories
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
+        }
+
+        public async Task<bool> FindAsync(int id)
+        {
+            var entity = await _context.Set<T>().FindAsync(id);
+            return entity != null; 
         }
 
         public T GetById(long id)
@@ -304,6 +315,11 @@ namespace ExaminationSystem.EF.Repositories
                 query = query.Take(take.Value);
 
             return await query.ToListAsync();
+        }
+
+        public T GetById(int id)
+        {
+            return _context.Set<T>().Find(id);
         }
     }
 }
