@@ -24,12 +24,8 @@ namespace ExaminationSystem.MVC.ViewModels.AuthViewModels
 	public string Email { get; set; }
 
 	[Required]
-	[StringLength(100)]
 	public string PasswordHash { get; set; }
 
-	[Required]
-	[MaxLength(100)]
-	public byte[] Salt { get; set; }
 
 	[Required]
 	[StringLength(6)]

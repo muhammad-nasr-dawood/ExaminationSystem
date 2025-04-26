@@ -1,0 +1,82 @@
+@model BranchManagerViewModel
+
+<style>
+	.select2-search__field {
+		background-color: white !important;
+		color: black !important;
+	}
+</style>
+
+<div class="modal fade" id="assignManagerModal" tabindex="-1" aria-labelledby="assignManagerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assignManagerModalLabel">Assign Manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="assignManagerForm">
+                    <div class="mb-3">
+                        <label for="staffSelect" class="form-label">Select Staff</label>
+                        <select id="staffSelect" class="form-select select2" required>
+                            <option value="" disabled selected>Select a staff member</option>
+                            @foreach (var staff in Model.UnassignedStaff)
+                            {
+								<option value="@staff.Ssn" selected="@(staff.Ssn == Model.AssignedStaffSsn)">
+                                    @staff.FullName
+                                </option>
+                            }
+                        </select> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Assign</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+		$(document).ready(function () {
+		
+		$('#assignManagerForm').on('submit', function (e) {
+			e.preventDefault();
+
+			var staffSsn = $('#staffSelect').val(); 
+			
+
+			
+			$.ajax({
+				type: 'POST',
+				url: '@Url.Action("AssignManager", "Branches")',  
+				data: { staffSsn: staffSsn },  
+				success: function (response) {
+					console.log(response); 
+
+					if (response.success) {
+
+					
+						$('#assignManagerModal').modal('hide');
+						$('#branch-' + response.id + ' .branch-manager').html('Manager: <strong>' + response.managerName + '</strong>');
+						$('#branch-' + response.id).find('.delete-manager-btn').removeClass('hide-delete-button');
+						$('#branch-' + response.id).find('.delete-manager-btn').addClass('show-delete-button');
+
+
+
+
+						 $('#branch-' + response.id).find('.assign-branch-btn').text('Change Manager');
+
+
+					} else {
+						alert('Error: ' + response.message);
+					}
+				},
+				error: function () {
+					alert("An error occurred while assigning the manager.");
+				}
+			});
+		});
+	});
+
+</script>

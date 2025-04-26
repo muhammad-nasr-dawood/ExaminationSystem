@@ -17,6 +17,7 @@
 	<link rel="stylesheet" href="~/vendor/libs/bs-stepper/bs-stepper.css" />
 	<link rel="stylesheet" href="~/vendor/libs/bootstrap-select/bootstrap-select.css" />
 	<link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css">
+	<link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
 }
 
 @section VendorScripts {
@@ -34,6 +35,7 @@
 <script src="~/vendor/libs/&#64;form-validation/popular.js"></script>
 <script src="~/vendor/libs/&#64;form-validation/bootstrap5.js"></script>
 <script src="~/vendor/libs/&#64;form-validation/auto-focus.js"></script>
+	<script src="~/vendor/libs/sweetalert2/sweetalert2.js"></script>
 }
 
 
@@ -138,7 +140,7 @@
 					<option value="">Filter by Branch</option>
 					@foreach (var branch in ViewBag.Branches) 
 					{ 
-						<option value="@branch.Id">@branch.ZipCode</option> 
+						<option value="@branch.Id">@branch.Location</option> 
 					} 
 				</select>
 			</div>
@@ -344,7 +346,7 @@
 								</div>
 								<div class="col-sm-6">
 									<label class="form-label" asp-for="ZipCode">Location</label>
-									<select class="selectpicker w-auto" asp-for="ZipCode" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white" >
+									<select class="select2 form-select  w-auto" data-allow-clear="true" asp-for="ZipCode" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white">
 											  @foreach (var item in ViewBag.Locations)
 											  {
 												  <option value="@item.ZipCode">@item.Governate</option>
@@ -426,7 +428,17 @@
 	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <script>
     $(document).ready(function () {
-				$('.btn-submit').on('click', function (e) {
+
+			$("form").validate();
+				$("form input").keyup(function() {
+					$(this).valid();
+				});
+
+			window.alert = function () {
+						// Do nothing or log it for debug
+						console.log("Default alert suppressed."); // stop the default alert
+					};
+  		$('.btn-submit').on('click', function (e) {
 			e.preventDefault();
 
 			let formData = {
@@ -518,10 +530,10 @@
                                     <i class="ti ti-dots-vertical"></i>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="/Staff/Edit/${data.Ssn}">
-                                        <i class="ti ti-pencil me-1"></i> Edit
+                                    <a class="dropdown-item" href="/Staff/Details/${data.ssn}">
+                                        <i class="ti ti-pencil me-1"></i> Details
                                     </a>
-                                    <a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('${data.Ssn}')">
+                                    <a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('${data.ssn}')">
                                         <i class="ti ti-trash me-1"></i> Delete
                                     </a>
                                 </div>

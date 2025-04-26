@@ -10,15 +10,23 @@ namespace ExaminationSystem.Core
 {
     public interface IUnitOfWork: IDisposable
     {
-        IStudentRepo Students { get; }
+        //IStudentRepo Students { get; }
+        //IBaseRepo<Student> StudentRepo { get; }
         IAuthRepo AuthRepo { get; }
         IBaseRepo<Staff> StaffRepo { get; }
+        IBaseRepo<Student> StudentRepo { get; }
         IBaseRepo<User> UserRepo { get; }
 
         IBaseRepo<Location> LocationRepo { get; }
         IBaseRepo<Department> DepartmentRepo { get; }
-        IBaseRepo<Branch> BranchesRepo { get; }
+       
+        IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> TeachingRepo { get; }
 
+        IBaseRepo<ProfileImage> ProfileImageRepo { get; }
+        IStaffBranchManageRepo StaffBranchManageRepo { get; }
+        IBranchRepo BranchesRepo { get; }
+
+        IBaseRepo<Course> CoursesRepo { get; }
 
         IPoolRepo PoolRepo { get; } // Added PoolRepo to UnitOfWork
 

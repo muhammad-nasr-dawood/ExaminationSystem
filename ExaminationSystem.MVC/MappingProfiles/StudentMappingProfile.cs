@@ -35,7 +35,14 @@ namespace ExaminationSystem.MVC.MappingProfiles
 
 
 
+	  CreateMap<StudentAddVM, User>().AfterMap((src, dest) =>
+	  {
+		dest.IsActive = true;
+		dest.UserType = "Student";
+	  });
 
+
+	  CreateMap<StudentAddVM, Student>().ReverseMap(); 
 
 
 

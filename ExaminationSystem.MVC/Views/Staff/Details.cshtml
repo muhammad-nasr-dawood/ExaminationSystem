@@ -1,0 +1,643 @@
+@model StaffDisplayDetailViewModel
+@{
+	// ViewData["Title"] = "User View - Account";
+}
+
+@section VendorStyles {
+
+	<link rel="stylesheet" href="~/vendor/libs/datatables-bs5/datatables.bootstrap5.css">
+	<link rel="stylesheet" href="~/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
+	<link rel="stylesheet" href="~/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css">
+	<link rel="stylesheet" href="~/vendor/libs/&#64;form-validation/form-validation.css" />
+	<link rel="stylesheet" href="~/vendor/libs/bs-stepper/bs-stepper.css" />
+	<link rel="stylesheet" href="~/vendor/libs/select2/select2.css" />
+	<link rel="stylesheet" href="~/vendor/libs/bootstrap-select/bootstrap-select.css" />
+	<link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
+	<link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css" />
+}
+
+@section VendorScripts {
+<script src="~/vendor/libs/moment/moment.js"></script>
+<script src="~/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+<script src="~/vendor/libs/sweetalert2/sweetalert2.js"></script>
+<script src="~/vendor/libs/cleavejs/cleave.js"></script>
+<script src="~/vendor/libs/cleavejs/cleave-phone.js"></script>
+<script src="~/vendor/libs/select2/select2.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/popular.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/bootstrap5.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/auto-focus.js"></script>
+	<script src="~/vendor/libs/bs-stepper/bs-stepper.js"></script>
+
+	<script src="~/vendor/libs/moment/moment.js"></script>
+<script src="~/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script> 
+<script src="~/vendor/libs/select2/select2.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/popular.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/bootstrap5.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/auto-focus.js"></script>
+<script src="~/vendor/libs/cleavejs/cleave.js"></script>
+<script src="~/vendor/libs/cleavejs/cleave-phone.js"></script>
+<script src="~/vendor/libs/bs-stepper/bs-stepper.js"></script>
+<script src="~/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+<script src="~/vendor/libs/select2/select2.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/popular.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/bootstrap5.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/auto-focus.js"></script>
+	<script src="~/vendor/libs/sweetalert2/sweetalert2.js"></script>
+
+}
+@section PageStyles {
+<link rel="stylesheet" href="~/vendor/css/pages/page-user-view.css" />
+}
+@* ************** Content ************** *@
+<div class="row">
+	<!-- User Sidebar -->
+	<div id="userSidebarContainer" class="col-xl-4 col-lg-5 order-1 order-md-0">
+		<!-- User Card -->
+		@await Html.PartialAsync("_StaffSidebar", Model)
+		<!-- /User Card -->
+	</div>
+	<!--/ User Sidebar -->
+	<!-- User Content -->
+	<div class="col-xl-8 col-lg-7 order-0 order-md-1">
+		<!-- User Pills -->
+		
+		<!-- Project table -->
+		@* <div class="card mb-6"> *@
+		@* 	<div class="card-datatable table-responsive"> *@
+		@* 		<table class="datatables-projects table border-top"> *@
+		@* 			<thead> *@
+		@* 				<tr> *@
+		@* 					<th></th> *@
+		@* 					<th></th> *@
+		@* 					<th>Project</th> *@
+		@* 					<th>Leader</th> *@
+		@* 					<th>Team</th> *@
+		@* 					<th class="w-px-200">Progress</th> *@
+		@* 					<th>Action</th> *@
+		@* 				</tr> *@
+		@* 			</thead> *@
+		@* 		</table> *@
+		@* 	</div> *@
+		@* </div> *@
+		<!-- /Project table -->
+		<div class="card">
+			<div class="card-header border-bottom">
+				<h5 class="card-title mb-0">Filters</h5>
+				<div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
+					<div class="col-md-4 user_role"></div>
+					<div class="col-md-4 user_plan"></div>
+					<div class="col-md-4 user_status"></div>
+					<div class="col-md-3">
+						<select id="branchFilter" class="form-select">
+							<option value="">Filter by Branch</option>
+							@foreach (var branch in ViewBag.Branches)
+							{
+								<option value="@branch.Id">@branch.Location</option>
+							}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<select id="departmentFilter" class="form-select">
+							<option value="">Filter by Department</option>
+							@foreach (var dept in ViewBag.Departments)
+							{
+								<option value="@dept.Id">@dept.Name</option>
+							}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<select id="courseFilter" class="form-select">
+							<option value="">Filter by Course</option>
+							@foreach (var crs in ViewBag.Courses)
+							{
+								<option value="@crs.Id">@crs.Name</option>
+							}
+						</select>
+					</div>
+					<div class="col-md-3"> 
+						<select id="statusFilter" class="form-select">
+							<option value="">Filter by Status</option>
+							<option value="true">Finished</option>
+							<option value="false">Not Finished</option>
+						</select> 
+					</div> 
+					@* <div class="col-md-3">  *@
+						@* <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">  *@
+					@* 		Add Staff *@
+					@* 	</button> *@
+					@* </div> *@
+				</div>
+				<div class="table-responsive text-nowrap">
+					<table id="teachingCourseTable" class="table table-hover">
+						<thead>
+							<tr>
+								<th>course</th>
+								<th>Internal/Exteranl</th>
+								<th>Start Date</th>
+								<th>End Date</th>
+							</tr>
+						</thead>
+						<tbody class="table-border-bottom-0">
+						</tbody>
+
+						@* @foreach (var item in Model) *@
+						@* { *@
+						@* 	<tr> *@
+						@* 		<td> *@
+						@* 			<ul class="list-unstyled m-0 avatar-group d-flex align-items-center"> *@
+						@* 				<li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-xs pull-up" title="Christina Parker"> *@
+						@* 					<img src="@item.ImageURL" alt="Avatar" class="rounded-circle"> *@
+						@* 					<span>@item.FullName</span> *@
+						@* 				</li> *@
+						@* 			</ul> *@
+						@* 		</td> *@
+						@* 		<td>@item.Ssn</td> *@
+						@* 		<td> *@
+						@* 			@item.Salary *@
+						@* 		</td> *@
+						@* 		<td><span class="badge bg-label-primary me-1">Active</span></td> *@
+						@* 		<td> *@
+						@* 			<div class="dropdown"> *@
+						@* 				<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i></button> *@
+						@* 				<div class="dropdown-menu"> *@
+						@* 					<a class="dropdown-item" href="javascript:void(0);"><i class="ti ti-pencil me-1"></i> Edit</a> *@
+						@* 					<a class="dropdown-item" href="javascript:void(0);"><i class="ti ti-trash me-1"></i> Delete</a> *@
+						@* 				</div> *@
+						@* 			</div> *@
+						@* 		</td> *@
+						@* 	</tr> *@
+						@* } *@
+					</table>
+				</div>
+			</div>
+			<!-- Offcanvas to add new user -->
+		</div>
+		
+		
+	</div>
+	<!--/ User Content -->
+</div>
+
+
+<!-- /Modal -->
+<!-- Large Modal -->
+<div class="modal fade" id="largeModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel3">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<!-- my de7k from here--->
+			@* <div class="col-12 mb-6"  > *@
+			@* <small class="text-light fw-medium">Basic</small> *@
+			<div class="bs-stepper wizard-numbered mt-2">
+				<div class="bs-stepper-header row">
+					<div class="step col-5" data-target="#account-details">
+						<button type="button" class="step-trigger">
+							<span class="bs-stepper-circle">1</span>
+							<span class="bs-stepper-label">
+								<span class="bs-stepper-title">Account Details</span>
+								<span class="bs-stepper-subtitle">Setup Account Details</span>
+							</span>
+						</button>
+					</div>
+					<div class="line">
+						<i class="ti ti-chevron-right"></i>
+					</div>
+					<div class="step col-5" data-target="#personal-info">
+						<button type="button" class="step-trigger">
+							<span class="bs-stepper-circle">2</span>
+							<span class="bs-stepper-label">
+								<span class="bs-stepper-title">Personal Info</span>
+								<span class="bs-stepper-subtitle">Add personal info</span>
+							</span>
+
+						</button>
+					</div>
+					@* <div class="line"> *@
+					@* 	<i class="ti ti-chevron-right"></i> *@
+					@* </div> *@
+					@* <div class="step" data-target="#social-links"> *@
+					@* 	<button type="button" class="step-trigger"> *@
+					@* 		<span class="bs-stepper-circle">3</span> *@
+					@* 		<span class="bs-stepper-label"> *@
+					@* 			<span class="bs-stepper-title">Social Links</span> *@
+					@* 			<span class="bs-stepper-subtitle">Add social links</span> *@
+					@* 		</span> *@
+					@* 	</button> *@
+					@* </div> *@
+				</div>
+				<div class="bs-stepper-content">
+					<form onSubmit="return false">
+						<!-- Account Details -->
+						<div id="account-details" class="content">
+							<div class="content-header mb-4">
+								<h6 class="mb-0">Account Details</h6>
+								<small>Enter Your Account Details.</small>
+							</div>
+							<div class="row g-6">
+								
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Fname">First Name</label>
+									<input type="text" asp-for="Fname" class="form-control" placeholder="johndoe" />
+									<span asp-validation-for="Fname"></span>
+								</div>
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Lname">Last Name</label>
+									<input type="text" asp-for="Lname" class="form-control" placeholder="johndoe" />
+									<span asp-validation-for="Lname"></span>
+								</div>
+								
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Email">Email</label>
+									<input type="email" asp-for="Email" class="form-control" placeholder="john.doe&#64;email.com" aria-label="john.doe" />
+									<span asp-validation-for="Email"></span>
+								</div>
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Ssn">SSN</label>
+									<input disabled type="number" asp-for="Ssn" class="form-control" placeholder="john.doe&#64;email.com" aria-label="john.doe" />
+									<span asp-validation-for="Ssn"></span>
+								</div>
+								@* <div class="col-sm-6 form-password-toggle"> *@
+								@* 	<label class="form-label" for="password">Password</label> *@
+								@* 	<div class="input-group input-group-merge"> *@
+								@* 		<input type="password" id="password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password2" /> *@
+								@* 		<span class="input-group-text cursor-pointer" id="password2"><i class="ti ti-eye-off"></i></span> *@
+								@* 	</div> *@
+								@* </div> *@
+								@* <div class="col-sm-6 form-password-toggle"> *@
+								@* 	<label class="form-label" for="confirm-password">Confirm Password</label> *@
+								@* 	<div class="input-group input-group-merge"> *@
+								@* 		<input type="password" id="confirm-password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="confirm-password2" /> *@
+								@* 		<span class="input-group-text cursor-pointer" id="confirm-password2"><i class="ti ti-eye-off"></i></span> *@
+								@* 	</div> *@
+								@* </div> *@
+								<div class="col-12 d-flex justify-content-between">
+									<button class="btn btn-label-secondary btn-prev" disabled>
+										<i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
+										<span class="align-middle d-sm-inline-block d-none">Previous</span>
+									</button>
+									<button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-2">Next</span> <i class="ti ti-arrow-right ti-xs"></i></button>
+								</div>
+							</div>
+						</div>
+						<!-- Personal Info -->
+						<div id="personal-info" class="content">
+							<div class="content-header mb-4">
+								<h6 class="mb-0">Personal Info</h6>
+								<small>Enter Your Personal Info.</small>
+							</div>
+							<div class="row g-6">
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="PhoneNumber">Phone Number</label>
+									<input type="number" asp-for="PhoneNumber" class="form-control" placeholder="John" />
+									<span asp-validation-for="PhoneNumber"></span>
+								</div>
+								@* <div class="col-sm-6"> *@
+								@* 	<label class="form-label" for="last-name">Last Name</label> *@
+								@* 	<input type="text" id="last-name" class="form-control" placeholder="Doe" /> *@
+								@* </div> *@
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Gender">Gender</label>
+									<select class="selectpicker w-auto" asp-for="Gender" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white">
+										<option value="M">Male</option>
+										<option value="F">Female</option>
+									</select>
+									<span asp-validation-for="Gender"></span>
+								</div>
+								<div class="col-12 mb-0">
+									<label for="dobBasic" asp-for="Bd" class="form-label">DOB</label>
+									<input type="date" asp-for="Bd" class="form-control">
+									<span asp-validation-for="Bd"></span>
+								</div>
+								
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="ZipCode">Location</label>
+									<select class="select2 form-select  w-auto" data-allow-clear="true" asp-for="ZipCode" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white">
+											  @foreach (var item in ViewBag.Locations) 
+											   { 
+												  <option value="@item.ZipCode">@item.Governate</option> 
+											   } 
+											</select>
+											<span asp-validation-for="ZipCode"></span>
+										</div>
+										
+										<div class="col-sm-6">
+											<label class="form-label" asp-for="StreetNo">Street Number</label>
+											<input type="text" asp-for="StreetNo" class="form-control" placeholder="Doe" />
+											<span asp-validation-for="StreetNo"></span>
+										</div>
+										
+										@* <div class="col-12 d-flex justify-content-between"> *@
+										@* 	<button class="btn btn-label-secondary btn-prev"> *@
+										@* 		<i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i> *@
+										@* 		<span class="align-middle d-sm-inline-block d-none">Previous</span> *@
+										@* 	</button> *@
+										@* 	<button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-2">Next</span> <i class="ti ti-arrow-right ti-xs"></i></button> *@
+										@* </div> *@
+										<div class="col-12 d-flex justify-content-between">
+										  <button class="btn btn-label-secondary btn-prev">
+											  <i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
+											  <span class="align-middle d-sm-inline-block d-none">Previous</span>
+										  </button>
+										  <button class="btn btn-success btn-submit">Submit</button>
+										</div>
+									</div>
+								</div>
+								<!-- Social Links -->
+								@* <div id="social-links" class="content"> *@
+								@* 	<div class="content-header mb-4"> *@
+								@* 		<h6 class="mb-0">Social Links</h6> *@
+								@* 		<small>Enter Your Social Links.</small> *@
+								@* 	</div> *@
+								@* 	<div class="row g-6"> *@
+								@* 		<div class="col-sm-6"> *@
+								@* 			<label class="form-label" for="twitter">Twitter</label> *@
+								@* 			<input type="text" id="twitter" class="form-control" placeholder="https://twitter.com/abc" /> *@
+								@* 		</div> *@
+								@* 		<div class="col-sm-6"> *@
+								@* 			<label class="form-label" for="facebook">Facebook</label> *@
+								@* 			<input type="text" id="facebook" class="form-control" placeholder="https://facebook.com/abc" /> *@
+								@* 		</div> *@
+								@* 		<div class="col-sm-6"> *@
+								@* 			<label class="form-label" for="google">Google+</label> *@
+								@* 			<input type="text" id="google" class="form-control" placeholder="https://plus.google.com/abc" /> *@
+								@* 		</div> *@
+								@* 		<div class="col-sm-6"> *@
+								@* 			<label class="form-label" for="linkedin">LinkedIn</label> *@
+								@* 			<input type="text" id="linkedin" class="form-control" placeholder="https://linkedin.com/abc" /> *@
+								@* 		</div> *@
+								@* 		<div class="col-12 d-flex justify-content-between"> *@
+								@* 			<button class="btn btn-label-secondary btn-prev"> *@
+								@* 				<i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i> *@
+								@* 				<span class="align-middle d-sm-inline-block d-none">Previous</span> *@
+								@* 			</button> *@
+								@* 			<button class="btn btn-success btn-submit">Submit</button> *@
+								@* 		</div> *@
+								@* 	</div> *@
+								@* </div> *@
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- /Default Wizard -->
+			@* </div> *@
+	</div>
+</div>
+@section PageScripts {
+	<script src="~/js/modal-edit-user.js"></script>
+<script src="~/js/app-user-view.js"></script>
+<script src="~/js/app-user-view-account.js"></script>
+<script src="~/js/pages-profile.js"></script>
+
+	<script src="~/js/app-user-list.js"></script>
+	<script src="~/js/form-wizard-numbered.js"></script>
+	<script src="~/js/form-wizard-validation.js"></script>
+	<script src="~/js/ui-modals.js"></script>
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+
+	$(document).ready(function () {
+
+			 // Alternative: Validate when any field loses focus
+			$("form").validate();
+			$("form input").keyup(function() {
+				$(this).valid();
+			});
+				window.alert = function () {
+					// Do nothing or log it for debug
+					console.log("Default alert suppressed."); // stop the default alert
+				};
+
+					var table = $('#teachingCourseTable').DataTable({
+					processing: true,
+					serverSide: true,
+					ajax: {
+								url: '/Staff/GetAllRegisteredCourses',
+						type: 'POST',
+						data: function (d) {
+							d.branchId = $('#branchFilter').val();
+							d.DeptId = $('#departmentFilter').val();
+							d.staffSsn = '@Model.Ssn';
+							d.courseId = $('#courseFilter').val();
+							d.status = $('#statusFilter').val();
+						},
+						dataSrc: function (json) {
+							if (!json.data || json.data.length === 0) {
+								console.log("No data returned from server.");
+							} else {
+								console.log("Returned data:", json.data);
+							}
+							return json.data;
+						}
+						},
+					columns: [
+						// {
+						// 	data: null,
+						// 	render: function(data) {
+						// 		return `
+						// 			<ul class="list-unstyled m-0 avatar-group d-flex align-items-center">
+						// 				<li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top"
+						// 					class="avatar avatar-xs pull-up" title="${data.fullName}">
+						// 					<img src="${data.imageURL}" alt="Avatar" class="rounded-circle">
+						// 					<span>${data.fullName}</span>
+						// 				</li>
+						// 			</ul>`;
+						// 	}
+						// },
+						{data: 'course'},
+						{
+							data: null,
+							render: function(data) {
+										if(data.isInstructorCurrentBranch == true)
+								  return '<span class="badge bg-label-primary me-1">Internal Course</span>';
+								else
+									  return '<span class="badge bg-label-danger me-1">External Course</span>'
+							}
+						},
+						{ data: 'startingDate' },
+						{ data: 'endingDate' },
+						// {
+						// 	data: null,
+						// 	render: function(data) {
+						// 		return `
+						// 			<div class="dropdown">
+						// 				<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+						// 					<i class="ti ti-dots-vertical"></i>
+						// 				</button>
+						// 				<div class="dropdown-menu">
+						// 					<a class="dropdown-item" href="/Staff/Details/${data.ssn}">
+						// 						<i class="ti ti-pencil me-1"></i> Details
+						// 					</a>
+						// 					<a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('${data.ssn}')">
+						// 						<i class="ti ti-trash me-1"></i> Delete
+						// 					</a>
+						// 				</div>
+						// 			</div>`;
+						// 	}
+						// }
+					],
+					language: {
+						paginate: {
+							previous: '<span aria-hidden="true">⟨</span>',
+							next: '<span aria-hidden="true">⟩</span>'
+						}
+					}
+				});
+
+				$('#searchTerm').on('input', function () {
+					table.search($(this).val()).draw();
+				});
+
+				$('#branchFilter, #departmentFilter, #courseFilter, #statusFilter').change(function () {
+					table.draw();
+				});
+
+
+			$(".btn-submit").on("click", function () {
+        const formData = {
+            Fname: $("#Fname").val(),
+            Lname: $("#Lname").val(),
+            Email: $("#Email").val(),
+            PhoneNumber: $("#PhoneNumber").val(),
+            Gender: $("#Gender").val(),
+            Bd: $("#Bd").val(),
+            ZipCode: $("#ZipCode").val(),
+            StreetNo: $("#StreetNo").val(),
+			Ssn: $("#Ssn").val(),
+            // add more fields if needed
+        };
+
+        $.ajax({
+            url: '/Staff/Update', // replace with your actual endpoint
+            type: 'POST',
+            data: formData,
+            success: function (res) {
+                // Close modal and maybe refresh sidebar info
+                $('#largeModal').modal('hide');
+                // Optionally show a SweetAlert success message
+                Swal.fire('Success', 'User updated successfully!', 'success');
+
+				$("#userSidebarContainer").load(`/Staff/GetUserSidebar?userId=${@Model.Ssn}`); // reload teh partial view
+                // Optional: update user card with new info using JS
+            },
+            error: function (xhr) {
+                // Show validation errors or a general message
+                Swal.fire('Error', 'Something went wrong!', 'error');
+            }
+        });
+    });
+
+
+
+				$(document).on('click', '.suspend-user', function () {
+			const button = $(this);
+			const isActive = button.data('active') === true || button.data('active') === 'true';
+			const ssn = button.data('ssn');
+			const action = isActive ? 'deactivate' : 'activate';
+
+			Swal.fire({
+				title: 'Are you sure?',
+				text: isActive
+					? "You're about to deactivate this user."
+					: "You're about to activate this user.",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#696cff', // Your theme primary color
+				cancelButtonColor: '#8592a3',
+				confirmButtonText: `Yes, ${action.charAt(0).toUpperCase() + action.slice(1)} user!`,
+				customClass: {
+					confirmButton: 'btn btn-primary me-2',
+					cancelButton: 'btn btn-outline-secondary'
+				},
+				buttonsStyling: false
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.post('/Staff/ToggleUserStatus', { ssn: ssn }, function (response) {
+						if (response.success) {
+							// Update UI
+							const newIsActive = response.isActive;
+							button
+								.text(newIsActive ? 'Deactivate' : 'Activate')
+								.toggleClass('btn-label-danger btn-label-success')
+								.data('active', newIsActive);
+
+							Swal.fire({
+								icon: 'success',
+								title: 'Success!',
+								text: `User has been ${newIsActive ? 'activated' : 'deactivated'}.`,
+								timer: 1500,
+								showConfirmButton: false,
+								customClass: {
+									popup: 'animated fadeIn'
+								}
+							});
+
+						$("#userSidebarContainer").load(`/Staff/GetUserSidebar?userId=${@Model.Ssn}`); // reload teh partial view
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Error',
+								text: response.message || 'Something went wrong.',
+								customClass: {
+									confirmButton: 'btn btn-primary'
+								},
+								buttonsStyling: false
+							});
+						}
+					});
+				}
+			});
+		});
+
+
+				$(document).on('click', '.reset-password', function () {
+			const ssn = $(this).data('ssn');
+
+			Swal.fire({
+				title: 'Reset Password?',
+				text: 'A new password will be generated and sent to the user.',
+				icon: 'question',
+				showCancelButton: true,
+				confirmButtonColor: '#ffab00',
+				cancelButtonColor: '#8592a3',
+				confirmButtonText: 'Yes, reset it!',
+				customClass: {
+					confirmButton: 'btn btn-warning me-2',
+					cancelButton: 'btn btn-outline-secondary'
+				},
+				buttonsStyling: false
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.post('/Staff/ResetPassword', { ssn: ssn }, function (response) {
+						if (response.success) {
+							Swal.fire({
+								icon: 'success',
+								title: 'Done!',
+								text: 'Password has been reset.',
+								timer: 1500,
+								showConfirmButton: false
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								title: 'Failed',
+								text: response.message || 'An error occurred.',
+								customClass: {
+									confirmButton: 'btn btn-primary'
+								},
+								buttonsStyling: false
+							});
+						}
+					});
+				}
+			});
+		});
+
+
+});
+
+</script>
+}

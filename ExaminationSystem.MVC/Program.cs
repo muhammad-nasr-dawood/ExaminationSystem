@@ -1,4 +1,5 @@
 using ExaminationSystem.Core;
+using ExaminationSystem.Core.Helpers;
 using ExaminationSystem.Core.IRepositories;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.EF;
@@ -17,6 +18,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllersWithViews();
 // Register services in the Dependency Injection container (DIC)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); // new object will be created for each request
+//builder.Services.AddScoped<IStudentRepo, StudentRepo>(); // new object will be created for each request 
 builder.Services.AddScoped<IStudentRepo, StudentRepo>(); // new object will be created for each request 
 builder.Services.AddScoped<IQuestionRepo, QuestionRepo>(); // new object will be created for each request
 builder.Services.AddScoped<IQuestionService, QuestionService>();
@@ -33,22 +35,42 @@ builder.Services.AddAutoMapper(cfg =>
 
 
 builder.Services.AddScoped<IStudentService, StudentService>(); // this is the only layer that can deal with the controller directly (any other dirty work like auto-mapping etc will be within it)
+builder.Services.AddScoped<IBranchService, BranchService>();
+builder.Services.AddScoped<IDepartmentService, DeparmentService>();
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
+builder.Services.AddScoped<IBranchRepo, BranchRepo>();
+builder.Services.AddScoped<IStaffBranchManageRepo, StaffBranchManageRepo>();
+
+builder.Services.AddScoped<IDepartmentRepo, DepartmentRepo>();
+builder.Services.AddScoped<ILocationRepo, LocationRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+
+
 
 builder.Services.AddSingleton<IPasswordService, PasswordService>(); // singleton no need for more than one object for this servcie since it's a stateless utility service and there's no shared state or data (and our code will be also loosly coupled better than using static class which will make our code tightly coupled)
+builder.Services.AddScoped<IImageService, ImageKitService>();
 
 builder.Services.AddScoped<IBaseRepo<Staff>, BaseRepo<Staff>>(); // staff repo using the generic repo
+builder.Services.AddScoped<IBaseRepo<Student>, BaseRepo<Student>>();
+//builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 
 builder.Services.AddScoped<IBaseRepo<User>, BaseRepo<User>>();
+
 
 builder.Services.AddScoped<IBaseRepo<Branch>, BaseRepo<Branch>>();
 
 builder.Services.AddScoped<IBaseRepo<Department>, BaseRepo<Department>>();
+builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();
+
+builder.Services.AddScoped<IStudentService, StudentService>(); // this is the only layer that can deal with the controller directly (any other dirty work like auto-mapping etc will be within it)
 
 builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();
 
 builder.Services.AddScoped<IStaffService, StaffService>();
+builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeDepartmentCourseTeach>, BaseRepo<StaffBranchIntakeDepartmentCourseTeach>>();
+builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
+builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();  
 
 
 builder.Services.AddScoped<IPoolRepo,PoolRepo>();
