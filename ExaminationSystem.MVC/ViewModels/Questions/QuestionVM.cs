@@ -1,15 +1,15 @@
-namespace ExaminationSystem.MVC.Views.Questions
+namespace ExaminationSystem.MVC.ViewModels.Questions
 {
-  public class QuestionViewModel
+  public class QuestionVM
   {
-	public int Id{ get; set; }
+	public int Id { get; set; }
 	public byte Type { get; set; }
 	public byte Level { get; set; }
 	public byte TopicId { get; set; }
 
 	public long StaffId { get; set; }
 	public string Content { get; set; }
-	public string CreatedDate{ get; set; }
+	public string CreatedDate { get; set; }
 	public byte IsDeleted { get; set; }
 
 
@@ -20,7 +20,7 @@ namespace ExaminationSystem.MVC.Views.Questions
 
   public class Choice
   {
-	public int Index_{ get; set; }
+	public int Index_ { get; set; }
 
 	public int QuestionId { get; set; }
 
@@ -32,9 +32,9 @@ namespace ExaminationSystem.MVC.Views.Questions
 
   public class Image
   {
-	public string Id{ get; set; }
+	public string Id { get; set; }
 	public int QuestionId { get; set; }
-	public string Url{ get; set; }
+	public string Url { get; set; }
   }
 
 }

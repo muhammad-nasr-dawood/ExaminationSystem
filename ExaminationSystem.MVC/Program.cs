@@ -3,6 +3,7 @@ using ExaminationSystem.Core.IRepositories;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.EF;
 using ExaminationSystem.EF.Repositories;
+using ExaminationSystem.MVC.IService;
 using ExaminationSystem.MVC.MappingProfiles;
 using ExaminationSystem.MVC.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;

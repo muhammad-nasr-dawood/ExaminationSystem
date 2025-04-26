@@ -5,6 +5,7 @@ using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.ViewModels.PoolViewModels;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text;
+using ExaminationSystem.MVC.IService;
 
 namespace ExaminationSystem.MVC.Services
 {
@@ -19,14 +20,14 @@ namespace ExaminationSystem.MVC.Services
 	  Map = map;
 	}
 
-	public async Task<TeachAtViewModel?> TeachAt(long staffId)
+	public async Task<TeachAtVM?> TeachAt(long staffId)
 	{
 	  List<TeachAtResult> TAL = await UnitOfWork.PoolRepo.TeachAt(staffId);
 
 	  if (TAL == null)
 		return null;
 
-	  return Map.Map<TeachAtViewModel>(TAL);
+	  return Map.Map<TeachAtVM>(TAL);
 	}
 
 	public async Task<List<GenaricPoolState<ActivePoolsResult>>?> ActivePools(long staffId)
@@ -50,7 +51,7 @@ namespace ExaminationSystem.MVC.Services
 	}
 
 
-	public async Task<PaginatedArchivedPoolsViewModel> ArchivedPools(int CourseId, int page, int limit, int order)
+	public async Task<PaginatedArchivedPoolsVM> ArchivedPools(int CourseId, int page, int limit, int order)
 	{
 	  //validate params
 
@@ -72,8 +73,8 @@ namespace ExaminationSystem.MVC.Services
 		  AllPools.Append(pool);
 		}
 		// Map the result to the desired view model  
-		PaginatedArchivedPoolsViewModel? result =
-		  JsonConvert.DeserializeObject<PaginatedArchivedPoolsViewModel>(AllPools.ToString());
+		PaginatedArchivedPoolsVM? result =
+		  JsonConvert.DeserializeObject<PaginatedArchivedPoolsVM>(AllPools.ToString());
 
 		if (result == null)
 		  throw new Exception("Mapping failed");
@@ -95,8 +96,7 @@ namespace ExaminationSystem.MVC.Services
 	}
 
 
- 
-	public async Task<PaginatedPoolQsViewModel> PoolQuestions(int PoolId, int Page, int Limit, byte QType, byte OType)
+	public async Task<PaginatedPoolQsVM> PoolQuestions(int PoolId, int Page, int Limit, byte QType, byte OType)
 	{
     try
     {
@@ -119,7 +119,7 @@ namespace ExaminationSystem.MVC.Services
 		}
 
         // Deserialize JSON
-        PaginatedPoolQsViewModel? result = JsonConvert.DeserializeObject<PaginatedPoolQsViewModel>(allQuestions.ToString());
+        PaginatedPoolQsVM? result = JsonConvert.DeserializeObject<PaginatedPoolQsVM>(allQuestions.ToString());
 
         if (result == null)
             throw new Exception("Mapping failed");

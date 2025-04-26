@@ -8,7 +8,7 @@ namespace ExaminationSystem.MVC.MappingProfiles
   {
 	public GenericPoolStateProfile()
 	{
-	  CreateMap< T, GenaricPoolState<T> >().AfterMap((src, dest) =>
+	  CreateMap< T, GenaricPoolStateVM<T> >().AfterMap((src, dest) =>
 	  {
 		dynamic dynamicSrc = src;
 

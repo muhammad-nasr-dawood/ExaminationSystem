@@ -2,7 +2,7 @@ using ExaminationSystem.Core.Models;
 
 namespace ExaminationSystem.MVC.ViewModels.PoolViewModels
 {
-  public class TeachAtViewModel
+  public class TeachAtVM
   {
 	public Dictionary<int, Branch> Branches { get; set; } = new();
 

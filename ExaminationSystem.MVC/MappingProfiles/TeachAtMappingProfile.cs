@@ -12,7 +12,7 @@ namespace ExaminationSystem.MVC.MappingProfiles
   {
 	  public TeachAtMappingProfile() {
 
-	  CreateMap<List<TeachAtResult>, TeachAtViewModel>().AfterMap((src, des)=>{
+	  CreateMap<List<TeachAtResult>, TeachAtVM>().AfterMap((src, des)=>{
 
 		foreach (var item in src)
 		{

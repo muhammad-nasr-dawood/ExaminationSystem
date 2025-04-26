@@ -1,5 +1,5 @@
 using ExaminationSystem.Core.Models;
-using ExaminationSystem.MVC.Services;
+using ExaminationSystem.MVC.IService;
 using ExaminationSystem.MVC.ViewModels.PoolViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language.CodeGeneration;
@@ -23,7 +23,7 @@ namespace ExaminationSystem.MVC.Controllers
 	{
 	  //i need to get on the staff id from claim
 
-	  TeachAtViewModel? TAVM =await _poolService.TeachAt(40404040404040);
+	  TeachAtVM? TAVM =await _poolService.TeachAt(40404040404040);
 
 	  if(TAVM == null)
 		return BadRequest("No Teach At Found");
@@ -45,9 +45,11 @@ namespace ExaminationSystem.MVC.Controllers
 	}
 
 
+	
 	[HttpGet]
 	public async Task<IActionResult> Processed()
 	{
+	  //claim 
 	  List<GenaricPoolState<ProcessedPoolsResult>>? GProcessedList = await _poolService.ProcessedPools(40404040404040);
 
 	  if (GProcessedList == null)
@@ -62,7 +64,7 @@ namespace ExaminationSystem.MVC.Controllers
 	{
 	  try
 	  {
-		PaginatedArchivedPoolsViewModel paginatedArchivedPoolsViewModel = await _poolService.ArchivedPools(CourseId, page, limit, order);
+		PaginatedArchivedPoolsVM paginatedArchivedPoolsViewModel = await _poolService.ArchivedPools(CourseId, page, limit, order);
 		if (paginatedArchivedPoolsViewModel == null)
 		  return BadRequest("No Archived Pools Found");
 		return View(paginatedArchivedPoolsViewModel);
@@ -79,7 +81,7 @@ namespace ExaminationSystem.MVC.Controllers
 	{
 	  try
 	  {
-		PaginatedPoolQsViewModel poolQuestions = await _poolService.PoolQuestions(PoolId,Page,Limit,QType,OType);
+		PaginatedPoolQsVM poolQuestions = await _poolService.PoolQuestions(PoolId,Page,Limit,QType,OType);
 
 		return View(poolQuestions);
 	  }
@@ -88,6 +90,10 @@ namespace ExaminationSystem.MVC.Controllers
 		return BadRequest(ex.Message);
 	  }
 	}
+
+
+
+
   }//end of calss
 
 

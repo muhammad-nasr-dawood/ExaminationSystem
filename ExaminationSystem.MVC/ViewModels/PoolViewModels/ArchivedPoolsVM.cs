@@ -1,6 +1,6 @@
 namespace ExaminationSystem.MVC.ViewModels.PoolViewModels
 {
-  public class ArchivedPoolsViewModel
+  public class ArchivedPoolsVM
   {
 	public int Id{ get; set; }
 	public int IsActive { get; set; }

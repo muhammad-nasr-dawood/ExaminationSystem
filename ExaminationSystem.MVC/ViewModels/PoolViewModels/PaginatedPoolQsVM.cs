@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace ExaminationSystem.MVC.ViewModels.PoolViewModels
 {
 
-  public class PaginatedPoolQsViewModel
+  public class PaginatedPoolQsVM
   {
 
 	public List<Questions> Questions { get; set; } = new List<Questions>();
