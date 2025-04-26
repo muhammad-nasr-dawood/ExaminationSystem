@@ -50,12 +50,14 @@ namespace ExaminationSystem.MVC.Services
 	}
 
 
-	public List<LocationViewModel> GetLocations()
+	public async Task< List<LocationViewModel>> GetLocations(int? id = null)
 	{
 	  
-	  var locations = _unitOfWork.LocationRepo.GetAll();
+	  var locations = await _unitOfWork.LocationRepo.GetLocationsWithNoBranchAndIsDeletedAsync(id);
 	  return _mapper.Map<List<LocationViewModel>>(locations);
 	}
+
+
 	public void Delete(int id)
 	{
 	  var branch = _unitOfWork.BranchesRepo.GetById(id);
@@ -120,11 +122,25 @@ namespace ExaminationSystem.MVC.Services
 
 	}
 
+
 	public async Task<StaffBranchManage> GetBranchThatOwnStaffByID(int branchId)
 	{
 	  return await _unitOfWork.StaffBranchManageRepo.GetByBranchId(branchId);
 	}
 
+	public BranchEditViewModel Add(BranchEditViewModel viewModel)
+	{
+	  
+	  var newBranch = _mapper.Map<Branch>(viewModel);
+	  _unitOfWork.BranchesRepo.Add(newBranch);
+	  _unitOfWork.Complete();
 
-  }
+
+
+	  return _mapper.Map<BranchEditViewModel>(newBranch);  
+	}
+  
+
+
+}
 }

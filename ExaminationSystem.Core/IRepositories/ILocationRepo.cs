@@ -9,5 +9,6 @@ namespace ExaminationSystem.Core.IRepositories
 {
     public interface ILocationRepo:IBaseRepo<Location>
     {
+        Task<List<Location>> GetLocationsWithNoBranchAndIsDeletedAsync(int? id = null);
     }
 }

@@ -42,7 +42,7 @@ builder.Services.AddScoped<IBaseRepo<Student>, BaseRepo<Student>>();
 builder.Services.AddScoped<IBaseRepo<User>, BaseRepo<User>>();
 
 builder.Services.AddScoped<IBaseRepo<Department>, BaseRepo<Department>>();
-builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();
+
 
 builder.Services.AddScoped<IStudentService, StudentService>(); // this is the only layer that can deal with the controller directly (any other dirty work like auto-mapping etc will be within it)
 builder.Services.AddScoped<IStaffService, StaffService>();

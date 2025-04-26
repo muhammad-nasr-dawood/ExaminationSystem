@@ -19,7 +19,7 @@ public class BranchesController : Controller
   }
 
 
-  public IActionResult Edit(int id)
+  public async Task< IActionResult>Edit(int id)
   {
 	var branch = _branchService.GetBranchForEdit(id);
 	if (branch == null)
@@ -28,7 +28,7 @@ public class BranchesController : Controller
 	}
 
 
-	var Locations = _branchService.GetLocations();
+	var Locations = await _branchService.GetLocations(id);
 	ViewBag.Locations = Locations;
 	
 	return PartialView("_EditBranchModal", branch);
@@ -170,6 +170,29 @@ public async Task<IActionResult> AssignManager(int id, long staffSsn)
 
   }
 
+  public async Task<IActionResult> Add()
+  {
+	var viewModel = new BranchEditViewModel();
+	ViewBag.Locations = await _branchService.GetLocations();
+	return PartialView("_EditBranchModal", viewModel);
+  }
+
+  [HttpPost]
+  public IActionResult Add(BranchEditViewModel viewModel)
+  {
+	if (ModelState.IsValid)
+	{
+	  
+	  var branch = _branchService.Add(viewModel);
+
+	  
+	  return Json(new { success = true, id = 0, branch = branch });
+	}
+
+	
+	var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
+	return Json(new { success = false, message = string.Join(", ", errors) });
+  }
 
 
 }

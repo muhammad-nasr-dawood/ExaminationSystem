@@ -1,15 +1,20 @@
 @model List<ExaminationSystem.MVC.ViewModels.BranchViewModels.BranchViewModel>
 <style>
-.show-delete-button {
-    display: block !important;
-}
-.hide-delete-button {
-    display: none !important;
-}
+	.show-delete-button {
+		display: block !important;
+	}
 
+	.hide-delete-button {
+		display: none !important;
+	}
 
 </style>
-<div class="row g-4">
+<div class="text-end mb-4">
+	<button class="btn btn-primary" id="addNewBranchBtn">
+		<i class="bi bi-plus-circle"></i> Add New Branch
+	</button>
+</div>
+<div id="branch-list" class="row g-4">
 	@foreach (var branch in Model.Where(b => !b.IsDeleted))
 	{
 		<div class="col-lg-4 col-md-6" id="branch-@branch.Id">
@@ -19,7 +24,7 @@
 						<h5 class="fw-bold text-primary mb-2 locName">@branch.LocationName</h5>
 						<p class="text-muted mb-1">Street No: <strong class="streetNo">@branch.StreetNo</strong></p>
 
-						
+
 						<div class="d-flex justify-content-between align-items-center mb-1">
 							<p class="text-muted mb-0 branch-manager">Manager: <strong>@branch.BranchManagerName</strong></p>
 							<button class="btn btn-sm btn-outline-primary assign-branch-btn" data-id="@branch.Id">
@@ -34,7 +39,7 @@
 							</p>
 							@if (branch.BranchManagerName != "Not Assigned")
 							{
-								
+
 								<div class="d-flex justify-content-end mb-2">
 									<button class="btn btn-sm btn-outline-danger delete-manager-btn show-delete-button" data-id="@branch.Id">
 										<i class="bi bi-trash"></i> Delete Manager
@@ -49,18 +54,27 @@
 									</button>
 								</div>
 							}
-							
-		
+
+
 						</div>
 
 					</div>
-					<div class="d-flex justify-content-end mt-2 mb-2">
-						
-						<button class="btn btn-info btn-sm w-100" type="button">
+					<div class="d-flex justify-content-between mt-2 mb-2 gap-3">
+						<!-- Show Departments Button with a blue-purple tone -->
+						<button class="btn btn-primary btn-sm w-50" type="button">
 							Show Departments
 						</button>
+
+						<!-- Show Staff Button with a muted purple tone -->
+						<button class="btn btn-secondary btn-sm w-50" type="button">
+							Show Staff
+						</button>
 					</div>
-	
+
+
+
+
+
 					<div class="dropdown position-absolute top-0 end-0 m-3">
 						<button class="btn btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<i class="ti ti-dots-vertical"></i>
@@ -99,17 +113,17 @@
 	$(document).ready(function () {
 	$(".delete-manager-btn").on('click', function (e) {
 		e.preventDefault();
-		var branchId = $(this).data("id"); 
+		var branchId = $(this).data("id");
 
 	$.ajax({
 		type: "GET",
 		url: '@Url.Action("DeleteManager", "Branches")/' + branchId,
 		success: function (data) {
-			$('#modalContainer').html(data); 
-			console.log('Modal content loaded:', data); 
+			$('#modalContainer').html(data);
+			console.log('Modal content loaded:', data);
 
 			var deleteModal = new bootstrap.Modal(document.getElementById('deleteManagerModal'));
-			deleteModal.show(); 
+			deleteModal.show();
 		},
 		error: function (xhr, status, error) {
 			console.error("Error details: ", status, error);
@@ -153,7 +167,7 @@
 			});
 		});
 
-		$(".edit-branch-btn").on('click', function (e) {
+		 		$(".edit-branch-btn").on('click', function (e) {
 			e.preventDefault();
 			var branchId = $(this).data("id");
 
@@ -182,6 +196,33 @@
 			});
 		});
 
+$("#addNewBranchBtn").on('click', function (e) {
+    e.preventDefault();
+
+    $.ajax({
+        type: "GET",
+        url: '@Url.Action("Add", "Branches")',
+        success: function (data) {
+            $('#modalContainer').html(data);  // Load modal content into modalContainer
+
+            var modal = new bootstrap.Modal(document.getElementById('editBranchModal-' + 0));  // Create modal instance
+            modal.show();  // Show the modal
+
+            $(document).on('shown.bs.modal', '#editBranchModal-' + 0, function () {
+                $('#ZipCode').select2({
+                    placeholder: "Select a location",
+                    allowClear: true,
+                    dropdownParent: $('#editBranchModal-' + 0)  // Ensure select2 dropdown appears inside the modal
+                }).trigger('change');
+            });
+        },
+        error: function () {
+            alert("An error occurred while loading the modal.");
+        }
+    });
+});
+
+
 
 		$(".dropdown-item.text-danger").on('click', function (e) {
 			e.preventDefault();
@@ -203,3 +244,4 @@
 		});
 	});
 </script>
+

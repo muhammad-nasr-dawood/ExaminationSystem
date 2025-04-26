@@ -9,7 +9,8 @@ namespace ExaminationSystem.MVC.Services
   public interface IBranchService
   {
 	List<BranchViewModel> GetAll();
-	List<LocationViewModel> GetLocations();
+    Task<List<LocationViewModel>> GetLocations(int? id = null);
+	public BranchEditViewModel Add(BranchEditViewModel viewModel);
 	BranchEditViewModel GetBranchForEdit(int id);
 	void Update(BranchEditViewModel viewModel);
 	void Delete(int id);
