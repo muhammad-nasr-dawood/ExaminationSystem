@@ -7,7 +7,7 @@ namespace ExaminationSystem.MVC.ViewModels.Questions
 	public string Content { get; set; }
 	public int TopicId { get; set; }
 	public byte AnswerIndex { get; set; }
-	public List<Image>? Images { get; set; }
+	public List<IFormFile>? Images { get; set; }
 	public List<string> Answers { get; set; }
   }
 }

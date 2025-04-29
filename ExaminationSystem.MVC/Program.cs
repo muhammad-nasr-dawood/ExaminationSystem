@@ -7,8 +7,10 @@ using ExaminationSystem.EF.Repositories;
 using ExaminationSystem.MVC.IService;
 using ExaminationSystem.MVC.MappingProfiles;
 using ExaminationSystem.MVC.Services;
+using Imagekit.Sdk;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +78,21 @@ builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();
 builder.Services.AddScoped<IPoolRepo,PoolRepo>();
 builder.Services.AddScoped<IPoolService, PoolService>();
 
+// Register ImageKit configuration
+builder.Services.Configure<ImageKitSettings>(builder.Configuration.GetSection("ImageKit"));
+
+// Alternative: Factory pattern for better thread safety
+builder.Services.AddTransient<ImagekitClient>(provider =>
+{
+  var config = provider.GetRequiredService<IOptions<ImageKitSettings>>().Value;
+  return new ImagekitClient(
+	  config.PublicKey,
+	  config.PrivateKey,
+	  config.UrlEndpoint
+  );
+});
+
+builder.Services.AddScoped<IImageKit, ExaminationSystem.MVC.Services.ImageKit>();
 
 
 builder.Services.AddDbContext<ExaminationDBContext>(

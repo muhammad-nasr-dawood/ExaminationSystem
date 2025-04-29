@@ -1,10 +1,8 @@
 using ExaminationSystem.Core;
-using ExaminationSystem.Core.Models;
-using ExaminationSystem.MVC.IService;
+ using ExaminationSystem.MVC.IService;
 using VM=ExaminationSystem.MVC.ViewModels.Questions;
 using Newtonsoft.Json;
-using SQLitePCL;
-using System.Data;
+ using System.Data;
 using ExaminationSystem.MVC.ViewModels.Questions;
 
 namespace ExaminationSystem.MVC.Services
@@ -12,10 +10,12 @@ namespace ExaminationSystem.MVC.Services
   public class QuestionService : IQuestionService
   {
 	IUnitOfWork UnitOfWork { get; set; }
+	IImageKit _imageKit { get; set; }
 
-	public QuestionService(IUnitOfWork unitOfWork)
+	public QuestionService(IUnitOfWork unitOfWork,IImageKit imageKit)
 	{
 	  UnitOfWork = unitOfWork;
+	  _imageKit = imageKit;
 	}
 	public async Task<VM.PaginatedQuestionsVM> GetByTopic(int topicId, int order, byte type, byte level, int page, int limit)
 	{
@@ -71,12 +71,11 @@ namespace ExaminationSystem.MVC.Services
 	private DataTable ConvertAnswersToDataTable(List<string> Answers)
 	{
 	  var table = new DataTable();
-	  table.Columns.Add("Id", typeof(int));
-	  table.Columns.Add("Url", typeof(string));
+	  table.Columns.Add("Value", typeof(int));
 
-	  foreach (var img in images)
+	  foreach (var ans in Answers)
 	  {
-		table.Rows.Add(img.Id, img.Url);
+		table.Rows.Add(ans);
 	  }
 
 	  return table;
@@ -92,10 +91,24 @@ namespace ExaminationSystem.MVC.Services
 		if (question == null)
 		  throw new ArgumentNullException("question");
 
-		List<VM.Image>? images = null;
+		List<VM.Image>? imagesInfo = null;
 
 		if (question.Images != null)
 		{
+		  string  folderName= "TFQuestions";
+		  List<KeyValuePair<string,string>> KitInfo= await _imageKit.UploadImage(question.Images, folderName);
+
+		  
+
+		  if (imagesInfo != null && imagesInfo.Count != 0)
+		  {
+			imagesInfo = new();
+			foreach (var info in KitInfo)
+			{
+			  imagesInfo.Add(new VM.Image() { Id=info.Key,  Url=info.Value});
+			}
+		  }
+
 
 		  // upload the images to image kit
 		  //handl image kit logic
@@ -104,9 +117,9 @@ namespace ExaminationSystem.MVC.Services
 
 		DataTable? dataTable = null;
 
-		if (images != null)
+		if (imagesInfo != null)
 		{
-		  dataTable = ConvertImagesToDataTable(images);
+		  dataTable = ConvertImagesToDataTable(imagesInfo);
 		}
 
 
@@ -132,23 +145,41 @@ namespace ExaminationSystem.MVC.Services
 		if (question == null)
 		  throw new ArgumentNullException("question");
 
-		List<VM.Image>? images = null;
+		List<VM.Image>? imagesInfo = null;
+
 		if (question.Images != null)
 		{
+		  string folderName = "MCQuestions";
+		  List<KeyValuePair<string, string>> KitInfo = await _imageKit.UploadImage(question.Images, folderName);
+
+
+
+		  if (imagesInfo != null && imagesInfo.Count != 0)
+		  {
+			imagesInfo = new();
+			foreach (var info in KitInfo)
+			{
+			  imagesInfo.Add(new VM.Image() { Id = info.Key, Url = info.Value });
+			}
+		  }
+
+
 		  // upload the images to image kit
 		  //handl image kit logic
+
 		}
 
 		DataTable? iamgesDataTable = null;
-		if (images != null)
+		if (imagesInfo != null)
 		{
-		  iamgesDataTable = ConvertImagesToDataTable(images);
+		  iamgesDataTable = ConvertImagesToDataTable(imagesInfo);
 		}
 
+		DataTable answersDataTable = ConvertAnswersToDataTable(question.Answers);
 
 
-		int result = await UnitOfWork.QuestionRepo.AddMCQQuestion(question.StaffId, question.Level, question.Content,
-					 question.TopicId, question.AnswerIndex, dataTable, question.Answers);
+		int result = await UnitOfWork.QuestionRepo.AddMCQuestion(question.StaffId, question.Level, question.Content,
+					 question.TopicId, question.AnswerIndex, iamgesDataTable, answersDataTable);
 
 		return result;
 	  }
