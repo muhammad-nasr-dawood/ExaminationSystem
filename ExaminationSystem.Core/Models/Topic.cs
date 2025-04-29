@@ -18,6 +18,8 @@ public partial class Topic
     [StringLength(30)]
     public string Name { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     [InverseProperty("Topic")]
     public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
 

@@ -72,7 +72,11 @@ builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();
 builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeDepartmentCourseTeach>, BaseRepo<StaffBranchIntakeDepartmentCourseTeach>>();
 builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
-builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();  
+builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();
+
+
+
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 
 builder.Services.AddScoped<IPoolRepo,PoolRepo>();

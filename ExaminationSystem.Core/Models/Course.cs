@@ -19,6 +19,8 @@ public partial class Course
 
     public int Duration { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     [InverseProperty("Course")]
     public virtual ICollection<IntakeDeptCourse> IntakeDeptCourses { get; set; } = new List<IntakeDeptCourse>();
 
