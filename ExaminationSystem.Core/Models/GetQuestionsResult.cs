@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExaminationSystem.Core.Models
 {
-    public partial class GetPoolQuestionsResult
+    public partial class GetQuestionsResult
     {
         [Column("JSON_F52E2B61-18A1-11d1-B105-00805F49916B")]
         [StringLength(2147483647)]

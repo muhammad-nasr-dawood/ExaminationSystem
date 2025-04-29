@@ -48,7 +48,11 @@ builder.Services.AddScoped<IStudentService, StudentService>(); // this is the on
 builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeDepartmentCourseTeach>, BaseRepo<StaffBranchIntakeDepartmentCourseTeach>>();
 builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
-builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();  
+builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();
+
+
+
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 builder.Services.AddDbContext<ExaminationDBContext>(
             options => options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped // will create a new object for each request

@@ -12,9 +12,11 @@ namespace ExaminationSystem.MVC.Controllers;
 public class AuthController : Controller
 {
   private readonly IAuthService _authService;
-  public AuthController(IAuthService authService)
+  private readonly IEmailService _emailService;
+  public AuthController(IAuthService authService, IEmailService emailService)
   {
 	  _authService = authService;
+	_emailService = emailService;
   }
   public IActionResult Index()
   {
@@ -81,6 +83,93 @@ public class AuthController : Controller
 	await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 	return RedirectToAction("LoginCover"); 
   }
+
+  [HttpGet]
+  public IActionResult ForgotPassword()
+  {
+	return View();
+  }
+
+  [HttpPost]
+  public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+  {
+	if (!ModelState.IsValid)
+	  return View(model);
+
+	var returnedTokenValue = await _authService.CreateTempTokenForNewPassword(model.Email);
+
+	if (returnedTokenValue is null)
+	{
+	  // for security: don't reveal if user exists
+	  return RedirectToAction("ForgotPasswordConfirmation");
+	}
+
+	// 3. create reset password link
+	var resetLink = Url.Action(
+		"ResetPassword",
+		"Auth",
+		new { token = returnedTokenValue, email = model.Email },
+		protocol: Request.Scheme);
+
+	// 4. send the link by email
+	await _emailService.SendEmailAsync(
+	model.Email,
+	"Reset Your Password",
+	$@"
+        <div style='font-family: Arial, sans-serif; font-size: 16px; color: #333;'>
+            <h2 style='color: #7864f4;'>Examination System - Password Reset Request</h2>
+            <p>Dear User,</p>
+            <p>We received a request to reset your password for your Examination System account.</p>
+            <p>To reset your password, please click the button below:</p>
+            <p style='text-align: center; margin: 30px 0;'>
+                <a href='{resetLink}' style='background-color: #7864f4; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                    Reset Password
+                </a>
+            </p>
+            <p>If you did not request a password reset, please ignore this email. Your account is still secure.</p>
+            <br/>
+            <p>Best Regards,</p>
+            <p><strong>Examination System Team</strong></p>
+        </div>
+    ");
+
+
+	return RedirectToAction("ForgotPasswordConfirmation");
+  }
+
+  public IActionResult ForgotPasswordConfirmation()
+  {
+	return View();
+  }
+
+
+  [HttpGet]
+  public IActionResult ResetPassword(string token, string email)
+  {
+	var model = new ResetPasswordViewModel { Token = token, Email = email };
+	return View(model);
+  }
+
+  [HttpPost]
+  public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+  {
+	if (!ModelState.IsValid)
+	  return View(model);
+
+	var user = await _authService.FindUserByEmail(model.Email);
+
+	if (user == null || user.PasswordResetToken != model.Token || user.PasswordResetTokenExpiry < DateTime.UtcNow)
+	{
+	  ModelState.AddModelError("", "Invalid or expired password reset token.");
+	  return View();
+	}
+
+	await _authService.ResetPasswordAfterVerification(model.Email, model.NewPassword);
+
+
+	return RedirectToAction("LoginCover");
+  }
+
 
 
 }
