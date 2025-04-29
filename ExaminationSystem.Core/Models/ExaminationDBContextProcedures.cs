@@ -1164,7 +1164,7 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<List<GetPoolQuestionsResult>> GetPoolQuestionsAsync(int? poolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<GetPoolQuestionsResult>> GetPoolQuestionsAsync(int? poolId, int? page, int? limit, byte? filter, int? oType, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -1181,9 +1181,33 @@ namespace ExaminationSystem.Core.Models
                     Value = poolId ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Int,
                 },
+                new SqlParameter
+                {
+                    ParameterName = "Page",
+                    Value = page ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "Limit",
+                    Value = limit ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "Filter",
+                    Value = filter ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.TinyInt,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "OType",
+                    Value = oType ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<GetPoolQuestionsResult>("EXEC @returnValue = [dbo].[GetPoolQuestions] @PoolId = @PoolId", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<GetPoolQuestionsResult>("EXEC @returnValue = [dbo].[GetPoolQuestions] @PoolId = @PoolId, @Page = @Page, @Limit = @Limit, @Filter = @Filter, @OType = @OType", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1216,7 +1240,7 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<int> GetQuestionsAsync(int? topicId, byte? order, byte? qType, int? page, int? limit, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<GetQuestionsResult>> GetQuestionsAsync(int? topicId, int? order, byte? qType, byte? qLevel, int? page, int? limit, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -1237,7 +1261,7 @@ namespace ExaminationSystem.Core.Models
                 {
                     ParameterName = "Order",
                     Value = order ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.TinyInt,
+                    SqlDbType = System.Data.SqlDbType.Int,
                 },
                 new SqlParameter
                 {
@@ -1247,19 +1271,25 @@ namespace ExaminationSystem.Core.Models
                 },
                 new SqlParameter
                 {
-                    ParameterName = "page",
+                    ParameterName = "QLevel",
+                    Value = qLevel ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.TinyInt,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "Page",
                     Value = page ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Int,
                 },
                 new SqlParameter
                 {
-                    ParameterName = "limit",
+                    ParameterName = "Limit",
                     Value = limit ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Int,
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[GetQuestions] @TopicId = @TopicId, @Order = @Order, @QType = @QType, @page = @page, @limit = @limit", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<GetQuestionsResult>("EXEC @returnValue = [dbo].[GetQuestions] @TopicId = @TopicId, @Order = @Order, @QType = @QType, @QLevel = @QLevel, @Page = @Page, @Limit = @Limit", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
