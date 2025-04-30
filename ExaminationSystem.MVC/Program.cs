@@ -20,9 +20,9 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllersWithViews();
 // Register services in the Dependency Injection container (DIC)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>(); // new object will be created for each request
-//builder.Services.AddScoped<IStudentRepo, StudentRepo>(); // new object will be created for each request 
-builder.Services.AddScoped<IStudentRepo, StudentRepo>(); // new object will be created for each request 
-builder.Services.AddScoped<IQuestionRepo, QuestionRepo>(); // new object will be created for each request
+													   //builder.Services.AddScoped<IStudentRepo, StudentRepo>(); // new object will be created for each request 
+builder.Services.AddScoped<IBaseRepo<Student>, BaseRepo<Student>>(); builder.Services.AddScoped<IQuestionRepo, QuestionRepo>(); // new object will be created for each request
+
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 
 builder.Services.AddAutoMapper(typeof(Program)); // regiseration for auto mapper (uses refelection)
@@ -96,12 +96,17 @@ builder.Services.AddTransient<ImagekitClient>(provider =>
   );
 });
 
+
+/*nasser*/
 builder.Services.AddScoped<IImageKit, ExaminationSystem.MVC.Services.ImageKit>();
 
 
 builder.Services.AddDbContext<ExaminationDBContext>(
             options => options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped // will create a new object for each request
         ); // if you didn't pass this callback function it will use the default constructor of the DbContext and will use the connection string from the OnConfiguring method in the ITIDBContext class
+
+/*nasser*/
+
 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

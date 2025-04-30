@@ -21,7 +21,6 @@ namespace ExaminationSystem.Core.Models
         Task<List<AddQuestionResult>> AddQuestionAsync(long? staffId, byte? type, byte? level, string content, int? topicId, byte? anserIndex, DataTable images, DataTable answers, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> AddQuestionsToPoolAsync(long? staffId, int? poolId, DataTable questionsIds, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> AddStaffBranchManageAsync(long? staffSSN, int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<int> AddTfQuestionAsync(long? staffId, byte? level, string content, int? topicId, bool? isTrue, DataTable images);
         Task<int> AddTFQuestionsAsync(long? staffId, byte? level, string content, int? topicId, bool? isTrue, DataTable images, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> AddTopicAsync(string topicName, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> AddTopicToCourseAsync(int? courseId, int? topicId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

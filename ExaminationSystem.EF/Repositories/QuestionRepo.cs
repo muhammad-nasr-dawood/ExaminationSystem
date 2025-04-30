@@ -22,7 +22,7 @@ namespace ExaminationSystem.EF.Repositories
 
         public async Task<int> AddTFQuestion(long? staffId, byte? level, string content, int? topicId, bool? isTrue, DataTable? images)
         {
-            return await _dbContext.Procedures.AddTfQuestionAsync(staffId, level, content, topicId, isTrue, images);
+            return await _dbContext.Procedures.AddTFQuestionsAsync(staffId, level, content, topicId, isTrue, images);
         }
 
         public async Task<List<GetQuestionsResult>> GetByTopic(int topicId, int order, byte type, byte level, int page, int limit)

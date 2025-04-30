@@ -31,7 +31,13 @@ public class AccountService: IAccountService
 
   public async Task<string> UpdateImage(IFormFile file, long userId)
   {
-	var (id, url) = await _imageService.UploadImageAsync(file);
+	//var (id, url) = await _imageService.UploadImageAsync(file);
+	//nasser changing
+	string folderName = "/ExaminationImagesFolder";
+
+	// Pass the folderName argument to the UploadImageAsync method  
+	var (id, url) = await _imageService.UploadImageAsync(file, folderName);
+
 	var user = UnitOfWork.UserRepo.GetById(userId);
 	ProfileImage currentImage;
 	if(user.ImageId is not null)
