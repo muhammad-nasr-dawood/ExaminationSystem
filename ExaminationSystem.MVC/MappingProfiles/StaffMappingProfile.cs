@@ -64,10 +64,6 @@ public class StaffMappingProfile: Profile
 
 	  CreateMap<StaffDisplayDetailViewModel, Staff>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); // This ensures that null values from the DTO won’t overwrite existing values in the entity.
 
-	  CreateMap<Branch, BranchDisplayViewModel>().AfterMap((src, des) =>
-	  {
-		des.Location = src.ZipCodeNavigation.Governate;
-	  });
 	}
 
 }

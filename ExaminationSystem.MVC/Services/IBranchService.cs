@@ -1,5 +1,6 @@
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.ViewModels.BranchViewModels;
+using ExaminationSystem.MVC.ViewModels.DepartmentViewModels;
 using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 using ExaminationSystem.MVC.ViewModels.StudentViewModels;
 using Microsoft.CodeAnalysis.Operations;
@@ -18,6 +19,8 @@ namespace ExaminationSystem.MVC.Services
 	Task<bool> AddBranchManager(int branchId, long staffSsn);
 	Task<StaffBranchManage> GetBranchThatOwnStaffByID(int branchId);
 	Task<BranchManagerViewModel> GetUnassignedStaffAsync(int branchId);
+	public List<DepartmentViewModel> GetDepartmentsByBranch(int branchId);
+	List<DepartmentViewModel> GetDepartmentsWithCapacitiesByBranch(int branchId);
 
   }
 

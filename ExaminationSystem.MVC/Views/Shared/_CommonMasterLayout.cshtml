@@ -57,7 +57,7 @@
 
   <!-- Core Scripts -->
   @await Html.PartialAsync("Sections/_Scripts" + ViewData["frontVar"])
-	
+	@await Html.PartialAsync("_ValidationScriptsPartial")
   <!-- Vendor Scripts -->
   @RenderSection("VendorScripts", required: false)
 

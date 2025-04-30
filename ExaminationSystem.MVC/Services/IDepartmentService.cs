@@ -5,6 +5,10 @@ namespace ExaminationSystem.MVC.Services
 {
   public interface IDepartmentService
   {
-	public List<DepartmentViewModel> GetAll();
+	 List<DepartmentViewModel> GetAll();
+	AddEditDeptViewModel GetDepartmentForEdit(int id);
+	AddEditDeptViewModel Add(AddEditDeptViewModel model);
+	void Update(AddEditDeptViewModel model);
+	bool Delete(int id);
   }
 }

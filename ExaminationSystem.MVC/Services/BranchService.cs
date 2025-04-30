@@ -2,6 +2,7 @@ using AutoMapper;
 using ExaminationSystem.Core;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.ViewModels.BranchViewModels;
+using ExaminationSystem.MVC.ViewModels.DepartmentViewModels;
 using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,8 @@ namespace ExaminationSystem.MVC.Services
 
 	public List<BranchViewModel> GetAll()
 	{
-	  var branches = _unitOfWork.BranchesRepo.GetAll().ToList();
+	  
+	  var branches = _unitOfWork.BranchesRepo.FindAll(b => !b.IsDeleted).ToList();
 	  return _mapper.Map<List<BranchViewModel>>(branches);
 	}
 
@@ -130,17 +132,56 @@ namespace ExaminationSystem.MVC.Services
 
 	public BranchEditViewModel Add(BranchEditViewModel viewModel)
 	{
-	  
 	  var newBranch = _mapper.Map<Branch>(viewModel);
 	  _unitOfWork.BranchesRepo.Add(newBranch);
 	  _unitOfWork.Complete();
 
+	 
+	  var location = _unitOfWork.LocationRepo
+		  .Find(l => l.ZipCode == newBranch.ZipCode);
 
+	  var result = _mapper.Map<BranchEditViewModel>(newBranch);
 
-	  return _mapper.Map<BranchEditViewModel>(newBranch);  
+	  if (location != null)
+	  {
+		result.LocationName = location.Governate;
+	  }
+
+	  return result;
 	}
-  
 
 
-}
+
+	public List<DepartmentViewModel> GetDepartmentsByBranch(int branchId)
+	{
+	 
+	  var departments = _unitOfWork.DepartmentRepo.FindAll(d => d.BranchDepts.Any(bd => bd.BranchId == branchId) && !d.IsDeleted).ToList();
+
+	
+	  return _mapper.Map<List<DepartmentViewModel>>(departments);
+	}
+	public List<DepartmentViewModel> GetDepartmentsWithCapacitiesByBranch(int branchId)
+	{
+	  var departments = _unitOfWork.DepartmentRepo
+		  .FindAll(d => d.BranchDepts.Any(bd => bd.BranchId == branchId) && !d.IsDeleted)
+		  .ToList();
+
+	  var departmentVMs = _mapper.Map<List<DepartmentViewModel>>(departments);
+
+	  foreach (var deptVM in departmentVMs)
+	  {
+		var deptEntity = departments.First(d => d.Id == deptVM.Id);
+
+		deptVM.TotalCapacity = deptEntity.StudentIntakeBranchDepartmentStudies.Count();
+		deptVM.BranchCapacity = deptEntity.StudentIntakeBranchDepartmentStudies
+			.Where(x => x.BranchId == branchId)
+			.Count();
+	  }
+
+	  return departmentVMs;
+	}
+
+
+
+  }
 }

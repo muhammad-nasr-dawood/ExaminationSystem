@@ -9,8 +9,12 @@ namespace ExaminationSystem.MVC.MappingProfiles
 	public DepartmentMappingProfile()
 	{
 	  CreateMap<Department, DepartmentViewModel>()
-		  .ForMember(dest => dest.Capacity,
-			  opt => opt.MapFrom(src => src.StudentIntakeBranchDepartmentStudies.Count));
+		  .ForMember(dest => dest.TotalCapacity,
+			  opt => opt.MapFrom(src => src.StudentIntakeBranchDepartmentStudies.Count))
+		  .ForMember(dest => dest.BranchCapacity,
+			  opt => opt.Ignore()); 
+	  CreateMap<Department, AddEditDeptViewModel>().ReverseMap();
 	}
+
   }
 }

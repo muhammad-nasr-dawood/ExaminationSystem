@@ -15,13 +15,13 @@
 	</button>
 </div>
 <div id="branch-list" class="row g-4">
-	@foreach (var branch in Model.Where(b => !b.IsDeleted))
+	@foreach (var branch in Model)
 	{
 		<div class="col-lg-4 col-md-6" id="branch-@branch.Id">
 			<div class="card shadow-lg border-0 rounded-3 h-100">
 				<div class="card-body p-4 d-flex flex-column justify-content-between">
 					<div>
-						<h5 class="fw-bold text-primary mb-2 locName">@branch.LocationName</h5>
+						<h5 class="fw-bold text-primary mb-2 locName">@branch.LocationName Branch</h5>
 						<p class="text-muted mb-1">Street No: <strong class="streetNo">@branch.StreetNo</strong></p>
 
 
@@ -60,15 +60,15 @@
 
 					</div>
 					<div class="d-flex justify-content-between mt-2 mb-2 gap-3">
-						<!-- Show Departments Button with a blue-purple tone -->
-						<button class="btn btn-primary btn-sm w-50" type="button">
+						
+						<a href="@Url.Action("ShowDepartments", "Branches", new { branchId = branch.Id })" class="btn btn-primary btn-sm w-50">
 							Show Departments
-						</button>
-
-						<!-- Show Staff Button with a muted purple tone -->
-						<button class="btn btn-secondary btn-sm w-50" type="button">
+						</a>
+						
+						<a href="@Url.Action( "ShowBranchStaff","Branches", new { branchId = branch.Id })" class="btn btn-secondary btn-sm w-50">
 							Show Staff
-						</button>
+						</a>
+
 					</div>
 
 
@@ -111,47 +111,39 @@
 
 <script>
 	$(document).ready(function () {
-	$(".delete-manager-btn").on('click', function (e) {
-		e.preventDefault();
-		var branchId = $(this).data("id");
 
-	$.ajax({
-		type: "GET",
-		url: '@Url.Action("DeleteManager", "Branches")/' + branchId,
-		success: function (data) {
-			$('#modalContainer').html(data);
-			console.log('Modal content loaded:', data);
-
-			var deleteModal = new bootstrap.Modal(document.getElementById('deleteManagerModal'));
-			deleteModal.show();
-		},
-		error: function (xhr, status, error) {
-			console.error("Error details: ", status, error);
-			alert("An error occurred while loading the delete manager modal.\n" +
-				  "Status: " + status + "\n" + "Error: " + error);
-		}
-	});
-
-	});
-
-
-				$(".assign-branch-btn").on('click', function (e) {
+		// Delete manager
+		$(document).on('click', '.delete-manager-btn', function (e) {
 			e.preventDefault();
 			var branchId = $(this).data("id");
-			;
 
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("DeleteManager", "Branches")/' + branchId,
+				success: function (data) {
+					$('#modalContainer').html(data);
+					var deleteModal = new bootstrap.Modal(document.getElementById('deleteManagerModal'));
+					deleteModal.show();
+				},
+				error: function (xhr, status, error) {
+					console.error("Error details: ", status, error);
+					alert("An error occurred while loading the delete manager modal.\nStatus: " + status + "\nError: " + error);
+				}
+			});
+		});
+
+		// Assign manager
+		$(document).on('click', '.assign-branch-btn', function (e) {
+			e.preventDefault();
+			var branchId = $(this).data("id");
 
 			$.ajax({
 				type: "GET",
 				url: '@Url.Action("AssignManager", "Branches")/' + branchId,
 				success: function (data) {
-
 					$('#modalContainer').html(data);
-
-
 					var modal = new bootstrap.Modal(document.getElementById('assignManagerModal'));
 					modal.show();
-
 
 					$(document).on('shown.bs.modal', '#assignManagerModal', function () {
 						$('#staffSelect').select2({
@@ -162,12 +154,13 @@
 					});
 				},
 				error: function () {
-					alert("An error occurred while loading the modal.");
+					alert("An error occurred while loading the assign manager modal.");
 				}
 			});
 		});
 
-		 		$(".edit-branch-btn").on('click', function (e) {
+		// Edit branch
+		$(document).on('click', '.edit-branch-btn', function (e) {
 			e.preventDefault();
 			var branchId = $(this).data("id");
 
@@ -176,11 +169,9 @@
 				url: '@Url.Action("Edit", "Branches")/' + branchId,
 				success: function (data) {
 					$('#modalContainer').html(data);
-
-
+					$.validator.unobtrusive.parse('#editBranchForm');
 					var modal = new bootstrap.Modal(document.getElementById('editBranchModal-' + branchId));
 					modal.show();
-
 
 					$(document).on('shown.bs.modal', '#editBranchModal-' + branchId, function () {
 						$('#ZipCode').select2({
@@ -191,42 +182,41 @@
 					});
 				},
 				error: function () {
-					alert("An error occurred while loading the modal.");
+					alert("An error occurred while loading the edit branch modal.");
 				}
 			});
 		});
 
-$("#addNewBranchBtn").on('click', function (e) {
-    e.preventDefault();
-
-    $.ajax({
-        type: "GET",
-        url: '@Url.Action("Add", "Branches")',
-        success: function (data) {
-            $('#modalContainer').html(data);  // Load modal content into modalContainer
-
-            var modal = new bootstrap.Modal(document.getElementById('editBranchModal-' + 0));  // Create modal instance
-            modal.show();  // Show the modal
-
-            $(document).on('shown.bs.modal', '#editBranchModal-' + 0, function () {
-                $('#ZipCode').select2({
-                    placeholder: "Select a location",
-                    allowClear: true,
-                    dropdownParent: $('#editBranchModal-' + 0)  // Ensure select2 dropdown appears inside the modal
-                }).trigger('change');
-            });
-        },
-        error: function () {
-            alert("An error occurred while loading the modal.");
-        }
-    });
-});
-
-
-
-		$(".dropdown-item.text-danger").on('click', function (e) {
+		// Add new branch
+		$(document).on('click', '#addNewBranchBtn', function (e) {
 			e.preventDefault();
 
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("Add", "Branches")',
+				success: function (data) {
+					$('#modalContainer').html(data);
+					$.validator.unobtrusive.parse('#editBranchForm');
+					var modal = new bootstrap.Modal(document.getElementById('editBranchModal-0'));
+					modal.show();
+
+					$(document).on('shown.bs.modal', '#editBranchModal-0', function () {
+						$('#ZipCode').select2({
+							placeholder: "Select a location",
+							allowClear: true,
+							dropdownParent: $('#editBranchModal-0')
+						}).trigger('change');
+					});
+				},
+				error: function () {
+					alert("An error occurred while loading the add branch modal.");
+				}
+			});
+		});
+
+		// Delete branch
+		$(document).on('click', '.dropdown-item.text-danger', function (e) {
+			e.preventDefault();
 			var branchId = $(this).data("id");
 
 			$.ajax({
@@ -238,10 +228,12 @@ $("#addNewBranchBtn").on('click', function (e) {
 					deleteModal.show();
 				},
 				error: function () {
-					alert("An error occurred while loading the delete modal.");
+					alert("An error occurred while loading the delete branch modal.");
 				}
 			});
 		});
+
 	});
 </script>
+
 

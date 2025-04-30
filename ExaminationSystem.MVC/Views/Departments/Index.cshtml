@@ -2,10 +2,11 @@
 
 @{
 	ViewData["Title"] = "Departments";
+	var isBranchView = ViewBag.BranchId != null; 
 }
 
 <style>
-	/* 👇 Hover circle only on the 3-dots button */
+	
 	.btn-icon {
 		background-color: transparent;
 		border: none;
@@ -25,46 +26,150 @@
 		}
 </style>
 
-<div class="row g-4">
+
+@if (isBranchView)
+{
+	<div class="text-start mb-4">
+		<a href="@Url.Action("Index", "Branches")" class="btn btn-primary">
+			<i class="bi bi-arrow-left-circle"></i> Go Back to Branch List
+		</a>
+	</div>
+}
+
+
+<div class="text-end mb-4" style="display: @(isBranchView ? "none" : "block")">
+	<button class="btn btn-primary" id="addNewDepartmentBtn">
+		<i class="bi bi-plus-circle"></i> Add New Department
+	</button>
+</div>
+
+
+<div class="row g-4" id="department-list">
 	@foreach (var dept in Model)
 	{
-		<div class="col-lg-4 col-md-6">
+		<div class="col-lg-4 col-md-6" id="department-@dept.Id">
 			<div class="card shadow-lg border-0 rounded-3 h-100 position-relative">
 				<div class="card-body p-4 d-flex flex-column justify-content-between">
 
-					<!-- 3 dots menu button with hover circle -->
-					<div class="dropdown position-absolute top-0 end-0 m-3">
+					
+					<div class="dropdown position-absolute top-0 end-0 m-3" style="@(isBranchView ? "display:none;" : "display:block;")">
 						<button class="btn btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<i class="ti ti-dots-vertical"></i>
 						</button>
 						<ul class="dropdown-menu">
 							<li>
-								<a class="dropdown-item text-warning" asp-action="Edit" asp-route-id="@dept.Id">
+								<a class="dropdown-item text-warning edit-department-btn" href="javascript:void(0);" data-id="@dept.Id">
 									<i class="ti ti-pencil me-2"></i>Edit
 								</a>
 							</li>
 							<li>
-								<a class="dropdown-item text-danger" asp-action="Delete" asp-route-id="@dept.Id">
+								<a class="dropdown-item text-danger delete-department-btn" href="javascript:void(0);" data-id="@dept.Id">
 									<i class="ti ti-trash me-2"></i>Delete
 								</a>
 							</li>
 						</ul>
 					</div>
 
-					<!-- Card content -->
+					
 					<div>
-						<h5 class="fw-bold text-primary mb-2">@dept.Name</h5>
+						<h5 class="fw-bold text-primary mb-2">@dept.Name Department</h5>
 						<p class="text-muted mb-2">Description: <strong>@dept.Disc</strong></p>
-						<p class="text-muted mb-2">Capacity: <strong>@dept.Capacity</strong></p>
+						<p class="text-muted mb-2">Capacity:
+							@if (ViewBag.BranchId != null)
+							{
+								<strong>@dept.BranchCapacity Students</strong>
+								
+							}
+							else
+							{
+								<strong>@dept.TotalCapacity Students</strong>
+								
+							}
+
+						</p>
 					</div>
 
-					<div class="mt-3">
-						<span class="badge px-3 py-2 rounded-pill @(dept.IsDeleted ? "bg-danger" : "bg-success") text-white">
-							@(dept.IsDeleted ? "Deleted" : "Active")
-						</span>
+					
+					<div class="d-flex gap-2">
+						<a href="@Url.Action("ShowStudents", "Branches", new { deptId = dept.Id, branchId = ViewBag.BranchId })" class="btn btn-primary btn-sm w-50">
+							Show Students
+						</a>
+						<a href="@Url.Action("ShowCourses", "Branches",  new { deptId = dept.Id, branchId = ViewBag.BranchId })" class="btn btn-secondary btn-sm w-50">
+							Show Courses
+						</a>
 					</div>
+
+					
+					<div class="mt-3">
+						<span class="badge px-3 py-2 rounded-pill bg-success text-white">Active</span>
+					</div>
+
 				</div>
 			</div>
 		</div>
 	}
 </div>
+
+
+<div id="modalContainer"></div>
+
+<script>
+		$(document).ready(function () {
+
+		// Add new department
+		$("#addNewDepartmentBtn").on('click', function () {
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("Add", "Departments")',
+				success: function (data) {
+					$('#modalContainer').html(data);
+					$.validator.unobtrusive.parse('#editDepartmentForm');
+					var modal = new bootstrap.Modal(document.getElementById('editDepartmentModal-0'));
+					modal.show();
+				},
+				error: function () {
+					alert("An error occurred while loading Add Department modal.");
+				}
+			});
+		});
+
+		// Edit department
+		$(document).on('click', '.edit-department-btn', function () {
+			var deptId = $(this).data("id");
+
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("Edit", "Departments")/' + deptId,
+				success: function (data) {
+					$('#modalContainer').html(data);
+					$.validator.unobtrusive.parse('#editDepartmentForm');
+					var modal = new bootstrap.Modal(document.getElementById('editDepartmentModal-' + deptId));
+					modal.show();
+				},
+				error: function () {
+					alert("An error occurred while loading Edit Department modal.");
+				}
+			});
+		});
+
+		// Delete department
+		$(document).on('click', '.delete-department-btn', function () {
+			var deptId = $(this).data("id");
+
+			$.ajax({
+				type: "GET",
+				url: '@Url.Action("Delete", "Departments")/' + deptId,
+				success: function (data) {
+					$('#modalContainer').html(data);
+					var modal = new bootstrap.Modal(document.getElementById('deleteDepartmentModal'));
+					modal.show();
+				},
+				error: function () {
+					alert("An error occurred while loading Delete Department modal.");
+				}
+			});
+		});
+
+	});
+
+</script>

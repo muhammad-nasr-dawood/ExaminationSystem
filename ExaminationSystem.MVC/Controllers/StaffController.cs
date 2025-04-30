@@ -44,7 +44,7 @@ public class StaffController : Controller
 
   public IActionResult Index()
   {
-	ViewBag.Branches = _mapper.Map<List<BranchDisplayViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll()) ;
+	ViewBag.Branches = _mapper.Map<List<BranchViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll()) ;
 	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
 
 	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
@@ -136,7 +136,7 @@ public class StaffController : Controller
 
   public IActionResult Details(long id)
   {
-	ViewBag.Branches = _mapper.Map<List<BranchDisplayViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
+	ViewBag.Branches = _mapper.Map<List<BranchViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
 	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
 
 	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();

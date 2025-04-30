@@ -1,14 +1,23 @@
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.Services;
 using ExaminationSystem.MVC.ViewModels.BranchViewModels;
+using ExaminationSystem.MVC.ViewModels.CourseViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 public class BranchesController : Controller
 {
   private readonly IBranchService _branchService;
-  public BranchesController(IBranchService branchService)
+  private readonly IStaffService _staffService;
+  private readonly ICourseService _courseService;
+  private readonly IDepartmentService _departmentService;
+  private readonly IMapper _mapper;
+  public BranchesController(IBranchService branchService, IStaffService staffService, IMapper mapper, IDepartmentService departmentService,ICourseService courseService)
   {
 	_branchService = branchService;
+	_staffService = staffService;
+	_courseService = courseService;
+	_departmentService = departmentService;
+	_mapper = mapper;
   }
 
   public IActionResult Index()
@@ -193,7 +202,45 @@ public async Task<IActionResult> AssignManager(int id, long staffSsn)
 	var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
 	return Json(new { success = false, message = string.Join(", ", errors) });
   }
+  public IActionResult ShowDepartments(int branchId)
+  {
+	var departments = _branchService.GetDepartmentsWithCapacitiesByBranch(branchId);
+	ViewBag.BranchId = branchId;
+	return View("~/Views/Departments/Index.cshtml", departments);
+  }
 
+
+  public IActionResult ShowBranchStaff(int branchId)
+  {
+	ViewBag.IsBranchView = true;  
+	ViewBag.BranchId = branchId;  
+	ViewBag.Branches = _mapper.Map<List<BranchViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
+	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
+	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
+
+	return View("~/Views/Staff/Index.cshtml"); 
+  }
+  public IActionResult ShowStudents(int branchId, int deptId)
+  {
+	ViewBag.BranchId = branchId;
+	ViewBag.DeptId = deptId;
+	ViewBag.Branches = _mapper.Map<List<BranchViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
+	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
+	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
+
+	return View("~/Views/Students/Index.cshtml"); 
+  }
+
+
+  public IActionResult ShowCourses(int deptId,int branchId)
+  {
+	var department = _departmentService.GetDepartmentForEdit(deptId);
+	if (department == null)
+	  return NotFound();
+
+
+	return RedirectToAction("Index", "Courses", new { BranchId= branchId,DeptId=deptId });
+  }
 
 }
 

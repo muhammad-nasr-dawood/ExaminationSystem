@@ -41,15 +41,28 @@
 	
 		<li class='menu-item@(currentPage == "/Branches" ? " active" : "")'>
 			<a asp-controller="Branches" asp-action="Index" class="menu-link">
-				<i class="menu-icon tf-icons ti ti-app-window"></i>
+				<i class="menu-icon tf-icons ti ti-building-bank"></i>
 				<div data-i18n="Branches">Branches</div>
 			</a>
 		</li>
 
 		<li class='menu-item@(currentPage == "/Departments" ? " active" : "")'>
 			<a asp-controller="Departments" asp-action="Index" class="menu-link">
-				<i class="menu-icon tf-icons ti ti-building-bank"></i>
+				<i class="menu-icon tf-icons ti ti-building-arch"></i>
 				<div data-i18n="Departments">Departments</div>
+			</a>
+		</li>
+		<li class='menu-item@(currentPage == "/Courses" ? " active" : "")'>
+			<a asp-controller="Courses" asp-action="Index" class="menu-link">
+				<i class="menu-icon tf-icons ti ti-notebook"></i>
+				<div data-i18n="Courses">Courses</div>
+			</a>
+		</li>
+
+		<li class='menu-item@(currentPage == "/Topics" ? " active" : "")'>
+			<a asp-controller="Topics" asp-action="Index" class="menu-link">
+				<i class="menu-icon tf-icons ti ti-list-details"></i>
+				<div data-i18n="Topics">Topics</div>
 			</a>
 		</li>
 

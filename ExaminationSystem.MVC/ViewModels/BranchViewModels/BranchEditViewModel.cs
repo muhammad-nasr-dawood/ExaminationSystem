@@ -12,10 +12,11 @@ namespace ExaminationSystem.MVC.ViewModels.BranchViewModels
 	public string? BranchManagerName { get; set; }
 	public string? LocationName { get; set; }
 
-	[Required]
-	[StringLength(5, ErrorMessage = "Street Number must be 5 characters long.")]
-	[Range(1, int.MaxValue, ErrorMessage = "Street Number must be greater than 0.")]
-	public string StreetNo { get; set; }
+	
+	[Required(ErrorMessage = "Street Number is required.")]
+	[Range(1, int.MaxValue, ErrorMessage = "Invalid Street Number.")]
+	public int StreetNo { get; set; }
+
 
   }
 }

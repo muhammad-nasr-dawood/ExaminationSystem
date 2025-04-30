@@ -122,6 +122,28 @@
 		</div>
 	</div>
 </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+	@if (ViewBag.BranchId != 0 || ViewBag.BranchId == 0)
+	{
+		<div>
+		@if (ViewBag.BranchId != 0)
+		{
+			<a href="@Url.Action("ShowDepartments", "Branches",new{branchId = ViewBag.BranchId})" class="btn btn-primary">
+		
+				<i class="bi bi-arrow-left-circle"></i> Go Back to Department List
+			</a>
+		}
+		else
+		{
+		<a href="@Url.Action("Index", "Departments")" class="btn btn-primary">
+			<i class="bi bi-arrow-left-circle"></i> Go Back to Department List
+		</a>
+		}
+		</div>
+	}
+	
+
+	</div>
 <!-- Users List Table -->
 <div class="card">
 	<div class="card-header border-bottom">
@@ -130,24 +152,30 @@
 			<div class="col-md-4 user_role"></div>
 			<div class="col-md-4 user_plan"></div>
 			<div class="col-md-4 user_status"></div>
-			<div class="col-md-3">
-				<select id="branchFilter" class="form-select">
-					<option value="">Filter by Branch</option>
-					@foreach (var branch in ViewBag.Branches)
-					{
-						<option value="@branch.Id">@branch.ZipCode</option>
-					}
-				</select>
-			</div>
-			<div class="col-md-3">
-				<select id="departmentFilter" class="form-select">
-					<option value="">Filter by Department</option>
-					@foreach (var dept in ViewBag.Departments)
-					{
-						<option value="@dept.Id">@dept.Name</option>
-					}
-				</select>
-			</div>
+         <div class="col-md-3">
+         <select id="branchFilter" class="form-select">
+        <option value="">Filter by Branch</option>
+        @foreach (var branch in ViewBag.Branches)
+        {
+						<option value="@branch.Id" selected="@(ViewBag.BranchId != null && ViewBag.BranchId == branch.Id)">
+							@branch.ZipCode
+						</option>
+
+        }
+    </select>
+</div>
+<div class="col-md-3">
+    <select id="departmentFilter" class="form-select">
+        <option value="">Filter by Department</option>
+        @foreach (var dept in ViewBag.Departments)
+        {
+						<option value="@dept.Id" selected="@(ViewBag.DeptId != null && ViewBag.DeptId == dept.Id)">
+							@dept.Name
+						</option>
+
+        }
+    </select>
+</div>
 			<div class="col-md-3">
 				<select id="statusFilter" class="form-select">
 					<option value="">Filter by Status</option>
@@ -155,11 +183,16 @@
 					<option value="false">In Active</option>
 				</select>
 			</div>
-			<div class="col-md-3">
-				<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
-					Add Student
-				</button>
-			</div>
+
+			@if (ViewBag.BranchId==0 && ViewBag.DeptId==0)
+				{
+					<div class="col-md-3">
+						<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
+							Add Student
+						</button>
+					</div>
+				}
+			
 		</div>
 		<div class="table-responsive text-nowrap">
 			<table id="studentTable" class="table table-hover">
@@ -561,11 +594,12 @@
 				ajax: {
 					url: '/Students/GetAllStudent',
 					type: 'POST',
-					data: function (d) {
-						d.branchId = $('#branchFilter').val();
-						d.DeptId = $('#departmentFilter').val();
-						d.statusFilter = $('#statusFilter').val();
-					},
+		data: function (d) {
+			d.branchId = $('#branchFilter').length && $('#branchFilter').is(':visible') ? $('#branchFilter').val() : '@(ViewBag.BranchId ?? 0)';
+			d.DeptId = $('#departmentFilter').length && $('#departmentFilter').is(':visible') ? $('#departmentFilter').val() : '@(ViewBag.DeptId ?? 0)';
+			d.statusFilter = $('#statusFilter').val();
+		},
+
 					dataSrc: function (json) {
 						if (!json.data || json.data.length === 0) {
 							console.log("No data returned from server.");
