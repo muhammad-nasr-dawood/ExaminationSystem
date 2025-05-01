@@ -43,9 +43,9 @@ namespace ExaminationSystem.Core.Models
         Task<List<GetCourseByIdResult>> GetCourseByIdAsync(int? id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetCoursesByTopicResult>> GetCoursesByTopicAsync(int? topicId, int? pageSize, int? pageNumber, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetDepartmentByIdResult>> GetDepartmentByIdAsync(int? id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<GetPoolQuestionsResult>> GetPoolQuestionsAsync(int? poolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<GetPoolQuestionsResult>> GetPoolQuestionsAsync(int? poolId, int? page, int? limit, byte? filter, int? oType, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetPoolsResult>> GetPoolsAsync(int? courseId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<int> GetQuestionsAsync(int? topicId, byte? order, byte? qType, int? page, int? limit, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<GetQuestionsResult>> GetQuestionsAsync(int? topicId, int? order, byte? qType, byte? qLevel, int? page, int? limit, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetStaffBranchManageByBranchIdResult>> GetStaffBranchManageByBranchIdAsync(int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetTopicByIdResult>> GetTopicByIdAsync(int? topicId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetTopicsByCourseResult>> GetTopicsByCourseAsync(int? courseId, int? pageSize, int? pageNumber, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

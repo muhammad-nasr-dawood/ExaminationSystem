@@ -123,7 +123,7 @@
 	</div>
 </div>
 <div class="d-flex justify-content-between align-items-center mb-4">
-	@if (ViewBag.BranchId != 0 || ViewBag.BranchId == 0)
+	@if (ViewBag.DeptId != null || ViewBag.BranchId != null)
 	{
 		<div>
 		@if (ViewBag.BranchId != 0)
@@ -184,7 +184,7 @@
 				</select>
 			</div>
 
-			@if (ViewBag.BranchId==0 && ViewBag.DeptId==0)
+			@if (ViewBag.BranchId==null && ViewBag.DeptId==null)
 				{
 					<div class="col-md-3">
 						<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
