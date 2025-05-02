@@ -49,13 +49,15 @@ public partial class ExaminationDBContext : DbContext
 
     public virtual DbSet<Role> Roles { get; set; }
 
+    public virtual DbSet<Session> Sessions { get; set; }
+
     public virtual DbSet<Staff> Staff { get; set; }
 
     public virtual DbSet<StaffBranchDepartmentManagement> StaffBranchDepartmentManagements { get; set; }
 
-    public virtual DbSet<StaffBranchDepartmentWorksFor> StaffBranchDepartmentWorksFors { get; set; }
-
     public virtual DbSet<StaffBranchIntakeDepartmentCourseTeach> StaffBranchIntakeDepartmentCourseTeaches { get; set; }
+
+    public virtual DbSet<StaffBranchIntakeWorksFor> StaffBranchIntakeWorksFors { get; set; }
 
     public virtual DbSet<StaffBranchManage> StaffBranchManages { get; set; }
 
@@ -303,6 +305,11 @@ public partial class ExaminationDBContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC070065C3C5");
         });
 
+        modelBuilder.Entity<Session>(entity =>
+        {
+            entity.ToView("Session");
+        });
+
         modelBuilder.Entity<Staff>(entity =>
         {
             entity.HasKey(e => e.Ssn).HasName("PK__Staff__CA1E8E3D2E07F881");
@@ -358,31 +365,6 @@ public partial class ExaminationDBContext : DbContext
                 .HasConstraintName("FK_BranchId_DeptId_IntakeId");
         });
 
-        modelBuilder.Entity<StaffBranchDepartmentWorksFor>(entity =>
-        {
-            entity.Property(e => e.HiringDate).HasDefaultValueSql("(getdate())");
-
-            entity.HasOne(d => d.Branch).WithMany(p => p.StaffBranchDepartmentWorksFors)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StaffBranchDepartmentWorksFor_Branch");
-
-            entity.HasOne(d => d.Department).WithMany(p => p.StaffBranchDepartmentWorksFors)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StaffBranchDepartmentWorksFor_Departments");
-
-            entity.HasOne(d => d.Intake).WithMany(p => p.StaffBranchDepartmentWorksFors)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StaffBranchDeptWorksFor_intakeId");
-
-            entity.HasOne(d => d.StaffSsnNavigation).WithMany(p => p.StaffBranchDepartmentWorksFors)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StaffBranchDepartmentWorksFor_Staff");
-
-            entity.HasOne(d => d.BranchDept).WithMany(p => p.StaffBranchDepartmentWorksFors)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_BranchId_DeptId_IntakeId_worksfor");
-        });
-
         modelBuilder.Entity<StaffBranchIntakeDepartmentCourseTeach>(entity =>
         {
             entity.HasOne(d => d.Branch).WithMany(p => p.StaffBranchIntakeDepartmentCourseTeaches)
@@ -412,6 +394,25 @@ public partial class ExaminationDBContext : DbContext
             entity.HasOne(d => d.IntakeDeptCourse).WithMany(p => p.StaffBranchIntakeDepartmentCourseTeaches)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_StaffBranchIntakeDepartmentCourseTeach_IntakeDeptCourses");
+        });
+
+        modelBuilder.Entity<StaffBranchIntakeWorksFor>(entity =>
+        {
+            entity.HasKey(e => new { e.StaffSsn, e.BranchId, e.IntakeId }).HasName("PK_StaffBranchDepartmentWorksFor");
+
+            entity.Property(e => e.HiringDate).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.Branch).WithMany(p => p.StaffBranchIntakeWorksFors)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StaffBranchDepartmentWorksFor_Branch");
+
+            entity.HasOne(d => d.Intake).WithMany(p => p.StaffBranchIntakeWorksFors)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StaffBranchDeptWorksFor_intakeId");
+
+            entity.HasOne(d => d.StaffSsnNavigation).WithMany(p => p.StaffBranchIntakeWorksFors)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StaffBranchDepartmentWorksFor_Staff");
         });
 
         modelBuilder.Entity<StaffBranchManage>(entity =>

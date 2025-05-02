@@ -76,5 +76,7 @@ namespace ExaminationSystem.MVC.ViewModels.StaffViewModels
 
 	[Display(Name = "Roles")]
 	public virtual List<string> Roles { get; set; } = new List<string>();
+	[Display(Name = "Branch")]
+	public int? BranchId { get; set; } // optional
   }
 }

@@ -45,9 +45,12 @@ namespace ExaminationSystem.EF
 
         public IQuestionRepo QuestionRepo { get; } // Added QuestionRepo to UnitOfWork
 
+
         /*nasser*/
 
 
+        public IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo { get; }
+        public IBaseRepo<Intake> IntakeRepo { get; }
 
         public UnitOfWork(ExaminationDBContext dbContext, 
             IBaseRepo<Student> studentRepo, 
@@ -62,7 +65,10 @@ namespace ExaminationSystem.EF
             IBaseRepo<ProfileImage> profileImageRepo, 
             IStaffBranchManageRepo staffBranchManageRepo,
             IPoolRepo _poolRepo,
-            IQuestionRepo _questionRepo)
+            IQuestionRepo _questionRepo,
+            IBaseRepo<StaffBranchIntakeWorksFor> worksFor,
+            IBaseRepo<Intake> intakeRepo
+            )
 
         {
             _dbContext = dbContext;
@@ -86,6 +92,11 @@ namespace ExaminationSystem.EF
 
             PoolRepo = _poolRepo; // Added PoolRepo to UnitOfWork
             QuestionRepo =  _questionRepo;
+
+
+
+            WorksForRepo = worksFor;
+            IntakeRepo = intakeRepo;
         }
 
          
@@ -93,6 +104,19 @@ namespace ExaminationSystem.EF
         {
             return _dbContext.SaveChanges(); // will return number of rows affected
         }
+
+        public async Task<int> CompleteAsync()
+        {
+            try
+            {
+                return await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while saving changes: {ex.Message}", ex);
+            }
+        }
+
 
         public void Dispose()
         {

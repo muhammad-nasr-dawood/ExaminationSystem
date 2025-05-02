@@ -36,9 +36,6 @@ public partial class BranchDept
     public virtual StaffBranchDepartmentManagement StaffBranchDepartmentManagement { get; set; }
 
     [InverseProperty("BranchDept")]
-    public virtual ICollection<StaffBranchDepartmentWorksFor> StaffBranchDepartmentWorksFors { get; set; } = new List<StaffBranchDepartmentWorksFor>();
-
-    [InverseProperty("BranchDept")]
     public virtual ICollection<StaffBranchIntakeDepartmentCourseTeach> StaffBranchIntakeDepartmentCourseTeaches { get; set; } = new List<StaffBranchIntakeDepartmentCourseTeach>();
 
     [InverseProperty("BranchDept")]

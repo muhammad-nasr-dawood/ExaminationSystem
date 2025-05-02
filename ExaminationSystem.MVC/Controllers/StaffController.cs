@@ -112,13 +112,13 @@ public class StaffController : Controller
   }
 
   [HttpPost]
-  public JsonResult Add(StaffAddViewModel model)
+  public async Task<JsonResult> Add(StaffAddViewModel model)
   {
 	if (ModelState.IsValid)
 	{
 	  try
 	  {
-		var IsSucceeded = _staffService.Add(model);
+		var IsSucceeded = await _staffService.Add(model);
 		if (!IsSucceeded)
 		  return Json(new { success = false, message = "Something went very wrong!" });
 
@@ -153,17 +153,33 @@ public class StaffController : Controller
 
 
   [HttpPost]
-  public IActionResult Update(StaffDisplayDetailViewModel model)
+  public async Task<IActionResult> Update(StaffDisplayDetailViewModel model)
   {
 	if (!ModelState.IsValid)
 	{
+	  // Return all validation errors in ModelState
 	  return BadRequest(ModelState);
 	}
-	_staffService.UpdateById(model);
-	// Save changes to DB...
 
-	return Ok(new { message = "User updated" });
+	try
+	{
+	  var result = await _staffService.UpdateById(model);
+
+	  if (!result)
+	  {
+		return StatusCode(500, new { message = "Update failed. Staff record was not modified." });
+	  }
+
+	  return Ok(new { message = "User updated" });
+	}
+	catch (Exception ex)
+	{
+	  //return StatusCode(500, new { message = $"An error occurred. {ex.Message}", error = ex.Message });
+	  return StatusCode(500, new { message = $"An error occurred.", error = ex.Message });
+
+	}
   }
+
 
   [HttpPost]
   public IActionResult GetAllRegisteredCourses()

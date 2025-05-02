@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExaminationSystem.Core.Models
 {
-    public partial class UsePoolResult
+    public partial class StaffBranchDeptWorksForCreateResult
     {
     }
 }

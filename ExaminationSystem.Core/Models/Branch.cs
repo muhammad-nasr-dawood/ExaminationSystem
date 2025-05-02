@@ -35,10 +35,10 @@ public partial class Branch
     public virtual ICollection<StaffBranchDepartmentManagement> StaffBranchDepartmentManagements { get; set; } = new List<StaffBranchDepartmentManagement>();
 
     [InverseProperty("Branch")]
-    public virtual ICollection<StaffBranchDepartmentWorksFor> StaffBranchDepartmentWorksFors { get; set; } = new List<StaffBranchDepartmentWorksFor>();
+    public virtual ICollection<StaffBranchIntakeDepartmentCourseTeach> StaffBranchIntakeDepartmentCourseTeaches { get; set; } = new List<StaffBranchIntakeDepartmentCourseTeach>();
 
     [InverseProperty("Branch")]
-    public virtual ICollection<StaffBranchIntakeDepartmentCourseTeach> StaffBranchIntakeDepartmentCourseTeaches { get; set; } = new List<StaffBranchIntakeDepartmentCourseTeach>();
+    public virtual ICollection<StaffBranchIntakeWorksFor> StaffBranchIntakeWorksFors { get; set; } = new List<StaffBranchIntakeWorksFor>();
 
     [InverseProperty("Branch")]
     public virtual StaffBranchManage StaffBranchManage { get; set; }

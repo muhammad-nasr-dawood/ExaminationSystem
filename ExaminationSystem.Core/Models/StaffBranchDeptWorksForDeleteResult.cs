@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExaminationSystem.Core.Models
 {
-    public partial class StaffBranchDeptWorksForGetResult
+    public partial class StaffBranchDeptWorksForDeleteResult
     {
     }
 }

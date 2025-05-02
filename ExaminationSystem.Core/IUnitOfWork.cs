@@ -32,6 +32,15 @@ namespace ExaminationSystem.Core
 
         IQuestionRepo QuestionRepo { get; } // Added QuestionRepo to UnitOfWork
 
+
+
+
+
+
+        IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo { get; }
+        IBaseRepo<Intake> IntakeRepo { get; }
         int Complete();
+
+        Task<int> CompleteAsync();
     }
 }

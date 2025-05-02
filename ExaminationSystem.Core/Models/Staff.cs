@@ -31,10 +31,10 @@ public partial class Staff
     public virtual StaffBranchDepartmentManagement StaffBranchDepartmentManagement { get; set; }
 
     [InverseProperty("StaffSsnNavigation")]
-    public virtual ICollection<StaffBranchDepartmentWorksFor> StaffBranchDepartmentWorksFors { get; set; } = new List<StaffBranchDepartmentWorksFor>();
+    public virtual ICollection<StaffBranchIntakeDepartmentCourseTeach> StaffBranchIntakeDepartmentCourseTeaches { get; set; } = new List<StaffBranchIntakeDepartmentCourseTeach>();
 
     [InverseProperty("StaffSsnNavigation")]
-    public virtual ICollection<StaffBranchIntakeDepartmentCourseTeach> StaffBranchIntakeDepartmentCourseTeaches { get; set; } = new List<StaffBranchIntakeDepartmentCourseTeach>();
+    public virtual ICollection<StaffBranchIntakeWorksFor> StaffBranchIntakeWorksFors { get; set; } = new List<StaffBranchIntakeWorksFor>();
 
     [InverseProperty("StaffSsnNavigation")]
     public virtual ICollection<StaffBranchManage> StaffBranchManages { get; set; } = new List<StaffBranchManage>();
