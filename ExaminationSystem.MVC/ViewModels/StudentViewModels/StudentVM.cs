@@ -12,5 +12,7 @@ namespace ExaminationSystem.MVC.ViewModels.StudentViewModels
 	public string Faculty { get; set; }
 	public string ImageUrl { get; set; }
 
+	public long Ssn { get; set; }
+
   }
 }

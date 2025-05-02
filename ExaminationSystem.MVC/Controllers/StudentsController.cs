@@ -3,11 +3,12 @@ using ExaminationSystem.Core.Consts;
 using ExaminationSystem.Core.Helpers;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.Services;
-using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 using ExaminationSystem.MVC.ViewModels.StudentViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using System.Data.Entity.Validation;
+using System.Threading.Tasks;
 
 namespace ExaminationSystem.MVC.Controllers;
 
@@ -19,31 +20,6 @@ public class StudentsController : Controller
   {
 	_studentService = studentService; // controller layer will only deal with the service layer any dirty work will be within the service layer // in order to keep our controller simple and clean
   }
-  // public async Task<IActionResult> Index()
-  // {
-  //PaginatedResult<StudentVM> res = await _studentService.GetAllAsync(1,10,std => std.SsnNavigation);
-
-  //   return View(res);
-  // }
-
-  // public IActionResult GetAllStudents()
-  // {
-  //   var stds = _studentService.GetAll();
-  //   return View(stds);
-  // }
-  // // Get Student Details
-  // public async Task<IActionResult> StudentDetails (long ssn)
-  // {
-  //if (ssn == 0)
-  //  return NotFound();
-
-  //StudentDetailsVM std = await _studentService.GetStdByIdAsync(ssn);
-
-  //if (std == null)
-  //  return NotFound();
-
-  //return View(std);
-  // }
 
   public IActionResult Index()
   {
@@ -125,7 +101,7 @@ public class StudentsController : Controller
 		if (!IsSucceeded)
 		  return Json(new { success = false, message = "Something went very wrong!" });
 
-		return Json(new { success = true, message = "Staff added successfully!" });
+		return Json(new { success = true, message = "Student added successfully!" });
 	  }
 	  catch (Exception ex)
 	  {
@@ -136,7 +112,105 @@ public class StudentsController : Controller
 	return Json(new { success = false, message = "Invalid data." });
   }
 
+  public async Task<IActionResult> Details(long id)
+  {
+	if (id == 0)
+	  return NotFound();
+	ViewBag.Locations = _studentService.UnitOfWork.LocationRepo.GetAll();
 
+	//ViewBag.Departments = _studentService.UnitOfWork.
+
+
+
+	StudentDetailsVM std = await _studentService.GetStdByIdAsync(id);
+
+	if (std == null)
+	  return NotFound();
+
+	return View(std);
+  }
+
+  [HttpPost]
+  public IActionResult ResetPassword(long ssn)
+  {
+
+	var user = _studentService.ResetPassword(ssn);
+
+	return Json(new
+	{
+	  success = true,
+	  message = "Password reset successfully.",
+	});
+  }
+
+  [HttpPost]
+  public IActionResult ToggleUserStatus(long ssn)
+  {
+	try
+	{
+	  var user = _studentService.ToggleUserStatus(ssn);
+
+	  return Json(new { success = true, isActive = user.IsActive });
+	}
+	catch (Exception ex)
+	{
+	  // log the error if needed
+	  return Json(new { success = false, message = "An error occurred while toggling status." });
+	}
+  }
+
+  public IActionResult GetUserSidebar(long userId)
+  {
+	var studentDetails = _studentService.GetById(userId); 
+	return PartialView("_StudentSidebar", studentDetails);
+  }
+
+  [HttpPost]
+  public IActionResult Update(StudentDetailsVM model)
+  {
+	if (!ModelState.IsValid)
+	{
+	  return BadRequest(ModelState);
+	}
+	_studentService.UpdateStudent(model);
+	// Save changes to DB...
+
+	return Ok(new { message = "Student updated" });
+  }
+
+
+  public async Task<IActionResult> IsEmailExist(string email, long? Ssn)
+  {
+	var model = await _studentService.GetByEmailAsync(email, Ssn);
+	if (model == null)
+	  return Json(true);
+	return Json("This email is already in use");
+  }
+
+  public async Task<IActionResult> IsSSNExist(long ssn)
+  {
+	var model = await _studentService.GetStdByIdAsync(ssn);
+	if (model == null)
+	{
+	  return Json(true); 
+	}
+	else
+	{
+	  return Json("This SSN is already in use"); 
+	}
+  }
+  public async Task<IActionResult> isPhoneNumberExist(string PhoneNumber, long? Ssn)
+	{
+	var model = await _studentService.GetByPhoneNumberAsync(PhoneNumber, Ssn);
+	if (model == null)
+	{
+	  return Json(true);
+	}
+	else
+	{
+	  return Json("This Phone Number is already in use");
+	}
+  }
 
 
 }
