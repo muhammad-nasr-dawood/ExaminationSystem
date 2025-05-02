@@ -103,11 +103,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[StaffBranchDepartmentWorksFor]",
+         "Name": "[dbo].[StaffBranchIntakeDepartmentCourseTeach]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[StaffBranchIntakeDepartmentCourseTeach]",
+         "Name": "[dbo].[StaffBranchIntakeWorksFor]",
          "ObjectType": 0
       },
       {
@@ -145,6 +145,10 @@
       {
          "Name": "[dbo].[Users]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Session]",
+         "ObjectType": 3
       },
       {
          "Name": "[dbo].[ActivePools]",

@@ -19,6 +19,7 @@ bin/
 obj/
 
 ../ExaminationSystem.Core/bin/
+../ExaminationSystem.Core/Models
 ../ExaminationSystem.EF/obj/
 
 bin/

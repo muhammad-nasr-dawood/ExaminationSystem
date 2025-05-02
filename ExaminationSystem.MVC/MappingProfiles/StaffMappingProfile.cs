@@ -3,6 +3,7 @@ using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.Services;
 using ExaminationSystem.MVC.ViewModels.BranchViewModels;
 using ExaminationSystem.MVC.ViewModels.StaffViewModels;
+using NuGet.Versioning;
 
 namespace ExaminationSystem.MVC.MappingProfiles;
 
@@ -47,6 +48,11 @@ public class StaffMappingProfile: Profile
 		des.Gender = src.SsnNavigation.Gender;
 		des.IsActive = src.SsnNavigation.IsActive;
 		des.ZipCode = src.SsnNavigation.ZipCode;
+		var tempWorksFor = src.StaffBranchIntakeWorksFors.FirstOrDefault( w => w.StaffSsn == src.Ssn);
+		if (tempWorksFor is not null)
+		{
+		  des.BranchId = tempWorksFor.BranchId;
+		}
 		if (src.SsnNavigation.Image != null)
 		  des.ImageURL = $"{src.SsnNavigation.Image.ImageUrl}";
 		else des.ImageURL = "/img/defaultImages/defaultImage.png";

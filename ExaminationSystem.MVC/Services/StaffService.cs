@@ -9,6 +9,7 @@ using LinqKit;
 using AutoMapper;
 using ExaminationSystem.MVC.ViewModels.StaffViewModels;
 using ExaminationSystem.MVC.ViewModels.TeachingViewModels;
+using System.Runtime.CompilerServices;
 
 namespace ExaminationSystem.MVC.Services;
 
@@ -42,13 +43,13 @@ public class StaffService : IStaffService
 
 	  if (branchIdFilter.HasValue)
 	  {
-		criteria = criteria.And(staff => staff.StaffBranchDepartmentWorksFors.Any(w => w.BranchId == branchIdFilter));
+		criteria = criteria.And(staff => staff.StaffBranchIntakeWorksFors.Any(w => w.BranchId == branchIdFilter));
 	  }
 
-	  if (departmentIdFilter.HasValue)
-	  {
-		criteria = criteria.And(staff => staff.StaffBranchDepartmentWorksFors.Any(w => w.DepartmentId == departmentIdFilter));
-	  }
+	 // if (departmentIdFilter.HasValue)
+	 // {
+		//criteria = criteria.And(staff => staff.StaffBranchDepartmentWorksFors.Any(w => w.DepartmentId == departmentIdFilter));
+	 // }
 
 	  if (StatusFilter.HasValue)
 	  {
@@ -99,7 +100,7 @@ public class StaffService : IStaffService
 	}
 
 
-	public bool Add(StaffAddViewModel model)
+	public async Task<bool> Add(StaffAddViewModel model)
 	{
 	  var userEntity = _mapper.Map<User>(model);
 	  if (userEntity != null)
@@ -111,9 +112,39 @@ public class StaffService : IStaffService
 	  UnitOfWork.UserRepo.Add(userEntity);
 	  UnitOfWork.StaffRepo.Add(staffEntity);
 
-	  var numOfRowsAffected = UnitOfWork.Complete();
+	  if(model.BranchId is not null)
+	  {
+		Expression<Func<StaffBranchIntakeWorksFor, bool>> criteria = sw => sw.StaffSsn == model.Ssn;
+		var tempStaffWorksfor = await UnitOfWork.WorksForRepo.FindAsync(criteria);
+	    if(tempStaffWorksfor != null)
+		{
+		  throw new Exception("This staff already exist");
+		}
+		else
+		{
+		  var intakes = await UnitOfWork.IntakeRepo.GetAllAsync();
+		  var currentIntake = -1;
+		  foreach (var intake in intakes)
+		  {
+			currentIntake = Math.Max(intake.Id, currentIntake);
+		  }
+		  var newStaffWorksFor = new StaffBranchIntakeWorksFor()
+		  {
+			StaffSsn = model.Ssn,
+			BranchId = (int)model.BranchId,
+			IntakeId = currentIntake,
+			HiringDate = DateOnly.FromDateTime(DateTime.Today)
+		  };
 
-	  return numOfRowsAffected == 2 ;
+		  await UnitOfWork.WorksForRepo.AddAsync(newStaffWorksFor);
+		}
+	
+		
+	  }
+
+	  var numOfRowsAffected = await UnitOfWork.CompleteAsync();
+
+	  return numOfRowsAffected >= 2 ;
 	}
 
 	public StaffDisplayDetailViewModel GetById(long id)
@@ -124,15 +155,70 @@ public class StaffService : IStaffService
 	  return staffMapped;
 	}
 
-	public bool UpdateById(StaffDisplayDetailViewModel staffDisplayDetailViewModeldel)
+	public async Task<bool> UpdateById(StaffDisplayDetailViewModel model)
 	{
-	  var user = UnitOfWork.UserRepo.GetById(staffDisplayDetailViewModeldel.Ssn);
-	  var staff = UnitOfWork.StaffRepo.GetById(staffDisplayDetailViewModeldel.Ssn);
 
-	  _mapper.Map(staffDisplayDetailViewModeldel, user); // will only update the values in the automapper configuration and leave every thing else as they are --> that's why i passed the two models the source and the destiantion
-	  _mapper.Map(staffDisplayDetailViewModeldel, staff);
+	  var user = await UnitOfWork.UserRepo.GetByIdAsync(model.Ssn);
+	  var staff = await UnitOfWork.StaffRepo.GetByIdAsync(model.Ssn);
 
-	  UnitOfWork.Complete(); // it will save changes in the user and staff that you get by id and they will be updated according to the mapped values in auto mapper
+	  _mapper.Map(model, user); // will only update the values in the automapper configuration and leave every thing else as they are --> that's why i passed the two models the source and the destiantion
+	  _mapper.Map(model, staff);
+
+	  if (model.BranchId is not null)
+	  {
+		  var currentIntakeId = (await UnitOfWork.IntakeRepo.GetAllAsync()).Max(i => i.Id);
+
+		  Expression<Func<StaffBranchIntakeWorksFor, bool>> criteria = sw => sw.StaffSsn == model.Ssn && sw.IntakeId == currentIntakeId;
+
+		  var tempStaffWorksfor = await UnitOfWork.WorksForRepo.FindAsync(criteria);
+		if (tempStaffWorksfor != null)
+		{
+		  /*
+		  // tempStaffWorksfor.BranchId = (int)model.BranchId;
+		  //tempStaffWorksfor.HiringDate = DateOnly.FromDateTime(DateTime.Today);
+		  those lines won't work dirctly since we are modifing in a primary key we have to remove the row first
+		  */
+		  // remove the old row
+		  UnitOfWork.WorksForRepo.Delete(tempStaffWorksfor);
+
+		  // insert the new one
+		  var replacement = new StaffBranchIntakeWorksFor
+		  {
+			StaffSsn = model.Ssn,
+			BranchId = (int)model.BranchId,
+			IntakeId = currentIntakeId,
+			HiringDate = DateOnly.FromDateTime(DateTime.Today)
+		  };
+		  await UnitOfWork.WorksForRepo.AddAsync(replacement);
+		}
+		else
+		{
+		  var newStaffWorksFor = new StaffBranchIntakeWorksFor()
+		  {
+			StaffSsn = model.Ssn,
+			BranchId = (int)model.BranchId,
+			IntakeId = currentIntakeId,
+			HiringDate = DateOnly.FromDateTime(DateTime.Today)
+		  };
+
+		  await UnitOfWork.WorksForRepo.AddAsync(newStaffWorksFor);
+		}
+
+
+	  }
+
+	try
+	{
+	  await UnitOfWork.CompleteAsync();
+	}
+	catch (Exception ex)
+	{
+	  // ex.Message will contain "Database update failed: ..." 
+	  // and ex.InnerException will be the original exception if you need more detail.
+	  // Return or log it as needed.
+	  throw;
+	}
+	//await UnitOfWork.CompleteAsync(); // it will save changes in the user and staff that you get by id and they will be updated according to the mapped values in auto mapper
 
 	  return true;
 	}
