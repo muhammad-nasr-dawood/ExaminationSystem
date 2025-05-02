@@ -3,6 +3,7 @@ using ExaminationSystem.Core;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.EF;
 using ExaminationSystem.MVC.ViewModels.PoolViewModels;
+using System.Data;
 
 namespace ExaminationSystem.MVC.IService
 {
@@ -19,7 +20,15 @@ namespace ExaminationSystem.MVC.IService
 
 	public Task<PaginatedArchivedPoolsVM> ArchivedPools(int c, int p, int l, int o);
 
-	public Task<PaginatedPoolQsVM> PoolQuestions(int PoolId, int Page, int Limit, byte QType, byte OTypre);
+	public Task<PaginatedPoolQsVM> PoolQuestions(int PoolId, int Page, int Limit, byte QType, int OType);
+
+	public Task<CreatePoolResult?> CreatePool(long staffId, int courseId, int deptId, int branchId);
+
+	public Task<int> UsePool(long staffId, int srcPoolId, int destPoolId);
+
+	public Task<int> RemoveQuestionFromPool(long staffId, int poolId, int[] _);
+
+
 
   }
 }

@@ -19,13 +19,13 @@ namespace ExaminationSystem.MVC.Controllers
 	}
 
 	[HttpGet]
-	public  async Task<IActionResult> TeachAt()
+	public async Task<IActionResult> TeachAt()
 	{
 	  //i need to get on the staff id from claim
 
-	  TeachAtVM? TAVM =await _poolService.TeachAt(40404040404040);
+	  TeachAtVM? TAVM = await _poolService.TeachAt(40404040404040);
 
-	  if(TAVM == null)
+	  if (TAVM == null)
 		return BadRequest("No Teach At Found");
 
 	  return View(TAVM);
@@ -36,16 +36,16 @@ namespace ExaminationSystem.MVC.Controllers
 	public async Task<IActionResult> Active()
 	{
 	  //i need to get on the staff id from claim
-	  List<GenaricPoolState<ActivePoolsResult>>? GActivePoolList= await _poolService.ActivePools(40404040404040);
+	  List<GenaricPoolState<ActivePoolsResult>>? GActivePoolList = await _poolService.ActivePools(40404040404040);
 
 	  if (GActivePoolList == null)
-		  return BadRequest("No Active Pools Found");
+		return BadRequest("No Active Pools Found");
 
 	  return View(GActivePoolList);
 	}
 
 
-	
+
 	[HttpGet]
 	public async Task<IActionResult> Processed()
 	{
@@ -55,7 +55,7 @@ namespace ExaminationSystem.MVC.Controllers
 	  if (GProcessedList == null)
 		return BadRequest("No Active Pools Found");
 
-		return View(GProcessedList);
+	  return View(GProcessedList);
 	}
 
 
@@ -77,13 +77,90 @@ namespace ExaminationSystem.MVC.Controllers
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> PoolQuestions(int PoolId, int Page, int Limit, byte QType, byte OType)
+	public async Task<IActionResult> PoolQuestions(int PoolId, int Page, int Limit, byte QType, int OType)
 	{
 	  try
 	  {
-		PaginatedPoolQsVM poolQuestions = await _poolService.PoolQuestions(PoolId,Page,Limit,QType,OType);
+		PaginatedPoolQsVM poolQuestions = await _poolService.PoolQuestions(PoolId, Page, Limit, QType, OType);
 
 		return View(poolQuestions);
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+	}
+
+	[HttpPut]
+	public async Task<IActionResult> CreatePool(long staffId, int courseId, int deptId, int branchId)
+	{
+	  try
+	  {
+		CreatePoolResult? result = await _poolService.CreatePool(staffId, courseId, deptId, branchId);
+
+		if (result == null)
+		  return BadRequest("No Pool Created");
+
+		return View(result);
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+
+
+	}//end of calss
+
+	[HttpPost]
+	public async Task<IActionResult> UsePool(long staffId, int srcPoolId, int destPoolId)
+	{
+	  try
+	  {
+		int result = await _poolService.UsePool(staffId, srcPoolId, destPoolId);
+
+		if (result == 0)
+		  return View(result);
+
+		if (result == -1)
+		  return BadRequest("System/unknown error occurred");
+
+		else if (result == 1)
+		  return BadRequest("invalid src pool Id");
+
+		else if (result == 2)
+		  return BadRequest("you cannot modify this pool");
+		else // 3 
+		  return BadRequest("invalid des pool Id");
+
+
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> RemoveQuestionFromPool(long staffId, int poolId, int[] QIDS)
+	{
+	  try
+	  {
+		if (QIDS == null || QIDS.Length == 0)
+		  return BadRequest("No Questions Found");
+
+		int result = await _poolService.RemoveQuestionFromPool(staffId, poolId, QIDS);
+
+		if (result == 0)
+		  return View(result);
+		if (result == -1)
+		  return BadRequest("System/unknown error occurred");
+		else if (result == 1)
+		  return BadRequest("Invalid params");
+		else if (result == 2)
+		  return BadRequest("One or more questions do not belong to your pool");
+		else // 3 
+		  return BadRequest("Cannot modify questions in this pool - used in active exams");
 	  }
 	  catch (Exception ex)
 	  {
@@ -94,7 +171,5 @@ namespace ExaminationSystem.MVC.Controllers
 
 
 
-  }//end of calss
-
-
+	}
 }//end of namespace

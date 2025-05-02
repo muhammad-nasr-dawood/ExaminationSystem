@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,11 +43,25 @@ namespace ExaminationSystem.EF.Repositories
             return await _dbContext.Procedures.TeachAtAsync(StaffId);
         }
 
-        public async Task<List<GetPoolQuestionsResult>> PoolQuestions(int PoolId, int Page, int Limit, byte QType, byte OTypre)
+        public async Task<List<GetPoolQuestionsResult>> PoolQuestions(int PoolId, int Page, int Limit, byte QType, int OType)
         {
-            return await _dbContext.Procedures.GetPoolQuestionsAsync(PoolId,Page,Limit,QType,OTypre);
+            return await _dbContext.Procedures.GetPoolQuestionsAsync(PoolId,Page,Limit,QType, OType);
         }
 
+        public async Task<List<CreatePoolResult>> CreatePool(long staffId, int courseId, int deptId, int branchId)
+        {
+           return await _dbContext.Procedures.CreatePoolAsync(staffId, courseId, deptId, branchId);
+        }
+
+        public async Task<int> UsePool(long staffId, int srcPoolId, int destPoolId, OutputParameter<int> returnValue)
+        {
+            return await _dbContext.Procedures.UsePoolAsync(staffId, srcPoolId, destPoolId, returnValue);
+        }
+
+        public Task<int> RemoveQuestionFromPool(long staffId, int poolId, DataTable questionsIds, OutputParameter<int> returnValue)
+        {
+            return _dbContext.Procedures.RemoveQuestionFromPoolAsync(staffId, poolId, questionsIds, returnValue);
+        }
     }
 }
 

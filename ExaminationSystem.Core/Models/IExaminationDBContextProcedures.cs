@@ -28,7 +28,7 @@ namespace ExaminationSystem.Core.Models
         Task<int> BranchDeptsDeleteAsync(int? branchId, int? deptId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<BranchDeptsGetResult>> BranchDeptsGetAsync(int? branchId, int? deptId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> BranchDeptsUpdateAsync(int? oldBranchId, int? oldDeptId, int? newBranchId, int? newDeptId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<int> CreatePoolAsync(long? staffId, int? courseId, int? deptId, int? branchId, DataTable questionIds, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<CreatePoolResult>> CreatePoolAsync(long? staffId, int? courseId, int? deptId, int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> DeleteBranchAsync(int? id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> DeleteDepartmentAsync(int? id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> DeleteQuestionAsync(long? staffId, int? questionId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -112,7 +112,7 @@ namespace ExaminationSystem.Core.Models
         Task<int> UpdateDepartmentAsync(int? id, string name, string disc, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UpdateStaffBranchManageAsync(long? staffSSN, int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UpdateTopicAsync(int? topicId, string newTopicName, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<UsePoolResult>> UsePoolAsync(long? staffId, int? srcPoolId, int? destPoolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<int> UsePoolAsync(long? staffId, int? srcPoolId, int? destPoolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> ValidateSessionDataAsync(long? staffId, int? poolId, DateOnly? date, TimeOnly? startingTime, TimeOnly? endingTime, int? duration, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
     }
 }

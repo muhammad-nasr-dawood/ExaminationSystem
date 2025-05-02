@@ -151,10 +151,6 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[ActivePools]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[AddBranch]",
          "ObjectType": 1
       },

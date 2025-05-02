@@ -14,7 +14,7 @@ namespace ExaminationSystem.MVC.ViewModels.PoolViewModels
 	public int Limit { get; set; }
 
   }
-	public class Questions
+  public class Questions
   {
 	public int Id { get; set; }
 	public int Type { get; set; }

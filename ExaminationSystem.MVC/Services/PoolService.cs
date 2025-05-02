@@ -6,6 +6,7 @@ using ExaminationSystem.MVC.ViewModels.PoolViewModels;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text;
 using ExaminationSystem.MVC.IService;
+using System.Data;
 
 namespace ExaminationSystem.MVC.Services
 {
@@ -96,53 +97,132 @@ namespace ExaminationSystem.MVC.Services
 	}
 
 
-	public async Task<PaginatedPoolQsVM> PoolQuestions(int PoolId, int Page, int Limit, byte QType, byte OType)
+	public async Task<PaginatedPoolQsVM> PoolQuestions(int PoolId, int Page, int Limit, byte QType, int OType)
 	{
-    try
-    {
+	  try
+	  {
 
 
 		if (PoolId < 1 || Page < 1 || Limit < 1 || QType < 0 || QType > 1 || OType < 0 || QType > 1)
 		  throw new Exception("invalid params");
 
-        // Fetch data from the repository
-        List<GetPoolQuestionsResult> poolQuestions = await UnitOfWork.PoolRepo.PoolQuestions(PoolId,Page,Limit,QType,OType);
+		// Fetch data from the repository
+		List<GetPoolQuestionsResult> poolQuestions = await UnitOfWork.PoolRepo.PoolQuestions(PoolId, Page, Limit, QType, OType);
 
-        if (poolQuestions == null || poolQuestions.Count == 0)
-            throw new Exception("Data not found");
+		if (poolQuestions == null || poolQuestions.Count == 0)
+		  throw new Exception("Data not found");
 
 		StringBuilder allQuestions = new StringBuilder(500);
 
 		foreach (var poolQuestion in poolQuestions)
 		{
-			allQuestions.Append( poolQuestion.JSON_F52E2B6118A111d1B10500805F49916B);
+		  allQuestions.Append(poolQuestion.JSON_F52E2B6118A111d1B10500805F49916B);
 		}
 
-        // Deserialize JSON
-        PaginatedPoolQsVM? result = JsonConvert.DeserializeObject<PaginatedPoolQsVM>(allQuestions.ToString());
+		// Deserialize JSON
+		PaginatedPoolQsVM? result = JsonConvert.DeserializeObject<PaginatedPoolQsVM>(allQuestions.ToString());
 
-        if (result == null)
-            throw new Exception("Mapping failed");
+		if (result == null)
+		  throw new Exception("Mapping failed");
 
 		result.Page = Page;
 		result.Limit = Limit;
 
 		return result;
-    }
-    catch (JsonException jsonEx)
-    {
-        // Log JSON-specific errors
-        throw new Exception($"JSON Error: {jsonEx.Message}");
-    }
-    catch (Exception ex)
-    {
-        // Log general errors
-        throw new Exception(ex.Message);
-    }
-}
+	  }
+	  catch (JsonException jsonEx)
+	  {
+		// Log JSON-specific errors
+		throw new Exception($"JSON Error: {jsonEx.Message}");
+	  }
+	  catch (Exception ex)
+	  {
+		// Log general errors
+		throw new Exception(ex.Message);
+	  }
+	}
+
+	public async Task<CreatePoolResult?> CreatePool(long staffId, int courseId, int deptId, int branchId)
+	{
+	  try
+	  {
+		List<CreatePoolResult> res = await UnitOfWork.PoolRepo.CreatePool(staffId, courseId, deptId, branchId);
+
+		return (res == null || res.Count() == 0) ? null : res[0];
+	  }
+	  catch (Exception ex)
+	  {
+		throw new Exception(ex.Message);
+	  }
+
+	}//end of function
+
+	public async Task<int> UsePool(long staffId, int srcPoolId, int destPoolId)
+	{
+	  try
+	  {
+		OutputParameter<int> output = new OutputParameter<int>();
+
+		var res = await UnitOfWork.PoolRepo.UsePool(staffId, srcPoolId, destPoolId, output);
+
+		return output.Value;
+
+	  }
+	  catch (Exception ex)
+	  {
+		throw new Exception(ex.Message);
+	  }
+
+	}
 
 
-  }
+	private DataTable CreateDataTableFromArray(int[] array)
+	{
+	  DataTable dataTable = new DataTable();
+	  dataTable.Columns.Add("Value", typeof(int));
 
- 
+	  foreach (int item in array)
+	  {
+		DataRow row = dataTable.NewRow();
+		row["Value"] = item;
+		dataTable.Rows.Add(row);
+	  }
+	  return dataTable;
+	}
+
+
+	public async Task<int> RemoveQuestionFromPool(long staffId, int poolId, int[] questionsIds)
+	{
+	  try
+	  {
+
+		if (questionsIds == null || questionsIds.Length == 0)
+		  throw new Exception("No Questions Found");
+
+		OutputParameter<int> returnValue=new OutputParameter<int>();
+
+		DataTable _dateTableForQIDS = CreateDataTableFromArray(questionsIds);
+
+		var res = await UnitOfWork.PoolRepo.RemoveQuestionFromPool(staffId, poolId, _dateTableForQIDS, returnValue);
+
+		return returnValue.Value;
+	  }
+	  catch (Exception ex)
+	  {
+		throw new Exception(ex.Message);
+	  }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+  }//end of service calss
 }
