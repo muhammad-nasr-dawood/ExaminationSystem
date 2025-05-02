@@ -11,6 +11,9 @@ namespace ExaminationSystem.MVC.ViewModels.StaffViewModels
 	[Column("SSN")]
 	public long Ssn { get; set; }
 
+
+
+
 	[Required]
 	[StringLength(50)]
 	public string Fname { get; set; }
@@ -18,6 +21,13 @@ namespace ExaminationSystem.MVC.ViewModels.StaffViewModels
 	[Required]
 	[StringLength(50)]
 	public string Lname { get; set; }
+
+
+
+
+
+
+
 
 	[Required]
 	[StringLength(100)]
