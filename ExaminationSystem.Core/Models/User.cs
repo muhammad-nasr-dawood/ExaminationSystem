@@ -67,6 +67,12 @@ public partial class User
     [Unicode(false)]
     public string ImageId { get; set; }
 
+    [StringLength(250)]
+    public string PasswordResetToken { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? PasswordResetTokenExpiry { get; set; }
+
     [ForeignKey("ImageId")]
     [InverseProperty("Users")]
     public virtual ProfileImage Image { get; set; }

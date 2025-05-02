@@ -189,14 +189,6 @@ namespace ExaminationSystem.MVC.Services
 	  return StudentMapped;
 	}
 
-	//public async Task<StudentDetailsVM> GetByEmailAsync(string email)
-	//{
-	//  var student = await UnitOfWork.StudentRepo.FindAsync(std => std.SsnNavigation.Email == email);
-	//  var StudentMapped = _mapper.Map<StudentDetailsVM>(student);
-
-	//  return StudentMapped;
-	//}
-
 
 	public async Task<StudentDetailsVM> GetByEmailAsync(string email, long? Ssn)
 	{
@@ -265,8 +257,6 @@ namespace ExaminationSystem.MVC.Services
 	  var student = _mapper.Map<Student>(stdvm);
 
 	  UnitOfWork.StudentRepo.Update(student);
-
-
 
 	  UnitOfWork.Complete();
 

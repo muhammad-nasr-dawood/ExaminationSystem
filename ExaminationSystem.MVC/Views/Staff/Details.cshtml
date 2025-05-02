@@ -306,12 +306,25 @@
 									</select>
 									<span asp-validation-for="Gender"></span>
 								</div>
-								<div class="col-12 mb-0">
+								<div class="col-6 mb-0">
 									<label for="dobBasic" asp-for="Bd" class="form-label">DOB</label>
 									<input type="date" asp-for="Bd" class="form-control">
 									<span asp-validation-for="Bd"></span>
 								</div>
-								
+
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="BranchId">Branch</label>
+									<select class="select2 form-select  w-auto" data-allow-clear="true" asp-for="BranchId" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white">
+										<option value="">No branch assigned</option> 
+										@foreach (var branch in ViewBag.Branches)
+										{
+											<option value="@branch.Id">@branch.Location</option>
+										}
+									</select>
+									<span asp-validation-for="BranchId"></span>
+								</div>
+
+
 								<div class="col-sm-6">
 									<label class="form-label" asp-for="ZipCode">Location</label>
 									<select class="select2 form-select  w-auto" data-allow-clear="true" asp-for="ZipCode" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white">
@@ -400,6 +413,12 @@
 <script>
 
 	$(document).ready(function () {
+
+			 // Alternative: Validate when any field loses focus
+			$("form").validate();
+			$("form input").keyup(function() {
+				$(this).valid();
+			});
 				window.alert = function () {
 					// Do nothing or log it for debug
 					console.log("Default alert suppressed."); // stop the default alert
@@ -501,6 +520,7 @@
             ZipCode: $("#ZipCode").val(),
             StreetNo: $("#StreetNo").val(),
 			Ssn: $("#Ssn").val(),
+			BranchId: $("#BranchId").val(),
             // add more fields if needed
         };
 
@@ -517,10 +537,27 @@
 				$("#userSidebarContainer").load(`/Staff/GetUserSidebar?userId=${@Model.Ssn}`); // reload teh partial view
                 // Optional: update user card with new info using JS
             },
-            error: function (xhr) {
-                // Show validation errors or a general message
-                Swal.fire('Error', 'Something went wrong!', 'error');
-            }
+			error: function (xhr) {
+			  let errorMsg = "Something went wrong!";
+
+			  if (xhr.status === 400 && xhr.responseJSON) {
+				  const errors = xhr.responseJSON.errors;
+				  if (errors) {
+					  errorMsg = Object.values(errors)
+						  .flat() // in case values are arrays of strings
+						  .join('<br>'); // join all messages with line breaks
+				  }
+			  } else if (xhr.responseJSON && xhr.responseJSON.message) {
+				  errorMsg = xhr.responseJSON.message;
+			  }
+
+			  Swal.fire({
+				  icon: 'error',
+				  title: 'Update Failed',
+				  html: errorMsg // supports line breaks
+			  });
+			}
+
         });
     });
 

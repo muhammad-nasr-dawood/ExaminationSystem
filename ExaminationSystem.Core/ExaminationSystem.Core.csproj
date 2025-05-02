@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="EfCore.SchemaCompare" Version="8.2.0" />
+    <PackageReference Include="Imagekit" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

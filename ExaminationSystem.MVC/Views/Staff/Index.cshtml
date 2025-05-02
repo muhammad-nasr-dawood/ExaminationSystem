@@ -135,7 +135,7 @@
 			<div class="col-md-4 user_role"></div>
 			<div class="col-md-4 user_plan"></div>
 			<div class="col-md-4 user_status"></div>
-			<div class="col-md-3">
+			<div class="col-md-4">
 				<select id="branchFilter" class="form-select">
 					<option value="">Filter by Branch</option>
 					@foreach (var branch in ViewBag.Branches) 
@@ -144,23 +144,23 @@
 					} 
 				</select>
 			</div>
-			<div class="col-md-3">
-				<select id="departmentFilter" class="form-select">
-					<option value="">Filter by Department</option> 
-					@foreach (var dept in ViewBag.Departments) 
-					 { 
-						<option value="@dept.Id">@dept.Name</option> 
-					} 
-				</select>
-			</div>
-			<div class="col-md-3">
+			@* <div class="col-md-3"> *@
+			@* 	<select id="departmentFilter" class="form-select"> *@
+			@* 		<option value="">Filter by Department</option>  *@
+			@* 		@foreach (var dept in ViewBag.Departments)  *@
+			@* 		 {  *@
+			@* 			<option value="@dept.Id">@dept.Name</option>  *@
+			@* 		}  *@
+			@* 	</select> *@
+			@* </div> *@
+			<div class="col-md-4">
 				<select id="statusFilter" class="form-select">
 					<option value="">Filter by Status</option>
 					<option value="true">Active</option>
 					<option value="false">In Active</option>
 				</select>
 			</div>
-			<div class="col-md-3">
+			<div class="col-md-4">
 				<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
 					Add Staff
 				</button>
@@ -339,10 +339,22 @@
 									</select>
 									<span asp-validation-for="Gender"></span>
 								</div>
-								<div class="col-12 mb-0">
+								<div class="col-6 mb-0">
 									<label for="dobBasic" asp-for="Bd" class="form-label">DOB</label>
 									<input type="date" asp-for="Bd" class="form-control">
 									<span asp-validation-for="Bd"></span>
+								</div>
+
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="BranchId">Branch</label>
+									<select class="select2 form-select  w-auto" data-allow-clear="true" asp-for="BranchId" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white">
+										<option value="">No branch assigned</option>
+										@foreach (var branch in ViewBag.Branches)
+										{
+											<option value="@branch.Id">@branch.Location</option>
+										}
+									</select>
+									<span asp-validation-for="BranchId"></span>
 								</div>
 								<div class="col-sm-6">
 									<label class="form-label" asp-for="ZipCode">Location</label>
@@ -429,6 +441,11 @@
 <script>
     $(document).ready(function () {
 
+			$("form").validate();
+				$("form input").keyup(function() {
+					$(this).valid();
+				});
+
 			window.alert = function () {
 						// Do nothing or log it for debug
 						console.log("Default alert suppressed."); // stop the default alert
@@ -445,7 +462,8 @@
 				Gender: $('select[name="Gender"]').val(),
 				Bd: $('input[name="Bd"]').val(),
 				ZipCode: $('select[name="ZipCode"]').val(), 
-				StreetNo: $('input[name="StreetNo"]').val()
+				StreetNo: $('input[name="StreetNo"]').val(),
+				BranchId: $("#BranchId").val(),
 			};
 
 			$.ajax({
@@ -528,7 +546,9 @@
                                     <a class="dropdown-item" href="/Staff/Details/${data.ssn}">
                                         <i class="ti ti-pencil me-1"></i> Details
                                     </a>
-                                    
+                                    <a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('${data.ssn}')">
+                                        <i class="ti ti-trash me-1"></i> Delete
+                                    </a>
                                 </div>
                             </div>`;
                     }

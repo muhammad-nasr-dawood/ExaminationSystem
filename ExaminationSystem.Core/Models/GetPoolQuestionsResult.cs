@@ -8,16 +8,8 @@ namespace ExaminationSystem.Core.Models
 {
     public partial class GetPoolQuestionsResult
     {
-        public int Id { get; set; }
-        public byte Type { get; set; }
-        public byte Level { get; set; }
-        public int TopicId { get; set; }
-        [StringLength(255)]
-        public string Content { get; set; }
-        public DateOnly createdDate { get; set; }
+        [Column("JSON_F52E2B61-18A1-11d1-B105-00805F49916B")]
         [StringLength(2147483647)]
-        public string Choices { get; set; }
-        [StringLength(2147483647)]
-        public string Images { get; set; }
+        public string JSON_F52E2B6118A111d1B10500805F49916B { get; set; }
     }
 }

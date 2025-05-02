@@ -8,9 +8,5 @@ namespace ExaminationSystem.Core.Models
 {
     public partial class StaffBranchDeptWorksForGetResult
     {
-        public long StaffSSN { get; set; }
-        public int BranchId { get; set; }
-        public int DepartmentId { get; set; }
-        public DateOnly? HiringDate { get; set; }
     }
 }

@@ -12,7 +12,11 @@ namespace ExaminationSystem.Core.IRepositories
     public interface IBaseRepo<T> where T : class
     {
         T GetById(long id);
+        T GetById(string id);
+        T GetById(int id);
         Task<T> GetByIdAsync(long id);
+        Task<bool> FindAsync(int id);
+
         IEnumerable<T> GetAll();
         Task<IEnumerable<T>> GetAllAsync();
         T Find(Expression<Func<T, bool>> criteria);

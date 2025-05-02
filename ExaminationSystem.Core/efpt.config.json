@@ -103,11 +103,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[StaffBranchDepartmentWorksFor]",
+         "Name": "[dbo].[StaffBranchIntakeDepartmentCourseTeach]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[StaffBranchIntakeDepartmentCourseTeach]",
+         "Name": "[dbo].[StaffBranchIntakeWorksFor]",
          "ObjectType": 0
       },
       {
@@ -252,6 +252,10 @@
       },
       {
          "Name": "[dbo].[GetAllTopics]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetArchivedPools]",
          "ObjectType": 1
       },
       {

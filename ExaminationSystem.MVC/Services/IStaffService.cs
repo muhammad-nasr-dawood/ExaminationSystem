@@ -31,11 +31,11 @@ public interface IStaffService
 		string orderByDirection = OrderBy.Ascending,
 		string searchTerm = null);
 
-	bool Add(StaffAddViewModel model);
+	Task<bool> Add(StaffAddViewModel model);
 
 	StaffDisplayDetailViewModel GetById(long id);
 
-	bool UpdateById(StaffDisplayDetailViewModel staffDisplayDetailViewModeldel);
+	Task<bool> UpdateById(StaffDisplayDetailViewModel model);
 
 	public User ToggleUserStatus(long userId);
 

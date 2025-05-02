@@ -20,5 +20,6 @@ namespace ExaminationSystem.Core.Models
         public int NoOfMedium { get; set; }
         public int NoOfEasy { get; set; }
         public int NoOfDifficult { get; set; }
+        public DateOnly? CreatedDate { get; set; }
     }
 }

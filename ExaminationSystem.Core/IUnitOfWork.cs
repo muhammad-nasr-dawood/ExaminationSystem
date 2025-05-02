@@ -19,10 +19,28 @@ namespace ExaminationSystem.Core
 
         IBaseRepo<Location> LocationRepo { get; }
         IBaseRepo<Department> DepartmentRepo { get; }
-        IBaseRepo<Branch> BranchesRepo { get; }
+       
         IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> TeachingRepo { get; }
 
+        IBaseRepo<ProfileImage> ProfileImageRepo { get; }
+        IStaffBranchManageRepo StaffBranchManageRepo { get; }
+        IBranchRepo BranchesRepo { get; }
+
         IBaseRepo<Course> CoursesRepo { get; }
+
+        IPoolRepo PoolRepo { get; } // Added PoolRepo to UnitOfWork
+
+        IQuestionRepo QuestionRepo { get; } // Added QuestionRepo to UnitOfWork
+
+
+
+
+
+
+        IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo { get; }
+        IBaseRepo<Intake> IntakeRepo { get; }
         int Complete();
+
+        Task<int> CompleteAsync();
     }
 }

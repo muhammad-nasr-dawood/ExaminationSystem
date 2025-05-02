@@ -35,6 +35,8 @@ public partial class Pool
 
     public int NoOfDifficult { get; set; }
 
+    public DateOnly? CreatedDate { get; set; }
+
     [ForeignKey("BranchId")]
     [InverseProperty("Pools")]
     public virtual Branch Branch { get; set; }

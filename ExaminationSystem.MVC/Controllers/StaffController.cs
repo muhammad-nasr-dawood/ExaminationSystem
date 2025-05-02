@@ -13,12 +13,33 @@ namespace ExaminationSystem.MVC.Controllers;
 public class StaffController : Controller
 {
   private readonly IStaffService _staffService;
+  private readonly IAccountService _accountService;
   private readonly IMapper _mapper;
   public StaffController(
-	  IStaffService staffService, IMapper mapper)
+	  IStaffService staffService, IMapper mapper, IAccountService accountService)
   {
 	_staffService = staffService;
 	_mapper = mapper;
+	_accountService = accountService;
+  }
+  [HttpGet]
+  public async Task<IActionResult> IsEmailExist(string Email, long Ssn)
+  {
+	var isSuccess = await _accountService.VerifyEmail(Ssn, Email);
+	return Json(isSuccess);
+  }
+  [HttpGet]
+  public async Task<IActionResult> IsPhoneNumberExist(string PhoneNumber, long Ssn)
+  {
+	 var isSuccess = await _accountService.VerifyPhone(Ssn, PhoneNumber);
+	return Json(isSuccess);
+  }
+
+  [HttpGet]
+  public async Task<IActionResult> IsSSNExist(long Ssn)
+  {
+	var isSuccess = await _accountService.VerifySSN(Ssn);
+	return Json(isSuccess);
   }
 
   public IActionResult Index()
@@ -91,13 +112,13 @@ public class StaffController : Controller
   }
 
   [HttpPost]
-  public JsonResult Add(StaffAddViewModel model)
+  public async Task<JsonResult> Add(StaffAddViewModel model)
   {
 	if (ModelState.IsValid)
 	{
 	  try
 	  {
-		var IsSucceeded = _staffService.Add(model);
+		var IsSucceeded = await _staffService.Add(model);
 		if (!IsSucceeded)
 		  return Json(new { success = false, message = "Something went very wrong!" });
 
@@ -132,17 +153,33 @@ public class StaffController : Controller
 
 
   [HttpPost]
-  public IActionResult Update(StaffDisplayDetailViewModel model)
+  public async Task<IActionResult> Update(StaffDisplayDetailViewModel model)
   {
 	if (!ModelState.IsValid)
 	{
+	  // Return all validation errors in ModelState
 	  return BadRequest(ModelState);
 	}
-	_staffService.UpdateById(model);
-	// Save changes to DB...
 
-	return Ok(new { message = "User updated" });
+	try
+	{
+	  var result = await _staffService.UpdateById(model);
+
+	  if (!result)
+	  {
+		return StatusCode(500, new { message = "Update failed. Staff record was not modified." });
+	  }
+
+	  return Ok(new { message = "User updated" });
+	}
+	catch (Exception ex)
+	{
+	  //return StatusCode(500, new { message = $"An error occurred. {ex.Message}", error = ex.Message });
+	  return StatusCode(500, new { message = $"An error occurred.", error = ex.Message });
+
+	}
   }
+
 
   [HttpPost]
   public IActionResult GetAllRegisteredCourses()

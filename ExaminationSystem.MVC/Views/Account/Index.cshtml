@@ -1,0 +1,260 @@
+@model AccountEditViewModel
+
+@{
+	ViewData["Title"] = "User Profile - Profile";
+}
+
+@section VendorStyles {
+	<link rel="stylesheet" href="~/vendor/libs/datatables-bs5/datatables.bootstrap5.css">
+		<link rel="stylesheet" href="~/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
+		<link rel="stylesheet" href="~/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css">
+}
+
+@section VendorScripts {
+<script src="~/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+}
+
+@section PageStyles {
+<link rel="stylesheet" href="~/vendor/css/pages/page-profile.css" />
+}
+
+
+@* ************** Content ************** *@
+<!-- Header -->
+<div class="row">
+	<div class="col-12">
+		<div class="card mb-6">
+			<div class="user-profile-header-banner">
+				<img src="~/img/pages/profile-banner.png" alt="Banner image" class="rounded-top">
+			</div>
+			<div class="user-profile-header d-flex flex-column flex-lg-row text-sm-start text-center mb-5">
+				<div class="flex-shrink-0 mt-n2 mx-sm-0 mx-auto">
+					<img src="@Model.ImageURL" alt="user image" class="d-block h-auto ms-0 ms-sm-6 rounded user-profile-img">
+				</div>
+				<div class="flex-grow-1 mt-3 mt-lg-5">
+					<div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-5 flex-md-row flex-column gap-4">
+						<div class="user-profile-info">
+							<h4 class="mb-2 mt-lg-6">@Model.Fname @Model.Lname</h4>
+							<ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-4 my-2">
+								<li class="list-inline-item d-flex gap-2 align-items-center">
+									<i class="ti ti-briefcase ti-lg"></i><span class="fw-medium">@Model.UserRole</span>
+								</li>
+								<li class="list-inline-item d-flex gap-2 align-items-center">
+									<i class='ti ti-map-pin ti-lg'></i><span class="fw-medium">@Model.City</span>
+								</li>
+								@* <li class="list-inline-item d-flex gap-2 align-items-center"> *@
+								@* 	<i class='ti ti-calendar ti-lg'></i><span class="fw-medium"> Joined April 2021</span> *@
+								@* </li> *@
+							</ul>
+						</div>
+						<a href="javascript:void(0)" class="btn btn-primary mb-1">
+							<i class='ti ti-user-check ti-xs me-2'></i>Connected
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--/ Header -->
+<!-- Navbar pills -->
+<div class="row">
+	<div class="col-md-12">
+		<div class="nav-align-top">
+			<ul class="nav nav-pills flex-column flex-sm-row mb-6 gap-2 gap-lg-0">
+				<li class="nav-item"><a class="nav-link active" asp-action="Index"><i class='ti-sm ti ti-user-check me-1_5'></i> Profile</a></li>
+				<li class="nav-item"><a class="nav-link" asp-action="AccountSettings"><i class="ti-sm ti ti-lock me-1_5"></i> Account Settings</a></li>
+				@* <li class="nav-item"><a class="nav-link" href="ProfileProjects"><i class='ti-sm ti ti-layout-grid me-1_5'></i> Projects</a></li> *@
+				@* <li class="nav-item"><a class="nav-link" href="ProfileConnections"><i class='ti-sm ti ti-link me-1_5'></i> Connections</a></li> *@
+			</ul>
+		</div>
+	</div>
+</div>
+<!--/ Navbar pills -->
+<!-- User Profile Content -->
+<div class="row">
+	<div class="col-xl-4 col-lg-5 col-md-5">
+		<!-- About User -->
+		<div class="card mb-6">
+			<div class="card-body">
+				<small class="card-text text-uppercase text-muted small">About</small>
+				<ul class="list-unstyled my-3 py-1">
+					<li class="d-flex align-items-center mb-4"><i class="ti ti-user ti-lg"></i><span class="fw-medium mx-2">Full Name:</span> <span>@Model.Fname @Model.Lname</span></li>
+					<li class="d-flex align-items-center mb-4"><i class="ti ti-check ti-lg"></i><span class="fw-medium mx-2">Status:</span>
+						@if (Model.IsActive)
+						{
+							<span>Active</span>
+						}else{
+							<span>Inactive</span>
+						}
+					</li>
+					<li class="d-flex align-items-center mb-4"><i class="ti ti-crown ti-lg"></i><span class="fw-medium mx-2">Role:</span> <span class="text-upper">@Model.UserRole</span></li>
+					<li class="d-flex align-items-center mb-4"><i class="ti ti-flag ti-lg"></i><span class="fw-medium mx-2">City:</span> <span>@Model.City</span></li>
+					@* <li class="d-flex align-items-center mb-2"><i class="ti ti-language ti-lg"></i><span class="fw-medium mx-2">Languages:</span> <span>English</span></li> *@
+				</ul>
+				<small class="card-text text-uppercase text-muted small">Contacts</small>
+				<ul class="list-unstyled my-3 py-1">
+					<li class="d-flex align-items-center mb-4"><i class="ti ti-phone-call ti-lg"></i><span class="fw-medium mx-2">Contact:</span> <span>@Model.PhoneNumber</span></li>
+					@* <li class="d-flex align-items-center mb-4"><i class="ti ti-messages ti-lg"></i><span class="fw-medium mx-2">Skype:</span> <span>john.doe</span></li> *@
+					<li class="d-flex align-items-center mb-4"><i class="ti ti-mail ti-lg"></i><span class="fw-medium mx-2">Email:</span> <span>@Model.Email</span></li>
+				</ul>
+				@if (Model.UserRole == "Student")
+				{
+					<small class="card-text text-uppercase text-muted small">Education</small>
+					<ul class="list-unstyled mb-0 mt-3 pt-1">
+						<li class="d-flex align-items-center mb-4">
+							<i class="ti ti-certificate ti-lg"></i>
+							<span class="fw-medium mx-2">Faculty:</span>
+							<span>@Model.StudentFaculty</span>
+						</li>
+						<li class="d-flex align-items-center mb-4">
+							<i class="ti ti-calendar ti-lg"></i>
+							<span class="fw-medium mx-2">Graduation Year:</span>
+							<span>@Model.GradYear</span>
+						</li>
+						<li class="d-flex align-items-center mb-2">
+							<i class="ti ti-award ti-lg"></i>
+							<span class="fw-medium mx-2">GPA:</span>
+							<span>@Model.Gpa</span>
+						</li>
+					</ul>
+				}
+
+			</div>
+		</div>
+		<!--/ About User -->
+		<!-- Profile Overview -->
+		
+		<!--/ Profile Overview -->
+	</div>
+	<div class="col-xl-8 col-lg-7 col-md-7">
+		<!-- Activity Timeline -->
+		@if (!User.IsInRole("Student")){
+		<!-- Projects table -->
+		<div class="card">
+			<div class="card-header border-bottom">
+				<h5 class="card-title mb-0">Filters</h5>
+				<div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
+					<div class="col-md-4 user_role"></div>
+					<div class="col-md-4 user_plan"></div>
+					<div class="col-md-4 user_status"></div>
+					<div class="col-md-3">
+						<select id="branchFilter" class="form-select">
+							<option value="">Filter by Branch</option>
+							@foreach (var branch in ViewBag.Branches)
+							{
+								<option value="@branch.Id">@branch.Location</option>
+							}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<select id="departmentFilter" class="form-select">
+							<option value="">Filter by Department</option>
+							@foreach (var dept in ViewBag.Departments)
+							{
+								<option value="@dept.Id">@dept.Name</option>
+							}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<select id="courseFilter" class="form-select">
+							<option value="">Filter by Course</option>
+							@foreach (var crs in ViewBag.Courses)
+							{
+								<option value="@crs.Id">@crs.Name</option>
+							}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<select id="statusFilter" class="form-select">
+							<option value="">Filter by Status</option>
+							<option value="true">Finished</option>
+							<option value="false">Not Finished</option>
+						</select>
+					</div>
+					@* <div class="col-md-3">  *@
+					@* <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">  *@
+					@* 		Add Staff *@
+					@* 	</button> *@
+					@* </div> *@
+				</div>
+				<div class="table-responsive text-nowrap">
+					<table id="teachingCourseTable" class="table table-hover">
+						<thead>
+							<tr>
+								<th>course</th>
+								<th>Internal/Exteranl</th>
+								<th>Start Date</th>
+								<th>End Date</th>
+							</tr>
+						</thead>
+						<tbody class="table-border-bottom-0">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- Offcanvas to add new user -->
+		</div>
+		}
+		<!--/ Projects table -->
+	</div>
+</div>
+<!--/ User Profile Content -->
+@section PageScripts {
+  <script src="~/js/pages-profile.js"></script>
+
+  @* only render the DataTable script for non-Students *@
+  @if (Model.UserRole != "Student")
+  {
+    <script>
+      $(document).ready(function () {
+        $('#teachingCourseTable').DataTable({
+          processing: true,
+          serverSide: true,
+          ajax: {
+            url: '@Url.Action("GetAllRegisteredCourses","Account")',
+            type: 'POST',
+            data: function (d) {
+              d.branchId = $('#branchFilter').val();
+              d.DeptId    = $('#departmentFilter').val();
+              d.courseId  = $('#courseFilter').val();
+              d.status    = $('#statusFilter').val();
+            },
+            dataSrc: function (json) {
+              console.log("Returned data:", json.data || []);
+              return json.data || [];
+            },
+            error: function (xhr) {
+              console.error("Ajax error:", xhr.status, xhr.responseText);
+            }
+          },
+          columns: [
+            { data: 'course' },
+            {
+              data: null,
+              render: function (data) {
+                return data.isInstructorCurrentBranch
+                  ? '<span class="badge bg-label-primary me-1">Internal Course</span>'
+                  : '<span class="badge bg-label-danger me-1">External Course</span>';
+              }
+            },
+            { data: 'startingDate' },
+            { data: 'endingDate' }
+          ],
+          language: {
+            paginate: {
+              previous: '<span aria-hidden="true">⟨</span>',
+              next:     '<span aria-hidden="true">⟩</span>'
+            }
+          }
+        });
+
+        $('#searchTerm').on('input', () => table.search($('#searchTerm').val()).draw());
+        $('#branchFilter, #departmentFilter, #courseFilter, #statusFilter')
+          .change(() => table.draw());
+      });
+    </script>
+  }
+}
+
