@@ -1,0 +1,46 @@
+@using ExaminationSystem.MVC.ViewModels.PoolViewModels
+
+@model List<GenaricPoolState<ActivePoolsResult>>
+
+<table class="table table-hover" id="poolsTable">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Branch</th>
+            <th>Department</th>
+            <th>Course</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody class="table-border-bottom-0">
+        @foreach (var branch in Model.First().Branches)
+        {
+            foreach (var dept in branch.Value.Departments)
+            {
+                foreach (var course in dept.Value.Courses)
+                {
+                    foreach (var pool in course.Value.Objects)
+                    {
+                        <tr data-branch="@branch.Key" data-department="@dept.Key" data-course="@course.Key">
+                            <td><span class="fw-medium">@pool.PTitle</span></td>
+                            <td>@branch.Value.Location</td>
+                            <td>@dept.Value.Name</td>
+                            <td>@course.Value.Name</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="javascript:void(0);"><i class="ti ti-pencil me-1"></i> Edit</a>
+                                        <a class="dropdown-item" href="javascript:void(0);"><i class="ti ti-trash me-1"></i> Delete</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>

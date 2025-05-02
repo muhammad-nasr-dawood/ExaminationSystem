@@ -1,5 +1,132 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@using ExaminationSystem.MVC.ViewModels.PoolViewModels
+@model List<GenaricPoolState<ActivePoolsResult>>
 @{
+    ViewData["Title"] = "Active Pools";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="~/vendor/libs/bootstrap-select/bootstrap-select.css" />
+}
+
+@section VendorScripts {
+    <script src="~/vendor/libs/select2/select2.js"></script>
+    <script src="~/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+}
+
+<div class="card">
+    <h5 class="card-header">Active Pools</h5>
+    <div class="card-header">
+        @await Component.InvokeAsync("TeachAt")
+    </div>
+    <div class="table-responsive text-nowrap">
+        @await Html.PartialAsync("_ActivePoolsTable", Model)
+    </div>
+</div>
+
+@section PageScripts {
+    <script src="~/js/forms-selects.js"></script>
+    <script>
+        $(document).ready(function () {
+            const branchSelect = $('#selectBranch');
+            const departmentSelect = $('#selectDepartment');
+            const courseSelect = $('#selectCourse');
+            const poolsTable = $('#poolsTable tbody tr');
+            
+            // Get TeachAt data from the data attribute
+            const teachAtData = JSON.parse($('#teachAtFilters').attr('data-teach-at'));
+            console.log('TeachAt Data:', teachAtData); // Debug line
+
+            // Initialize Select2
+            $('.select2').select2();
+
+            // Branch selection change
+            branchSelect.on('change', function() {
+                const branchId = $(this).val();
+                departmentSelect.prop('disabled', !branchId);
+                courseSelect.prop('disabled', true);
+                
+                if (!branchId) {
+                    resetSelect(departmentSelect);
+                    resetSelect(courseSelect);
+                    poolsTable.show();
+                    return;
+                }
+
+                // Update departments dropdown from TeachAt data
+                updateDepartments(branchId);
+                // Filter table
+                filterTable();
+            });
+
+            // Department selection change
+            departmentSelect.on('change', function() {
+                const departmentId = $(this).val();
+                courseSelect.prop('disabled', !departmentId);
+                
+                if (!departmentId) {
+                    resetSelect(courseSelect);
+                }
+
+                // Update courses dropdown from TeachAt data
+                if (departmentId) {
+                    updateCourses(branchSelect.val(), departmentId);
+                }
+                // Filter table
+                filterTable();
+            });
+
+            // Course selection change
+            courseSelect.on('change', function() {
+                filterTable();
+            });
+
+            function resetSelect(select) {
+                select.html('<option value="">Select</option>').trigger('change');
+            }
+
+            function filterTable() {
+                const branchId = branchSelect.val();
+                const departmentId = departmentSelect.val();
+                const courseId = courseSelect.val();
+
+                poolsTable.each(function() {
+                    const row = $(this);
+                    const showRow = (!branchId || row.data('branch') == branchId) &&
+                                  (!departmentId || row.data('department') == departmentId) &&
+                                  (!courseId || row.data('course') == courseId);
+                    row.toggle(showRow);
+                });
+            }
+
+            function updateDepartments(branchId) {
+                departmentSelect.html('<option value="">Select Department</option>');
+                console.log('Updating departments for branch:', branchId);
+                
+                const branch = teachAtData.branches[branchId];
+                if (branch && branch.departments) {  // Changed from Departments to departments
+                    for (const [deptId, dept] of Object.entries(branch.departments)) {
+                        departmentSelect.append(new Option(dept.name, deptId));  // Changed from Name to name
+                    }
+                }
+                departmentSelect.prop('disabled', false).trigger('change');
+            }
+
+            function updateCourses(branchId, departmentId) {
+                courseSelect.html('<option value="">Select Course</option>');
+                console.log('Updating courses for branch:', branchId, 'dept:', departmentId);
+
+                const branch = teachAtData.branches[branchId];
+                if (branch && branch.departments && branch.departments[departmentId]) {
+                    const dept = branch.departments[departmentId];  // Changed from Departments to departments
+                    if (dept.courses) {  // Changed from Courses to courses
+                        for (const [courseId, course] of Object.entries(dept.courses)) {
+                            courseSelect.append(new Option(course.name, courseId));  // Changed from Name to name
+                        }
+                    }
+                }
+                courseSelect.prop('disabled', false).trigger('change');
+            }
+        });
+    </script>
 }

@@ -5603,7 +5603,7 @@ jquery.repeater@1.2.1:
   resolved "https://registry.npmjs.org/jquery.repeater/-/jquery.repeater-1.2.1.tgz"
   integrity sha512-OltR1Z1AwaOsCQFBbfe1h+RnxjAwLrBa9uYkOjuj6DvyEJx0alr0ToCvfbCX1CJqq4vOMfoZUSjjKXBVog0srw==
 
-jquery@*, "jquery@^1.7 || ^2.0 || ^3.1", jquery@^3.5.0, jquery@^3.5.1, jquery@^3.6.0, jquery@^3.7.1, jquery@>=1.10, jquery@>=1.12.0, jquery@>=1.7, jquery@>=1.7.x, "jquery@>=3.4.0 <4.0.0", "jquery@1.8 - 4", "jquery@1.9.1 - 3":
+jquery@*, "jquery@^1.7 || ^2.0 || ^3.1", jquery@^3.5.0, jquery@^3.5.1, jquery@^3.6.0, jquery@^3.7.1, jquery@>=1.10, jquery@>=1.12.0, jquery@>=1.7, jquery@>=1.7.x, "jquery@>=3.4.0 <4.0.0", "jquery@1.8 - 4", "jquery@1.9.1 - 3", jquery@3.7.1:
   version "3.7.1"
   resolved "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
   integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
@@ -8046,9 +8046,9 @@ svg.select.js@^3.0.1:
     svg.js "^2.6.5"
 
 sweetalert2@^11.6.13:
-  version "11.6.13"
-  resolved "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.6.13.tgz"
-  integrity sha512-n5yVF0FNx1lm4XzpPyb1HIaiptzODfVyeCzmB809tpK+1bPdoKoevKOxYjrtId75DV7xuIp4r6cjn8xUAB8dPQ==
+  version "11.19.1"
+  resolved "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.19.1.tgz"
+  integrity sha512-+8yws3Sc1srAZbrgdhmEIZny1I1UOYhJOIOdtOlv4TYaP5kkwQ9Zm8/BT23Qg+KdByCNOazltxEJAHzXVu8mhA==
 
 swiper@11.0.7:
   version "11.0.7"
