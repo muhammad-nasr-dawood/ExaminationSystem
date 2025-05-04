@@ -27,7 +27,14 @@ namespace ExaminationSystem.MVC.Services
 	public Task<StudentDetailsVM> GetStdByIdAsync (long id);
 
 	public bool Add (StudentAddVM studentAddVM);
+	public User ResetPassword(long userId);
+	public User ToggleUserStatus(long userId);
+	public StudentDetailsVM GetById(long id);
 
+	public Task<StudentDetailsVM> GetByEmailAsync(string email, long? Ssn);
+	public Task<StudentDetailsVM> GetByPhoneNumberAsync(string phone, long? Ssn);
+
+	public bool UpdateStudent(StudentDetailsVM stdvm);
 
   }
 }
