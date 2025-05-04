@@ -1,0 +1,29 @@
+@using ExaminationSystem.MVC.ViewModels.PoolViewModels
+@model TeachAtVM
+
+<div id="teachAtFilters" data-teach-at='@Html.Raw(Json.Serialize(Model))'>
+    <div class="row">
+        <div class="col-md-4 mb-6">
+            <label for="selectBranch" class="form-label">Branch</label>
+            <select id="selectBranch" class="select2 form-select form-select-lg" data-allow-clear="true">
+                <option value="">Select Branch</option>
+                @foreach (var branch in Model.Branches)
+                {
+                    <option value="@branch.Key">@branch.Value.Location</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4 mb-6">
+            <label for="selectDepartment" class="form-label">Department</label>
+            <select id="selectDepartment" class="select2 form-select form-select-lg" data-allow-clear="true" disabled>
+                <option value="">Select Department</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-6">
+            <label for="selectCourse" class="form-label">Course</label>
+            <select id="selectCourse" class="select2 form-select form-select-lg" data-allow-clear="true" disabled>
+                <option value="">Select Course</option>
+            </select>
+        </div>
+    </div>
+</div>
