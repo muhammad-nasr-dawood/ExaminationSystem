@@ -47,6 +47,7 @@ namespace ExaminationSystem.EF
 
         public IExamRepo ExamRepo { get; }
 
+        public ITopics TopicsRepo { get; }
 
         /*nasser*/
 
@@ -70,7 +71,9 @@ namespace ExaminationSystem.EF
             IPoolRepo _poolRepo,
             IQuestionRepo _questionRepo,
             IBaseRepo<StaffBranchIntakeWorksFor> worksFor,
-            IBaseRepo<Intake> intakeRepo
+            IBaseRepo<Intake> intakeRepo,
+            IExamRepo examRepo,
+            ITopics topicsRepo
             )
 
         {
@@ -95,7 +98,8 @@ namespace ExaminationSystem.EF
 
             PoolRepo = _poolRepo; // Added PoolRepo to UnitOfWork
             QuestionRepo =  _questionRepo;
-
+            ExamRepo= examRepo;
+            TopicsRepo = topicsRepo;
 
 
             WorksForRepo = worksFor;

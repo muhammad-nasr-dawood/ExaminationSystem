@@ -7,12 +7,11 @@ namespace ExaminationSystem.MVC.Services
   {
 	public IUnitOfWork UnitOfWork { get; set; }
 
-	public IMapper Map { get; set; }
+
 
 	public ExamService(IUnitOfWork unitOfWork, IMapper map)
 	{
 	  UnitOfWork = unitOfWork;
-	  Map = map;
 	}
 
 

@@ -11,6 +11,7 @@ using Imagekit.Sdk;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,14 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeDepartmentCourseTeach>, BaseRepo<StaffBranchIntakeDepartmentCourseTeach>>();
 builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
 builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();
+
+
+
+builder.Services.AddScoped<ITopics,TopicRepo>();
+builder.Services.AddScoped<ITopicService, TopicService>();
+
+
+builder.Services.AddScoped<IExamRepo, ExamRepo>();
 
 
 
