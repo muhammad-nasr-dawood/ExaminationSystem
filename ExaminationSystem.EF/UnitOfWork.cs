@@ -45,12 +45,15 @@ namespace ExaminationSystem.EF
 
         public IQuestionRepo QuestionRepo { get; } // Added QuestionRepo to UnitOfWork
 
+        public IExamRepo ExamRepo { get; }
+
 
         /*nasser*/
 
 
         public IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo { get; }
         public IBaseRepo<Intake> IntakeRepo { get; }
+
 
         public UnitOfWork(ExaminationDBContext dbContext, 
             IBaseRepo<Student> studentRepo, 

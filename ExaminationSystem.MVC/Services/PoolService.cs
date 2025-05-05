@@ -176,12 +176,12 @@ namespace ExaminationSystem.MVC.Services
 	}
 
 
-	private DataTable CreateDataTableFromArray(int[] array)
+	private DataTable CreateDataTableFromArray<T>(T [] array)
 	{
 	  DataTable dataTable = new DataTable();
 	  dataTable.Columns.Add("Value", typeof(int));
 
-	  foreach (int item in array)
+	  foreach (T item in array)
 	  {
 		DataRow row = dataTable.NewRow();
 		row["Value"] = item;
@@ -201,10 +201,104 @@ namespace ExaminationSystem.MVC.Services
 
 		OutputParameter<int> returnValue=new OutputParameter<int>();
 
-		DataTable _dateTableForQIDS = CreateDataTableFromArray(questionsIds);
+		DataTable _dateTableForQIDS = CreateDataTableFromArray<int>(questionsIds);
 
 		var res = await UnitOfWork.PoolRepo.RemoveQuestionFromPool(staffId, poolId, _dateTableForQIDS, returnValue);
 
+		return returnValue.Value;
+	  }
+	  catch (Exception ex)
+	  {
+		throw new Exception(ex.Message);
+	  }
+	}
+
+	public async Task<int> AddQuestionsToPool(long staffId, int poolId, int[] questionsIds)
+	{
+	  try
+	  {
+
+		if (questionsIds == null || questionsIds.Length == 0)
+		  throw new Exception("No Questions Found");
+
+		OutputParameter<int> returnValue = new OutputParameter<int>();
+
+		DataTable _dateTableForQIDS = CreateDataTableFromArray<int>(questionsIds);
+
+		var res = await UnitOfWork.PoolRepo.AddQuestionsToPool(staffId, poolId, _dateTableForQIDS, returnValue);
+
+		return returnValue.Value;
+	  }
+	  catch (Exception ex)
+	  {
+		throw new Exception(ex.Message);
+	  }
+	}
+
+
+	public async Task<int> SetConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMid, int gradeForEasy, int noOfModels, int[] excludedStdIds)
+	{
+	  try
+	  {
+		OutputParameter<int> returnValue = new OutputParameter<int>();
+
+		//if (excludedStdIds == null || excludedStdIds.Length == 0)
+		//  throw new Exception("No Questions Found");
+
+		//if (noOfDiff < 0 || noOfMed < 0 || noOfEasy < 0 || gradeForDiff < 0 || gradeForMid < 0 || gradeForEasy < 0 || noOfModels < 0)
+		//  throw new Exception("invalid params");
+
+
+		DataTable dataTable= CreateDataTableFromArray(excludedStdIds);
+
+		var res = await UnitOfWork.PoolRepo.SetConfigurations(staffId, poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMid, gradeForEasy, noOfModels, dataTable, returnValue);
+
+		return returnValue.Value;
+	  }
+	  catch (Exception ex)
+	  {
+		throw new Exception(ex.Message);
+	  }
+	}
+
+	public async Task<int> UpdateConfigurationGrades(long staffId, int poolId, int gradeForDiff, int gradeForMed, int gradeForEasy)
+	{
+	  try
+	  {
+		OutputParameter<int> returnValue = new OutputParameter<int>();
+
+		var res =await UnitOfWork.PoolRepo.UpdateConfigurationGrades(staffId, poolId, gradeForDiff, gradeForMed, gradeForEasy, returnValue);
+
+		return returnValue.Value;
+	  }
+	  catch (Exception ex)
+	  {
+		throw new Exception(ex.Message);
+	  }
+	}
+
+	public async Task<int> UpdateConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMed, int gradeForEasy, int noOfModels)
+	{
+	  try
+	  {
+		OutputParameter<int> returnValue = new OutputParameter<int>();
+		var res = await UnitOfWork.PoolRepo.UpdateConfigurations(staffId, poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMed, gradeForEasy, noOfModels, returnValue);
+		return returnValue.Value;
+	  }
+	  catch (Exception ex)
+	  {
+		throw new Exception(ex.Message);
+	  }
+	}
+
+
+	public async Task<int> UpdateConfigurationStudentList(int poolId, long staffId, int[] excludedStdIds)
+	{
+	  try
+	  {
+		OutputParameter<int> returnValue = new OutputParameter<int>();
+		DataTable dataTable = CreateDataTableFromArray(excludedStdIds);
+		var res = await UnitOfWork.PoolRepo.UpdateConfigurationStudentList(poolId, staffId, dataTable, returnValue);
 		return returnValue.Value;
 	  }
 	  catch (Exception ex)
@@ -217,12 +311,5 @@ namespace ExaminationSystem.MVC.Services
 
 
 
-
-
-
-
-
-
-
-  }//end of service calss
+	}//end of service calss
 }

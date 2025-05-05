@@ -58,10 +58,37 @@ namespace ExaminationSystem.EF.Repositories
             return await _dbContext.Procedures.UsePoolAsync(staffId, srcPoolId, destPoolId, returnValue);
         }
 
-        public Task<int> RemoveQuestionFromPool(long staffId, int poolId, DataTable questionsIds, OutputParameter<int> returnValue)
+        public async Task<int> RemoveQuestionFromPool(long staffId, int poolId, DataTable questionsIds, OutputParameter<int> returnValue)
         {
-            return _dbContext.Procedures.RemoveQuestionFromPoolAsync(staffId, poolId, questionsIds, returnValue);
+            return await _dbContext.Procedures.RemoveQuestionFromPoolAsync(staffId, poolId, questionsIds, returnValue);
         }
+
+        public async Task<int> AddQuestionsToPool(long staffId, int poolId, DataTable questionsIds, OutputParameter<int> returnValue)
+        {
+            return await _dbContext.Procedures.AddQuestionsToPoolAsync(staffId, poolId, questionsIds, returnValue);
+        }
+
+        public async Task<int> SetConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMid, int gradeForEasy, int noOfModels, DataTable excludedStdIds, OutputParameter<int> returnValue)
+        {
+            return await _dbContext.Procedures.SetConfigurationsAsync(staffId, poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMid, gradeForEasy, noOfModels, excludedStdIds, returnValue);
+        }
+
+        public async Task<int> UpdateConfigurationGrades(long staffId, int poolId, int gradeForDiff, int gradeForMed, int gradeForEasy, OutputParameter<int> returnValue)
+        {
+            return await _dbContext.Procedures.UpdateConfigurationGradesAsync(staffId, poolId, gradeForDiff, gradeForMed, gradeForEasy, returnValue);
+        }
+
+        public async Task<int> UpdateConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMed, int gradeForEasy, int noOfModels, OutputParameter<int> returnValue)
+        {
+            return await _dbContext.Procedures.UpdateConfigurationsAsync(staffId, poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMed, gradeForEasy, noOfModels, returnValue);
+        }
+
+        public async Task<int> UpdateConfigurationStudentList(int poolId, long staffId, DataTable excludedStds, OutputParameter<int> returnValue)
+        {
+            return await _dbContext.Procedures.UpdateConfigurationStudentListAsync(poolId, staffId, excludedStds, returnValue);
+        }
+
+
     }
 }
 

@@ -29,6 +29,19 @@ namespace ExaminationSystem.MVC.IService
 	public Task<int> RemoveQuestionFromPool(long staffId, int poolId, int[] _);
 
 
+	public Task<int> AddQuestionsToPool(long staffId, int poolId, int[] _);
+
+	public Task<int> SetConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMid, int gradeForEasy, int noOfModels, int [] excludedStdIds);
+
+
+   public Task<int> UpdateConfigurationGrades(long staffId, int poolId, int gradeForDiff, int gradeForMed, int gradeForEasy);
+
+
+	public Task<int> UpdateConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMed, int gradeForEasy, int noOfModels);
+
+	public Task<int> UpdateConfigurationStudentList(int poolId, long staffId, int[] excludedStds);
+
+
 
   }
 }

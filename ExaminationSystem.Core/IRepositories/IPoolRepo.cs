@@ -31,6 +31,23 @@ namespace ExaminationSystem.Core.IRepositories
         public Task<int> RemoveQuestionFromPool(long staffId, int poolId, DataTable questionsIds, OutputParameter<int> returnValue);
 
 
+        public Task<int> AddQuestionsToPool(long staffId, int poolId, DataTable questionsIds, OutputParameter<int> returnValue);
+
+
+        public Task<int> SetConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMid, int gradeForEasy, int noOfModels, DataTable excludedStdIds, OutputParameter<int> returnValue);
+
+
+        public Task<int> UpdateConfigurationGrades(long staffId, int poolId, int gradeForDiff, int gradeForMed, int gradeForEasy, OutputParameter<int> returnValue);
+
+
+        public Task<int> UpdateConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMed, int gradeForEasy, int noOfModels, OutputParameter<int> returnValue);
+
+
+
+        public Task<int> UpdateConfigurationStudentList(int poolId, long staffId, DataTable excludedStds, OutputParameter<int> returnValue);
+
+
 
     }
+
 }

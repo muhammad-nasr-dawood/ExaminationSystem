@@ -44,8 +44,6 @@ namespace ExaminationSystem.MVC.Controllers
 	  return View(GActivePoolList);
 	}
 
-
-
 	[HttpGet]
 	public async Task<IActionResult> Processed()
 	{
@@ -167,6 +165,147 @@ namespace ExaminationSystem.MVC.Controllers
 		return BadRequest(ex.Message);
 	  }
 	}
+
+	[HttpPost]
+	public async Task<IActionResult> AddQuestionsToPool(long staffId, int poolId, int[] QIDS)
+	{
+	  try
+	  {
+		if (QIDS == null || QIDS.Length == 0)
+		  return BadRequest("No Questions Found");
+
+		int result = await _poolService.AddQuestionsToPool(staffId, poolId, QIDS);
+
+		if (result == 0)
+		  return View(result);
+
+		if (result == -1)
+		  return BadRequest("System/unknown error occurred");
+		else //if (result == 1)
+		  return BadRequest("You cannot modify questions in this pool because it is used in active exams. ");
+
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> SetConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMid, int gradeForEasy, int noOfModels, int[] excludedStdIds)
+	{
+	  try
+	  {
+		if (excludedStdIds == null || excludedStdIds.Length == 0)
+		  return BadRequest("No Questions Found");
+		if (noOfDiff < 0 || noOfMed < 0 || noOfEasy < 0 || gradeForDiff < 0 || gradeForMid < 0 || gradeForEasy < 0 || noOfModels < 0)
+		  return BadRequest("invalid params");
+
+		int result = await _poolService.SetConfigurations(staffId, poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMid, gradeForEasy, noOfModels, excludedStdIds);
+
+		if (result == 0)
+		  return View(result);
+		if (result == -1)
+		  return BadRequest("System/unknown error occurred");
+		else if (result == 1)
+		  return BadRequest("students do not belong to that branch and dept");
+		else if (result == 2)
+		  return BadRequest("this pool has been configured before this time.");
+		else //3 
+		  return BadRequest("this pool dose not exist");
+
+
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+
+	}
+
+
+	[HttpPost]
+	public async Task<IActionResult> UpdateConfigurationGrades(long staffId, int poolId, int gradeForDiff, int gradeForMed, int gradeForEasy)
+	{
+	  try
+	  {
+		if (gradeForDiff < 0 || gradeForMed < 0 || gradeForEasy < 0)
+		  return BadRequest("invalid params");
+
+		int result = await _poolService.UpdateConfigurationGrades(staffId, poolId, gradeForDiff, gradeForMed, gradeForEasy);
+
+		if (result == 0)
+		  return View(result);
+		if (result == -1)
+		  return BadRequest("System/unknown error occurred");
+		else if (result == 1)
+		  return BadRequest("this pool dose not exist");
+		else //2 
+		  return BadRequest("this pool has not been configured before this time.");
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+
+	  }
+	}
+
+
+	[HttpPost]
+	public async Task<IActionResult> UpdateConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMed, int gradeForEasy, int noOfModels)
+	{
+	  try
+	  {
+		if (noOfDiff < 0 || noOfMed < 0 || noOfEasy < 0 || gradeForDiff < 0 || gradeForMed < 0 || gradeForEasy < 0 || noOfModels < 0)
+		  return BadRequest("invalid params");
+		int result = await _poolService.UpdateConfigurations(staffId, poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMed, gradeForEasy, noOfModels);
+		if (result == 0)
+		  return View(result);
+		if (result == -1)
+		  return BadRequest("System/unknown error occurred");
+		else if (result == 1)
+		  return BadRequest("this pool dose not exist");
+		else if (result==2) 
+		  return BadRequest("this pool has not been configured before this time.");
+		else //3 
+		  return BadRequest("you can not modify in this pool configuration.");
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+	}
+
+
+	[HttpPost]
+	public async Task<IActionResult> UpdateConfigurationStudentList(int poolId, long staffId, int[] excludedStdIds)
+	{
+	  try
+	  {
+		if (excludedStdIds == null || excludedStdIds.Length == 0)
+		  return BadRequest("No Questions Found");
+		int result = await _poolService.UpdateConfigurationStudentList(poolId, staffId, excludedStdIds);
+		if (result == 0)
+		  return View(result);
+		if (result == -1)
+		  return BadRequest("System/unknown error occurred");
+		else if (result == 1)
+		  return BadRequest("this pool dose not exist");
+		else if (result == 2)
+		  return BadRequest("this pool has not been configured before this time.");
+		else if (result == 3)
+		  return BadRequest("you can not modify in this pool configuration.");
+		else //4
+		  return BadRequest("invalid student ids");
+
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+	}
+
 
 
 

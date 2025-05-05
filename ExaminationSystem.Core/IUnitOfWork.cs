@@ -33,7 +33,7 @@ namespace ExaminationSystem.Core
         IQuestionRepo QuestionRepo { get; } // Added QuestionRepo to UnitOfWork
 
 
-
+        IExamRepo ExamRepo { get; } // Added ExamRepo to UnitOfWork
 
 
 
