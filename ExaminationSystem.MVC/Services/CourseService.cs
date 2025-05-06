@@ -193,7 +193,7 @@ namespace ExaminationSystem.MVC.Services
 	public List<CourseDisplayViewModel> GetAll()
 	{
 
-	  var courses = _unitOfWork.CourseRepo.FindAll(c => !c.IsDeleted).ToList();
+	  var courses = _unitOfWork.CoursesRepo.FindAll(c => !c.IsDeleted).ToList();
 	  return _mapper.Map<List<CourseDisplayViewModel>>(courses);
 	}
 

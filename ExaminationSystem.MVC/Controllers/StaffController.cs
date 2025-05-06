@@ -31,7 +31,7 @@ public class StaffController : Controller
   [HttpGet]
   public async Task<IActionResult> IsPhoneNumberExist(string PhoneNumber, long Ssn)
   {
-	 var isSuccess = await _accountService.VerifyPhone(Ssn, PhoneNumber);
+	var isSuccess = await _accountService.VerifyPhone(Ssn, PhoneNumber);
 	return Json(isSuccess);
   }
 
@@ -44,7 +44,7 @@ public class StaffController : Controller
 
   public IActionResult Index()
   {
-	ViewBag.Branches = _mapper.Map<List<BranchViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll()) ;
+	ViewBag.Branches = _mapper.Map<List<BranchViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
 	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
 
 	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
@@ -63,7 +63,7 @@ public class StaffController : Controller
 
 	  var searchValue = Request.Form["search[value]"].FirstOrDefault();
 
-	  var filterStatus = bool.TryParse( Request.Form["statusFilter"].FirstOrDefault(), out var fStatus) ? fStatus : (bool?) null;
+	  var filterStatus = bool.TryParse(Request.Form["statusFilter"].FirstOrDefault(), out var fStatus) ? fStatus : (bool?)null;
 
 	  var branchId = int.TryParse(Request.Form["branchId"].FirstOrDefault(), out var bId) ? bId : (int?)null;
 	  var deptId = int.TryParse(Request.Form["DeptId"].FirstOrDefault(), out var dId) ? dId : (int?)null;
@@ -71,7 +71,7 @@ public class StaffController : Controller
 	  var orderColumnIndex = int.Parse(Request.Form["order[0][column]"].FirstOrDefault() ?? "0");
 	  var orderDir = Request.Form["order[0][dir]"].FirstOrDefault() ?? "asc";
 
-	  string[] columnNames = { "FullName", "Ssn", "Salary", "", "" }; 
+	  string[] columnNames = { "FullName", "Ssn", "Salary", "", "" };
 	  string orderBy = columnNames[orderColumnIndex];
 
 	  int pageNumber = (start / length) + 1;
@@ -112,13 +112,13 @@ public class StaffController : Controller
   }
 
   [HttpPost]
-  public JsonResult Add(StaffAddViewModel model)
+  public async Task<JsonResult> Add(StaffAddViewModel model)
   {
 	if (ModelState.IsValid)
 	{
 	  try
 	  {
-		var IsSucceeded = _staffService.Add(model);
+		var IsSucceeded = await _staffService.Add(model);
 		if (!IsSucceeded)
 		  return Json(new { success = false, message = "Something went very wrong!" });
 
@@ -153,17 +153,33 @@ public class StaffController : Controller
 
 
   [HttpPost]
-  public IActionResult Update(StaffDisplayDetailViewModel model)
+  public async Task<IActionResult> Update(StaffDisplayDetailViewModel model)
   {
 	if (!ModelState.IsValid)
 	{
+	  // Return all validation errors in ModelState
 	  return BadRequest(ModelState);
 	}
-	_staffService.UpdateById(model);
-	// Save changes to DB...
 
-	return Ok(new { message = "User updated" });
+	try
+	{
+	  var result = await _staffService.UpdateById(model);
+
+	  if (!result)
+	  {
+		return StatusCode(500, new { message = "Update failed. Staff record was not modified." });
+	  }
+
+	  return Ok(new { message = "User updated" });
+	}
+	catch (Exception ex)
+	{
+	  //return StatusCode(500, new { message = $"An error occurred. {ex.Message}", error = ex.Message });
+	  return StatusCode(500, new { message = $"An error occurred.", error = ex.Message });
+
+	}
   }
+
 
   [HttpPost]
   public IActionResult GetAllRegisteredCourses()

@@ -1,3 +1,4 @@
+using AutoMapper;
 using ExaminationSystem.Core;
 using ExaminationSystem.Core.Helpers;
 using ExaminationSystem.Core.IRepositories;
@@ -11,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -33,6 +36,8 @@ builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
 builder.Services.AddScoped<ILocationRepo, LocationRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeWorksFor>, BaseRepo<StaffBranchIntakeWorksFor>>();
+builder.Services.AddScoped<IBaseRepo<Intake>, BaseRepo<Intake>>();
 
 
 

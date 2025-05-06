@@ -1,27 +1,10 @@
 @model ExaminationSystem.MVC.ViewModels.BranchViewModels.BranchEditViewModel
 
 <style>
+	.select2-hidden-before-init {
+	visibility: hidden;
+}
 
-	.select2-container {
-		z-index: 9999 !important;
-	}
-
-	.select2-search__field {
-		background-color: white !important;
-		color: black !important;
-	}
-
-	.modal-backdrop {
-		z-index: 1040 !important;
-	}
-
-	.modal-content {
-		z-index: 1050 !important;
-	}
-
-	.modal-dialog {
-		z-index: 1060 !important;
-	}
 </style>
 
 <div class="modal fade" id="editBranchModal-@Model.Id" tabindex="-1" aria-labelledby="editBranchModalLabel-@Model.Id" aria-hidden="true">
@@ -45,25 +28,28 @@
 					<input type="hidden" name="Id" value="@Model.Id" />
 
 
-					<div class="mb-3">
-						<label for="ZipCode" class="form-label">Location (Zip Code)</label>
-						<select id="ZipCode" name="ZipCode" class="select2 form-select form-select-lg" required>
-							<option value="" selected="@( Model.Id==0)" disabled>Select a location</option>
+            <div class="mb-3">
+                <label asp-for="ZipCode" class="form-label"></label>
+               <select asp-for="ZipCode" id="ZipCode" class="select2 form-select select2-hidden-before-init ">
+
+                            <option value="" >Select a location</option>
 							@foreach (var location in ViewBag.Locations)
-							{
-								<option value="@location.ZipCode" selected="@(location.ZipCode == Model.ZipCode)">
-									@location.LocationName
-								</option>
-							}
-						</select>
-					</div>
+{
+                         <option value="@location.ZipCode">@location.LocationName</option>
+}
+
+                </select>
+                 <span asp-validation-for="ZipCode" class="text-danger"></span>
+            </div>         
+
 
 				
-					<div class="mb-3">
-						<label asp-for="StreetNo" class="form-label">Street Number</label>
-						<input type="number" class="form-control" asp-for="StreetNo" value="@Model.StreetNo" required/><br/>
-						<span asp-validation-for="StreetNo" class="text-danger"></span>
-					</div>
+                   <div class="mb-3">
+                    <label asp-for="StreetNo" class="form-label"></label>
+                    <input asp-for="StreetNo" class="form-control" />
+                    <span asp-validation-for="StreetNo" class="text-danger"></span>
+                   </div>
+
 
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -76,124 +62,108 @@
 		</div>
 	</div>
 </div>
-
 <script>
-	$(document).ready(function () {
+$(document).ready(function () {
+	$('#editBranchForm').on('submit', function (e) {
+		e.preventDefault();
+		if (!$(this).valid()) return;
 
+		var formData = $(this).serialize();
 
-
-		$(document).on('shown.bs.modal', '#editBranchModal', function () {
-			$('#ZipCode').select2({
-				placeholder: "Select a location",
-				allowClear: true,
-				dropdownParent: $('#editBranchModal-' + @Model.Id)
-			}).trigger('change');
-		});
-
-
-		$('#editBranchForm').on('submit', function (e) {
-			e.preventDefault();
-	        if (!$(this).valid()) {
-					   return;
-				   }
-
-
-			var formData = $(this).serialize();
-
-			$.ajax({
-				type: 'POST',
-				url: $(this).attr('action'),
-				data: formData,
-				success: function (response) {
-					console.log(response);
-					console.log(response.branch.id);
-
-					if (response.success) {
-
+		$.ajax({
+			type: 'POST',
+			url: $(this).attr('action'),
+			data: formData,
+			success: function (response) {
+				try {
+					
+					if (typeof response === 'object' && response.success) {
 						$('#editBranchModal-' + response.id).modal('hide');
-						if(response.id!=0)
-						{
+
+						if (response.id !== 0) {
 							$('#branch-' + response.id + ' .location').text(response.branch.zipCode);
-						$('#branch-' + response.id + ' .streetNo').text(response.branch.streetNo);
-						$('#branch-' + response.id + ' .locName').text(response.branch.locationName + " Branch");
+							$('#branch-' + response.id + ' .streetNo').text(response.branch.streetNo);
+							$('#branch-' + response.id + ' .locName').text(response.branch.locationName + " Branch");
 						}
-	else {
-		
-		var newBranchHtml = `
-		<div class="col-lg-4 col-md-6" id="branch-${response.branch.id}">
-			<div class="card shadow-lg border-0 rounded-3 h-100">
-				<div class="card-body p-4 d-flex flex-column justify-content-between">
-					<div>
-						<h5 class="fw-bold text-primary mb-2 locName">${response.branch.locationName} Branch</h5>
-						<p class="text-muted mb-1">Street No: <strong class="streetNo">${response.branch.streetNo}</strong></p>
 
-						<div class="d-flex justify-content-between align-items-center mb-1">
-							<p class="text-muted mb-0 branch-manager">Manager: <strong>Not Assigned</strong></p>
-							<button class="btn btn-sm btn-outline-primary assign-branch-btn" data-id="${response.branch.id}">
-								<i class="bi bi-pencil-fill"></i> Assign Manager
-							</button>
-						</div>
-
-						<div class="d-flex justify-content-start mb-1 mt-2">
-							<p class="text-muted mb-0 flex-grow-1">
-								Departments: <strong>0</strong>
-							</p>
-							<div class="d-flex justify-content-end mb-2">
-								<button class="btn btn-sm btn-outline-danger delete-manager-btn hide-delete-button" data-id="${response.branch.id}">
-									<i class="bi bi-trash"></i> Delete Manager
-								</button>
-							</div>
-						</div>
-					</div>
-
-					<div class="d-flex justify-content-between mt-2 mb-2 gap-3">
-						<a href="/Branches/ShowDepartments?branchId=${response.branch.id}" class="btn btn-primary btn-sm w-50">
-							Show Departments
-						</a>
-						<a href="/Branches/ShowBranchStaff?branchId=${response.branch.id}" class="btn btn-secondary btn-sm w-50">
-							Show Staff
-						</a>
-					</div>
-
-					<div class="dropdown position-absolute top-0 end-0 m-3">
-						<button class="btn btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<i class="ti ti-dots-vertical"></i>
-						</button>
-						<ul class="dropdown-menu">
-							<li>
-								<a class="dropdown-item text-warning edit-branch-btn" href="javascript:void(0);" data-id="${response.branch.id}">
-									<i class="ti ti-pencil me-2"></i>Edit
-								</a>
-							</li>
-							<li>
-								<a class="dropdown-item text-danger" href="javascript:void(0);" data-id="${response.branch.id}" id="deleteBranchBtn">
-									<i class="ti ti-trash me-2"></i>Delete
-								</a>
-							</li>
-						</ul>
-					</div>
-
-					<div class="mt-3 d-flex align-items-center justify-content-between">
-						<span class="badge px-3 py-2 rounded-pill bg-success text-white">Active</span>
-						<small class="text-secondary ">Location Code: <strong class="location">${response.branch.zipCode.toUpperCase()}</strong></small>
-					</div>
-				</div>
-			</div>
-		</div>`;
-
-		$('#branch-list').append(newBranchHtml);
-	}
-
+						Swal.fire({
+							icon: 'success',
+							title: 'Success!',
+							text: 'Branch updated successfully.',
+							timer: 2000,
+							showConfirmButton: false
+						});
 					}
+					
+	             else if (typeof response === 'string' && $(response).filter('div.col-lg-4').length > 0) {
+	             $('#editBranchModal-0').modal('hide');
+	             $('#branch-list').prepend(response);
+	             $('#branch-list .col-lg-4').last().remove();
+
+	            Swal.fire({
+	            icon: 'success',
+		        title: 'Success!',
+		        text: 'Branch added successfully.',
+		        timer: 2000,
+		        showConfirmButton: false
+
+	            });
+                }
+
+					
 					else {
-						alert('Error: ' + response.message);
+						$('#editBranchModal-0').modal('hide');
+						$('#branch-list').prepend(response);
+						$('#branch-list .col-lg-4').last().remove();
+
+						Swal.fire({
+							icon: 'warning',
+							title: 'Validation Failed',
+							text: 'Please check the required fields and try again.'
+						});
 					}
-				},
-				error: function () {
-					alert('An error occurred while updating the branch.');
+				} catch (e) {
+					$('#editBranchModal-0').modal('hide');
+					$('#branch-list').prepend(response);
+					$('#branch-list .col-lg-4').last().remove();
+
+					Swal.fire({
+						icon: 'warning',
+						title: 'Validation Error',
+						text: 'Please check your inputs.'
+					});
 				}
-			});
+			},
+			error: function (xhr) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Error!',
+					text: xhr.responseText || 'An error occurred while processing your request.'
+				});
+			}
 		});
 	});
+
+	$('#editBranchModal-@Model.Id').on('shown.bs.modal', function () {
+		const $form = $('#editBranchForm');
+		const $select = $('#ZipCode');
+
+		if (!$select.hasClass('select2-initialized')) {
+			$select.select2().on('select2:close', function () {
+				$form.validate().element(this);
+			}).addClass('select2-initialized');
+		}
+	});
+
+	$('#editBranchModal-@Model.Id').on('hide.bs.modal', function () {
+		const modal = this;
+		const focused = document.activeElement;
+		if (modal.contains(focused)) {
+			focused.blur();
+		}
+	});
+});
+
+
 </script>
 

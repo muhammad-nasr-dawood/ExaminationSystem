@@ -115,7 +115,7 @@ namespace ExaminationSystem.MVC.Services
 	  var vm = _mapper.Map<TopicAddEditViewModel>(topic);
 
 	  vm.AvailableCourses = _mapper.Map<List<CourseDisplayViewModel>>(
-		  _unitOfWork.CourseRepo.FindAll(c => !c.IsDeleted)
+		  _unitOfWork.CoursesRepo.FindAll(c => !c.IsDeleted)
 	  );
 
 	  vm.SelectedCourseIds = topic.Crs.Select(c => c.Id).ToList();

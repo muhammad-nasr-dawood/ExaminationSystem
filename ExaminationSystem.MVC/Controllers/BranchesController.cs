@@ -3,6 +3,7 @@ using ExaminationSystem.MVC.Services;
 using ExaminationSystem.MVC.ViewModels.BranchViewModels;
 using ExaminationSystem.MVC.ViewModels.CourseViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 public class BranchesController : Controller
 {
@@ -11,7 +12,7 @@ public class BranchesController : Controller
   private readonly ICourseService _courseService;
   private readonly IDepartmentService _departmentService;
   private readonly IMapper _mapper;
-  public BranchesController(IBranchService branchService, IStaffService staffService, IMapper mapper, IDepartmentService departmentService,ICourseService courseService)
+  public BranchesController(IBranchService branchService, IStaffService staffService, IMapper mapper, IDepartmentService departmentService, ICourseService courseService)
   {
 	_branchService = branchService;
 	_staffService = staffService;
@@ -20,15 +21,8 @@ public class BranchesController : Controller
 	_mapper = mapper;
   }
 
-  public IActionResult Index()
-  {
-	var branches = _branchService.GetAll();
 
-	return View(branches);
-  }
-
-
-  public async Task< IActionResult>Edit(int id)
+  public async Task<IActionResult> Edit(int id)
   {
 	var branch = _branchService.GetBranchForEdit(id);
 	if (branch == null)
@@ -39,7 +33,7 @@ public class BranchesController : Controller
 
 	var Locations = await _branchService.GetLocations(id);
 	ViewBag.Locations = Locations;
-	
+
 	return PartialView("_EditBranchModal", branch);
   }
 
@@ -53,10 +47,10 @@ public class BranchesController : Controller
 
 	  _branchService.Update(viewModel);
 
-	
+
 	  var updatedBranch = _branchService.GetBranchForEdit(viewModel.Id);
 
-	 
+
 	  return Json(new { success = true, id = updatedBranch.Id, branch = updatedBranch });
 	}
 
@@ -66,13 +60,13 @@ public class BranchesController : Controller
   }
 
 
-  
+
   [HttpGet]
   public IActionResult Delete(int id)
   {
 	var branch = _branchService.GetBranchForEdit(id);
 
-	
+
 	if (branch == null)
 	{
 	  return Json(new { success = false, message = "Branch not found." });
@@ -81,13 +75,13 @@ public class BranchesController : Controller
 	return PartialView("DeleteBranchModel", branch);
   }
 
- 
+
   [HttpPost]
   public IActionResult DeleteConfirmed(int id)
   {
 	try
 	{
-	  
+
 	  var branch = _branchService.GetBranchForEdit(id);
 
 	  if (branch == null)
@@ -101,12 +95,12 @@ public class BranchesController : Controller
 	}
 	catch (KeyNotFoundException ex)
 	{
-	  
+
 	  return Json(new { success = false, message = ex.Message });
 	}
 	catch (Exception ex)
 	{
-	  
+
 	  return Json(new { success = false, message = "An error occurred while deleting the branch." });
 	}
   }
@@ -115,36 +109,38 @@ public class BranchesController : Controller
   [HttpGet]
   public async Task<IActionResult> AssignManager(int id)
   {
-	
+
 	var unassignedStaff = await _branchService.GetUnassignedStaffAsync(id);
 
-
+	ViewBag.BranchId = id;
 	return PartialView("AssignBranchManagerModal", unassignedStaff);
   }
 
 
 
- [HttpPost]
-public async Task<IActionResult> AssignManager(int id, long staffSsn)
-{
+  [HttpPost]
+  public async Task<IActionResult> AssignManager(int id, long staffSsn)
+  {
+	
+	var managerName = await _branchService.AddBranchManager(id, staffSsn);
 
+	if (!string.IsNullOrEmpty(managerName))
+	{
+	  return Json(new
+	  {
+		success = true,
+		Id = id,
+		message = "Manager assigned successfully.",
+		managerName = managerName
+	  });
+	}
 
-    var success = await _branchService.AddBranchManager(id, staffSsn);
+	return Json(new { success = false, message = "Error: Could not assign manager." });
+  }
 
-    if (success)
-    {
-       
-       var branch =  _branchService.GetBranchForEdit(id);
-	  
-
-        return Json(new { success = true,Id=id, message = "Manager assigned successfully.", managerName = branch?.BranchManagerName });
-    }
-
-    return Json(new { success = false, message = "Error: Could not assign manager." });
-}
 
   [HttpGet]
-  public async Task< IActionResult> DeleteManager(int id)
+  public async Task<IActionResult> DeleteManager(int id)
   {
 	var branch = await _branchService.GetBranchThatOwnStaffByID(id);
 
@@ -160,22 +156,22 @@ public async Task<IActionResult> AssignManager(int id, long staffSsn)
   [HttpPost]
   public async Task<IActionResult> DeleteManagerConfirmed(int id)
   {
-	
-	  var branch = await _branchService.GetBranchThatOwnStaffByID(id); 
-	  if (branch == null)
-	  {
-		return Json(new { success = false, message = "Branch not found." });
-	  }
 
-	  bool ok = await _branchService.DeleteManagerByBranchId(id);
-	  if (ok)
-	  {
-		return Json(new { success = true, message = "Staff deleted successfully" });
-	  }
-	  else
-	  {
-		return Json(new { success = false, message = "An error occurred while deleting the staff." });
-	  }
+	var branch = await _branchService.GetBranchThatOwnStaffByID(id);
+	if (branch == null)
+	{
+	  return Json(new { success = false, message = "Branch not found." });
+	}
+
+	bool ok = await _branchService.DeleteManagerByBranchId(id);
+	if (ok)
+	{
+	  return Json(new { success = true, message = "Staff deleted successfully" });
+	}
+	else
+	{
+	  return Json(new { success = false, message = "An error occurred while deleting the staff." });
+	}
 
   }
 
@@ -191,17 +187,19 @@ public async Task<IActionResult> AssignManager(int id, long staffSsn)
   {
 	if (ModelState.IsValid)
 	{
-	  
 	  var branch = _branchService.Add(viewModel);
 
 	  
-	  return Json(new { success = true, id = 0, branch = branch });
+	  return PartialView("_BranchCardPartial", branch); 
 	}
 
-	
 	var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
-	return Json(new { success = false, message = string.Join(", ", errors) });
+	return BadRequest(string.Join(", ", errors));
   }
+
+
+
+ 
   public IActionResult ShowDepartments(int branchId)
   {
 	var departments = _branchService.GetDepartmentsWithCapacitiesByBranch(branchId);
@@ -241,6 +239,25 @@ public async Task<IActionResult> AssignManager(int id, long staffSsn)
 
 	return RedirectToAction("Index", "Courses", new { BranchId= branchId,DeptId=deptId });
   }
+
+  [HttpGet]
+  public async Task<IActionResult> Index(string? search, int page = 1, int pageSize = 9, bool isPartial = false)
+  {
+	var paginated = await _branchService.GetPagedBranchesAsync(search, page, pageSize);
+
+	if (isPartial)
+	{
+	  return PartialView("_BranchCardListPartial", paginated);
+	}
+
+	return View(paginated);
+  }
+
+
+
+
+
+
 
 }
 

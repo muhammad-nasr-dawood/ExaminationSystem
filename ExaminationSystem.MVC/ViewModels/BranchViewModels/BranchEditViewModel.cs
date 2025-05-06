@@ -8,6 +8,7 @@ namespace ExaminationSystem.MVC.ViewModels.BranchViewModels
 	public int Id { get; set; } 
 
 	[Required]
+	[Display(Name = "Location")]
 	public string ZipCode { get; set; }
 	public string? BranchManagerName { get; set; }
 	public string? LocationName { get; set; }
@@ -15,7 +16,7 @@ namespace ExaminationSystem.MVC.ViewModels.BranchViewModels
 	
 	[Required(ErrorMessage = "Street Number is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "Invalid Street Number.")]
-	public int StreetNo { get; set; }
+	public int? StreetNo { get; set; }
 
 
   }
