@@ -62,8 +62,31 @@ namespace ExaminationSystem.MVC.Controllers
 	}
 
 
+	[HttpGet]
+
+	public IActionResult AddMCQQuestion()
+	{
+	  AddMCQQuestionVM MCQObj = new AddMCQQuestionVM();
+	  return View(model: MCQObj);
+	}
 
 
+	public async Task<IActionResult> AddMCQQuestion([FromForm] AddMCQQuestionVM MCQObj)
+	{
+	  if (!ModelState.IsValid)
+		return BadRequest(ModelState);
+	  int result = await _questionService.AddMCQQuestion(MCQObj);
+	  // faild to add question 
+	  if (result == -1)
+	  {
+		ModelState.AddModelError(string.Empty, "Failed to add question. Please try again.");
+		return View(MCQObj); // return to same view with validation message
+	  }
+	  string successMessage = "Question added successfully.😊😊";
+
+	  return RedirectToAction("Index", successMessage); // index must the incomming page till now i don't know it 
+
+	}
 
 
 

@@ -4,6 +4,8 @@ using VM=ExaminationSystem.MVC.ViewModels.Questions;
 using Newtonsoft.Json;
  using System.Data;
 using ExaminationSystem.MVC.ViewModels.Questions;
+using System.Text;
+using ExaminationSystem.Core.Models;
 
 namespace ExaminationSystem.MVC.Services
 {
@@ -32,12 +34,22 @@ namespace ExaminationSystem.MVC.Services
 		  return new PaginatedQuestionsVM() { Total = 0, Questions = null, page = page, limit = limit };
 		}
 
+
+		StringBuilder allQuestions = new StringBuilder(500);
+
+		foreach (var poolQuestion in result)
+		{
+		  allQuestions.Append(poolQuestion.JSON_F52E2B6118A111d1B10500805F49916B);
+		}
+
 		// decerialized the result to PaginatedQuestionsViewModel
 
-		PaginatedQuestionsVM? DeserializedResult = JsonConvert.DeserializeObject<PaginatedQuestionsVM>(result[0].JSON_F52E2B6118A111d1B10500805F49916B);
+		PaginatedQuestionsVM? DeserializedResult = JsonConvert.DeserializeObject<PaginatedQuestionsVM>(allQuestions.ToString());
+
 
 		if (DeserializedResult == null)
 		  throw new Exception("some thing went very wrong during DeSerialization Process");
+
 
 		DeserializedResult.page = page;
 		DeserializedResult.limit = limit;
@@ -193,6 +205,8 @@ namespace ExaminationSystem.MVC.Services
 
 	}
 
+
+ 
 
 
   }
