@@ -2,7 +2,7 @@ namespace ExaminationSystem.MVC.ViewModels.Questions
 {
   public class PaginatedQuestionsVM
   {
-	public List<QuestionVM> Questions { get; set; }
+	public List<QuestionVM>? Questions { get; set; }
 
 	public int Total { get; set; }
 
