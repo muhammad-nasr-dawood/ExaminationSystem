@@ -22,13 +22,12 @@ namespace ExaminationSystem.MVC.Controllers
 	  try
 	  {
 		PaginatedQuestionsVM PaginateResult = await _questionService.GetByTopic(topicId, order, type, level, page, limit);
-		return View(PaginateResult);
+		return Json(PaginateResult); // Changed from return View() to return Json()
 	  }
 	  catch (Exception ex)
 	  {
 		return BadRequest(ex.Message);
 	  }
-
 	}
 
 

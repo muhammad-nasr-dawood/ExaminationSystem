@@ -54,6 +54,32 @@
 		</li>
 
 
+		@*Instructors Menu Items*@
+		@if (true)
+		{
+			<li class='menu-item@(currentPage.StartsWith("/Pools")? " active open" : "")'>
+				<a href="javascript:void(0);" class="menu-link menu-toggle">
+					<i class="menu-icon tf-icons ti ti-list-details"></i>
+					<div data-i18n="Exam Pools">Exam Pools</div>
+
+				</a>
+				<ul class="menu-sub">
+					<li class='menu-item@(currentPage == "/Pools/Active" ? " active" : "")'>
+						<a asp-controller="Pools" asp-action="Active" class="menu-link">
+							<div data-i18n="Draft Pools">Draft Pools</div>
+							<div class="badge bg-warning rounded-pill ms-auto">2</div>
+						</a>
+					</li>
+					<li class='menu-item@(currentPage == "/Pools" ? " active" : "")'>
+						<a asp-controller="Pools" asp-action="Processed" class="menu-link">
+							<div data-i18n="Pending Pools">Pending Pools</div>
+							<div class="badge bg-success rounded-pill ms-auto">3</div>
+						</a>
+					</li>
+				</ul>
+			</li>
+		}
+
   </ul>
 
 </aside>

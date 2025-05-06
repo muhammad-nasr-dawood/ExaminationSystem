@@ -1,0 +1,246 @@
+@using ExaminationSystem.MVC.ViewModels.PoolViewModels
+@model PaginatedPoolQsVM
+@{
+    Layout = "_HorizontalLayout";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/bootstrap-select/bootstrap-select.css" />
+    <link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css" />
+    <link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
+}
+
+@section VendorScripts {
+    <script src="~/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+    <script src="~/vendor/libs/sweetalert2/sweetalert2.js"></script>
+}
+
+<div class="row">
+    <div class="card mb-6" id="btn-dropdown-demo">
+        <h5 class="card-header">Choose Question Type</h5>
+        <div class="card-body">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle waves-effect" data-bs-toggle="dropdown" aria-expanded="false">
+                    @(ViewBag.QType == 1 ? "MCQ" : "True/False")
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item waves-effect @(ViewBag.QType == 1 ? "active" : "")" 
+                           href="@Url.Action("PoolQuestions", new { PoolId = ViewBag.PoolId, Page = 1, Limit = Model.Limit, QType = 1, OType = ViewBag.OType })">
+                            MCQ
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item waves-effect @(ViewBag.QType == 0 ? "active" : "")" 
+                           href="@Url.Action("PoolQuestions", new { PoolId = ViewBag.PoolId, Page = 1, Limit = Model.Limit, QType = 0, OType = ViewBag.OType })">
+                            True/False
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    @foreach (var question in Model.Questions)
+    {
+        <div class="col-12">
+            <div class="card mb-6">
+                <div class="card-body">
+                    <div class="card-title header-elements">
+                        <div class="row w-100">
+                            <div class="col-8">
+                                <h5 class="m-0 me-2 d-inline">@question.Content</h5>
+                            </div>
+                            <div class="col-4">
+                                <div class="card-title-elements d-flex justify-content-end">
+                                    <span class="badge p-2 rounded-pill bg-label-primary">
+                                        <label class="switch switch-primary">
+                                            <input type="checkbox" class="switch-input" checked="">
+                                            <span class="switch-toggle-slider">
+                                                <span class="switch-on">
+                                                    <i class="icon-base ti ti-check"></i>
+                                                </span>
+                                                <span class="switch-off">
+                                                    <i class="icon-base ti ti-x"></i>
+                                                </span>
+                                            </span>
+                                            <span class="switch-label">Must Include</span>
+                                        </label>
+                                    </span>
+                                    <button type="button" class="btn rounded-pill btn-icon btn-label-danger waves-effect"
+                                            onclick="removeQuestion(@question.Id)">
+                                        <span class="icon-base ti ti-trash-x icon-22px"></span>
+                                    </button>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="badge bg-label-@(question.Level switch { 0 => "success", 1 => "warning", 2 => "danger", _ => "primary" })">
+                        @(question.Level switch { 0 => "Easy", 1 => "Intermediate", 2 => "Hard", _ => "Unknown" })
+                    </span>
+                    <p class="demo-inline-spacing">
+                        <a class="btn btn-sm btn-primary me-1"
+                           data-bs-toggle="collapse"
+                           href="#collapse_@question.Id"
+                           role="button"
+                           aria-expanded="false"
+                           aria-controls="collapse_@question.Id">
+                            Answers
+                        </a>
+                    </p>
+                    <div class="collapse" id="collapse_@question.Id">
+                        <div class="d-grid d-sm-flex p-4 border">
+                            <div class="list-group col-12">
+                                @if (question.MCChoices != null)
+                                {
+                                    @foreach (var choice in question.MCChoices)
+                                    {
+                                        <a href="javascript:void(0);" class="list-group-item list-group-item-action @(choice.IsCorrect ? "bg-label-success" : "")">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="list-content">@choice.Content</div>
+                                                @if (choice.IsCorrect)
+                                                {
+                                                    <i class="icon-base ti ti-circle-check text-success"></i>
+                                                }
+                                            </div>
+                                        </a>
+                                    }
+                                }
+                                @if (question.TFChoices != null)
+                                {
+                                    @foreach (var choice in question.TFChoices)
+                                    {
+                                        <a href="javascript:void(0);" class="list-group-item list-group-item-action @(choice.IsTrue ? "bg-label-success" : "")">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="list-content">@(choice.IsTrue ? "True" : "False")</div>
+                                                @if (choice.IsTrue)
+                                                {
+                                                    <i class="icon-base ti ti-circle-check text-success"></i>
+                                                }
+                                            </div>
+                                        </a>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@{
+    var totalPages = (int)Math.Ceiling((double)Model.Total / Model.Limit);
+}
+<nav aria-label="Page navigation" class="d-flex justify-content-center align-items-center gap-4">
+    <ul class="pagination pagination-rounded mb-0">
+        <li class="page-item first @(Model.Page == 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("PoolQuestions", new { PoolId = ViewBag.PoolId, Page = 1, Limit = Model.Limit, QType = ViewBag.QType, OType = ViewBag.OType })">
+                <i class="ti ti-chevrons-left"></i>
+            </a>
+        </li>
+        <li class="page-item prev @(Model.Page == 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("PoolQuestions", new { PoolId = ViewBag.PoolId, Page = Model.Page - 1, Limit = Model.Limit, QType = ViewBag.QType, OType = ViewBag.OType })">
+                <i class="ti ti-chevron-left"></i>
+            </a>
+        </li>
+        @for (int i = Math.Max(1, Model.Page - 2); i <= Math.Min(totalPages, Model.Page + 2); i++)
+        {
+            <li class="page-item @(i == Model.Page ? "active" : "")">
+                <a class="page-link" href="@Url.Action("PoolQuestions", new { PoolId = ViewBag.PoolId, Page = i, Limit = Model.Limit, QType = ViewBag.QType, OType = ViewBag.OType })">@i</a>
+            </li>
+        }
+        <li class="page-item next @(Model.Page == totalPages ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("PoolQuestions", new { PoolId = ViewBag.PoolId, Page = Model.Page + 1, Limit = Model.Limit, QType = ViewBag.QType, OType = ViewBag.OType })">
+                <i class="ti ti-chevron-right"></i>
+            </a>
+        </li>
+        <li class="page-item last @(Model.Page == totalPages ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("PoolQuestions", new { PoolId = ViewBag.PoolId, Page = totalPages, Limit = Model.Limit, QType = ViewBag.QType, OType = ViewBag.OType })">
+                <i class="ti ti-chevrons-right"></i>
+            </a>
+        </li>
+    </ul>
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary">@Model.Limit</button>
+        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="visually-hidden">Toggle Dropdown</span>
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item @(Model.Limit == 5 ? "active" : "")" 
+                   href="@Url.Action("PoolQuestions", new { PoolId = ViewBag.PoolId, Page = 1, Limit = 5, QType = ViewBag.QType, OType = ViewBag.OType })">
+                    5
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item @(Model.Limit == 10 ? "active" : "")" 
+                   href="@Url.Action("PoolQuestions", new { PoolId = ViewBag.PoolId, Page = 1, Limit = 10, QType = ViewBag.QType, OType = ViewBag.OType })">
+                    10
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item @(Model.Limit == 50 ? "active" : "")" 
+                   href="@Url.Action("PoolQuestions", new { PoolId = ViewBag.PoolId, Page = 1, Limit = 50, QType = ViewBag.QType, OType = ViewBag.OType })">
+                    50
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+@section PageScripts {
+	<script>
+		function removeQuestion(questionId) {
+			console.log("asjobncjndl");
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "You won't be able to revert this!",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: 'Yes, delete it!',
+				customClass: {
+					confirmButton: 'btn btn-danger me-3',
+					cancelButton: 'btn btn-label-secondary'
+				},
+				buttonsStyling: false
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.post('@Url.Action("RemoveQuestionFromPool", "Pools")', {
+						staffId: 40404040404040, // Replace with actual staff ID from claims
+						poolId: @ViewBag.PoolId,
+						QIDS: [questionId]
+					})
+					.done(function() {
+						Swal.fire({
+							icon: 'success',
+							title: 'Deleted!',
+							text: 'Question has been removed.',
+							customClass: {
+								confirmButton: 'btn btn-success'
+							},
+							buttonsStyling: false
+						}).then(() => {
+							// Reload the current page to reflect changes
+							window.location.reload();
+						});
+					})
+					.fail(function(response) {
+						Swal.fire({
+							icon: 'error',
+							title: 'Error!',
+							text: response.responseText,
+							customClass: {
+								confirmButton: 'btn btn-danger'
+							},
+							buttonsStyling: false
+						});
+					});
+				}
+			});
+		}
+	</script>
+                                    }

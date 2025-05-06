@@ -1,0 +1,182 @@
+
+@model List<GetTopicsByCourseResult>
+@{
+    ViewData["Title"] = "Questions Bank";
+	Layout = "_HorizontalLayout";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css" />
+    <link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
+}
+
+@section VendorScripts {
+    <script src="~/vendor/libs/select2/select2.js"></script>
+    <script src="~/vendor/libs/sweetalert2/sweetalert2.js"></script>
+
+}
+
+<div class="card mb-6">
+    <h5 class="card-header">Choose a Topic</h5>
+    <div class="card-body">
+        <div class="demo-inline-spacing">
+            <div class="btn-group me-3">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Select Topic
+                </button>
+                <ul class="dropdown-menu">
+                    @foreach (var topic in Model)
+                    {
+                        <li>
+                            <a class="dropdown-item" href="javascript:void(0);" 
+                               onclick="loadQuestions(@topic.Id)">
+                                @topic.Name
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div class="btn-group me-3">
+                <select class="form-select" id="questionLevel" onchange="filterQuestions()">
+                    <option value="0">Easy</option>
+                    <option value="1">Intermediate</option>
+                    <option value="2">Hard</option>
+                </select>
+            </div>
+
+            <div class="btn-group">
+                <select class="form-select" id="questionType" onchange="filterQuestions()">
+                    <option value="1">MCQ</option>
+                    <option value="0">True/False</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h5 class="card-header">Questions List</h5>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Content</th>
+                    <th>Type</th>
+                    <th>Level</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="questionsTableBody" class="table-border-bottom-0">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section PageScripts {
+    <script>
+        let currentTopicId = null;
+
+        function loadQuestions(topicId) {
+            currentTopicId = topicId;
+            filterQuestions();
+        }
+
+        function filterQuestions() {
+            if (!currentTopicId) return;
+
+            const level = $('#questionLevel').val();
+            const type = $('#questionType').val();
+
+            $.get('@Url.Action("GetByTopic", "Questions")', {
+                topicId: currentTopicId,
+                order: 1,
+                type: type,
+                level: level,
+                page: 1,
+                limit: 10
+            })
+            .done(function (data) {
+                updateQuestionsTable(data.questions);
+            });
+        }
+
+        function updateQuestionsTable(questions) {
+            const tbody = $('#questionsTableBody');
+            tbody.empty();
+            
+            questions.forEach(q => {
+                const levelBadge = q.level === 0 ? 'success' : q.level === 1 ? 'warning' : 'danger';
+                const levelText = q.level === 0 ? 'Easy' : q.level === 1 ? 'Intermediate' : 'Hard';
+                
+                tbody.append(`
+                    <tr>
+                        <td>
+                            <span class="fw-medium">${q.content}</span>
+                        </td>
+                        <td>${q.type === 1 ? 'MCQ' : 'T/F'}</td>
+                        <td>
+                            <span class="badge bg-label-${levelBadge}">${levelText}</span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-primary" 
+                                    onclick="addToPool(${q.id})">
+                                <i class="ti ti-plus me-1"></i>Add
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+
+        function addToPool(questionId) {
+            const poolId = @TempData.Peek("CurrentPoolId");
+            const staffId = 40404040404040; // Replace with actual staff ID from claims
+        
+            Swal.fire({
+                title: 'Add Question',
+                text: 'Are you sure you want to add this question to the pool?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, add it!',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: 'btn btn-primary me-3 waves-effect waves-light',
+                    cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("AddQuestionsToPool", "Pools")', {
+                        staffId: staffId,
+                        poolId: poolId,
+                        QIDS: [questionId]
+                    })
+                    .done(function() {
+                        Swal.fire({
+                            title: 'Added!',
+                            text: 'Question has been added to the pool.',
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'btn btn-success waves-effect waves-light'
+                            },
+                            buttonsStyling: false
+                        });
+                    })
+                    .fail(function(response) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.responseText || 'Failed to add question',
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-danger waves-effect waves-light'
+                            },
+                            buttonsStyling: false
+                        });
+                    });
+                }
+            });
+        }
+    </script>
+}

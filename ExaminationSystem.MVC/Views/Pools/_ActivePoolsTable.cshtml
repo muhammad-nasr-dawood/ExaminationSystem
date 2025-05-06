@@ -32,7 +32,9 @@
                                         <i class="ti ti-dots-vertical"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="javascript:void(0);"><i class="ti ti-pencil me-1"></i> Edit</a>
+                                        <a class="dropdown-item" href="@Url.Action("PoolQuestions", "Pools", new { PoolId = pool.PId, CourseId = course.Key, Page = 1, Limit = 50, QType = 1, OType = 1 })">
+                                            <i class="ti ti-pencil me-1"></i> Edit
+                                        </a>
                                         <a class="dropdown-item" href="javascript:void(0);"><i class="ti ti-trash me-1"></i> Delete</a>
                                     </div>
                                 </div>

@@ -1,27 +1,75 @@
 @{
-  TempData.Keep();
-  string? currentPage =  ViewContext.HttpContext.Request.Path;
-  ViewData["containerNav"] ??= "container-fluid";
+	TempData.Keep();
+	string? currentPage = ViewContext.HttpContext.Request.Path;
+	ViewData["containerNav"] ??= "container-fluid";
 }
 
 <!-- Menu -->
 <aside id="layout-menu" class="layout-menu-horizontal menu-horizontal  menu bg-menu-theme flex-grow-0">
-  <div class='@ViewData["containerNav"] d-flex h-100'>
-    @* ! Starter Kit menu-items *@
-    <ul class="menu-inner py-1">
-      <li class='menu-item@(currentPage == "/" ? " active" : "")'>
-        <a asp-controller="Home" asp-action="Index" class="menu-link">
-          <i class="menu-icon tf-icons ti ti-smart-home"></i>
-          <div data-i18n="Page 1">Page 1</div>
-        </a>
-      </li>
-      <li class='menu-item@(currentPage == "/Page2" ? " active" : "")'>
-        <a asp-controller="Page2" asp-action="Index" class="menu-link">
-          <i class="menu-icon tf-icons ti ti-app-window"></i>
-          <div data-i18n="Page 2">Page 2</div>
-        </a>
-      </li>
-    </ul>
-  </div>
+
+	@if (true)
+	{
+		<div class='@ViewData["containerNav"] d-flex h-100'>
+			@* ! Starter Kit menu-items *@
+			<ul class="menu-inner py-1">
+				<li class='menu-item@(currentPage == "/Pools/PoolQuestions" ? " active" : "")'>
+					<a asp-controller="Pools" asp-action="PoolQuestions"
+					   asp-route-PoolId="@TempData.Peek("CurrentPoolId")"
+					   asp-route-CourseId="@TempData.Peek("CurrentCourseId")"
+					   asp-route-Page="1"
+					   asp-route-Limit="10"
+					   class="menu-link">
+						<i class="menu-icon tf-icons ti ti-list-details"></i>
+						<div data-i18n="Added Questions">Added Questions</div>
+					</a>
+				</li>
+				<li class='menu-item@(currentPage == "/Pools/Bank" ? " active" : "")'>
+					<a asp-controller="Pools" asp-action="Bank"
+					   asp-route-CourseId="@TempData.Peek("CurrentCourseId")"
+					   class="menu-link">
+						<i class="menu-icon tf-icons ti ti-moneybag"></i>
+						Questions Bank
+					</a>
+				</li>
+				<li class='menu-item@(currentPage == "/Page2" ? " active" : "")'>
+					<a asp-controller="Page2" asp-action="Index" class="menu-link">
+						<i class="menu-icon tf-icons ti ti-squares"></i>
+						<div data-i18n="Other Pool">Other Pool</div>
+					</a>
+				</li>
+				<li class='menu-item@(currentPage == "/Page2" ? " active" : "")'>
+					<a asp-controller="Instructors" asp-action="CreateQuestion" class="menu-link">
+						<i class="menu-icon tf-icons ti ti-pencil-plus"></i>
+						<div data-i18n="Create New Question">Create New Question</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<button type="button" class="btn btn-primary m-3">
+			<span class="ti-xs ti ti-toggle-left me-2"></span>Criteria
+		</button>
+		<button type="button" class="btn btn-danger m-3">
+			<span class="ti-xs ti ti-logout-2 me-2"></span>Exit
+		</button>
+	}
+
+
+	@* ! Student Menu Items *@
+
+	<span id="time" class="badge bg-label-primary m-4 d-flex align-items-center"><span class="icon-xs icon-base ti ti-alarm me-2"></span>45:15:04</span>
 </aside>
 <!-- / Menu -->
+
+
+@* <script>
+	var timeDisplay = document.getElementById("time");
+
+
+	function refreshTime() {
+	  var dateString = new Date().toLocaleString("en-US", {timeZone: "America/Sao_Paulo"});
+	  var formattedString = dateString.replace(", ", " - ");
+	  timeDisplay.innerHTML =`<span class="icon-xs icon-base ti ti-alarm me-2"></span>`+ formattedString;
+	}
+
+	setInterval(refreshTime, 1000);
+</script> *@

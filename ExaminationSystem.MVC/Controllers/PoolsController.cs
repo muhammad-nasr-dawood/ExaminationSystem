@@ -12,10 +12,12 @@ namespace ExaminationSystem.MVC.Controllers
   {
 
 	IPoolService _poolService;
+	ITopicService TopicService;
 
-	public PoolsController(IPoolService poolService)
+	public PoolsController(IPoolService poolService, ITopicService topicService)
 	{
 	  _poolService = poolService;
+	  TopicService = topicService;
 	}
 
 	[HttpGet]
@@ -75,11 +77,18 @@ namespace ExaminationSystem.MVC.Controllers
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> PoolQuestions(int PoolId, int Page, int Limit, byte QType, int OType)
+	public async Task<IActionResult> PoolQuestions(int PoolId, int CourseId, int Page, int Limit, byte QType, int OType)
 	{
 	  try
 	  {
 		PaginatedPoolQsVM poolQuestions = await _poolService.PoolQuestions(PoolId, Page, Limit, QType, OType);
+
+		ViewBag.PoolId = PoolId;
+		ViewBag.QType = QType;
+		ViewBag.OType = OType;
+
+		TempData["CurrentPoolId"] = PoolId;
+		TempData["CurrentCourseId"] = CourseId;
 
 		return View(poolQuestions);
 	  }
@@ -266,7 +275,7 @@ namespace ExaminationSystem.MVC.Controllers
 		  return BadRequest("System/unknown error occurred");
 		else if (result == 1)
 		  return BadRequest("this pool dose not exist");
-		else if (result==2) 
+		else if (result == 2)
 		  return BadRequest("this pool has not been configured before this time.");
 		else //3 
 		  return BadRequest("you can not modify in this pool configuration.");
@@ -310,5 +319,29 @@ namespace ExaminationSystem.MVC.Controllers
 
 
 
+	[HttpGet]
+	public async Task<IActionResult> Bank(int? CourseId)
+	{
+	    var poolId = TempData.Peek("CurrentPoolId");
+	    
+	    // Use passed CourseId or fallback to TempData
+	    var courseId = CourseId ?? TempData.Peek("CurrentCourseId") as int?;
+	
+	    if (poolId == null || courseId == null)
+	    {
+	        return RedirectToAction("Active");
+	    }
+	
+	    // Store CourseId in TempData for next use
+	    TempData["CurrentCourseId"] = courseId;
+	
+	    // Get topics for the course
+	    var topics = await TopicService.GetTopicsByCourse((int)courseId, null, null);
+	
+	    ViewBag.PoolId = poolId;
+	    ViewBag.CourseId = courseId;
+	
+	    return View(topics);
 	}
+  }
 }//end of namespace
