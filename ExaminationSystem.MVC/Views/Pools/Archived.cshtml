@@ -1,5 +1,202 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@using ExaminationSystem.MVC.ViewModels.PoolViewModels
+
+@model PaginatedArchivedPoolsVM
 @{
+    ViewData["Title"] = "Archived Pools";
+    Layout = "_HorizontalLayout";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css" />
+    <link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
+}
+
+@section VendorScripts {
+    <script src="~/vendor/libs/sweetalert2/sweetalert2.js"></script>
+}
+
+<div class="card">
+    <h5 class="card-header">Archived Pools</h5>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Staff</th>
+                    <th>Department</th>
+                    <th>Questions Count</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @foreach (var pool in Model.Pools)
+                {
+                    <tr>
+                        <td><span class="fw-medium">@pool.Title</span></td>
+                        <td>@($"{pool.FName} {pool.Lname}")</td>
+                        <td>@pool.DName</td>
+                        <td>
+                            <span class="badge bg-label-info">
+                                @(pool.NoOfEasy + pool.NoOfMedium + pool.NoOfDifficult)
+                            </span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-icon btn-primary waves-effect waves-light"
+                                    onclick="viewPool(@pool.Id)">
+                                <span class="icon-base ti tabler-eye icon-22px"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="poolQuestionsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pool Questions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="questionsTable">
+                        <thead>
+                            <tr>
+                                <th>Content</th>
+                                <th>Type</th>
+                                <th>Level</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-label-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary waves-effect" onclick="usePool()">Use Pool</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section PageScripts {
+    <script>
+        let currentPoolId = null;
+
+        function viewPool(poolId) {
+            currentPoolId = poolId;
+            
+            // Fetch pool questions
+            $.get('@Url.Action("PoolQuestions", "Pools")', {
+                PoolId: poolId,
+                CourseId: @TempData.Peek("CurrentCourseId"),
+                Page: 1,
+                Limit: 50,
+                QType: 1,
+                OType: 1
+            }, 'json')
+            .done(function(data) {
+                if (data && data.questions) {
+                    updateQuestionsTable(data.questions);
+                    $('#poolQuestionsModal').modal('show');
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'No questions found in this pool',
+                        icon: 'warning',
+                        customClass: {
+                            confirmButton: 'btn btn-warning'
+                        },
+                        buttonsStyling: false
+                    });
+                }
+            })
+            .fail(function(response) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: response.responseText || 'Failed to load questions',
+                    icon: 'error',
+                    customClass: {
+                        confirmButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false
+                });
+            });
+        }
+
+        function updateQuestionsTable(questions) {
+            const tbody = $('#questionsTable tbody');
+            tbody.empty();
+            
+            questions.forEach(q => {
+                const levelBadge = q.level === 0 ? 'success' : q.level === 1 ? 'warning' : 'danger';
+                const levelText = q.level === 0 ? 'Easy' : q.level === 1 ? 'Intermediate' : 'Hard';
+                
+                tbody.append(`
+                    <tr>
+                        <td><span class="fw-medium">${q.content}</span></td>
+                        <td>${q.type === 1 ? 'MCQ' : 'T/F'}</td>
+                        <td><span class="badge bg-label-${levelBadge}">${levelText}</span></td>
+                    </tr>
+                `);
+            });
+        }
+
+        function usePool() {
+            if (!currentPoolId) return;
+
+            const destPoolId = @TempData.Peek("CurrentPoolId");
+            
+            Swal.fire({
+                title: 'Use Pool',
+                text: 'Are you sure you want to use this pool? All questions will be copied to your current pool.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, use it!',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: 'btn btn-primary me-3',
+                    cancelButton: 'btn btn-label-secondary'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("UsePool", "Pools")', {
+                        staffId: 40404040404040, // Replace with actual staff ID from claims
+                        srcPoolId: currentPoolId,
+                        destPoolId: destPoolId
+                    })
+                    .done(function() {
+                        $('#poolQuestionsModal').modal('hide');
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Pool questions have been copied.',
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            },
+                            buttonsStyling: false
+                        }).then(() => {
+                            window.location.href = '@Url.Action("PoolQuestions", "Pools")?PoolId=' + destPoolId;
+                        });
+                    })
+                    .fail(function(response) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.responseText,
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            },
+                            buttonsStyling: false
+                        });
+                    });
+                }
+            });
+        }
+    </script>
 }

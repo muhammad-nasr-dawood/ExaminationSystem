@@ -31,10 +31,15 @@
 						Questions Bank
 					</a>
 				</li>
-				<li class='menu-item@(currentPage == "/Page2" ? " active" : "")'>
-					<a asp-controller="Page2" asp-action="Index" class="menu-link">
+				<li class='menu-item@(currentPage == "/Archived" ? " active" : "")'>
+					<a asp-controller="Pools" asp-action="Archived"
+					   asp-route-CourseId="@TempData.Peek("CurrentCourseId")"
+					   asp-route-page="1"
+					   asp-route-limit="10"
+					   asp-route-order="1"
+					   class="menu-link">
 						<i class="menu-icon tf-icons ti ti-squares"></i>
-						<div data-i18n="Other Pool">Other Pool</div>
+						<div data-i18n="Arcived Pool">Archived Pool</div>
 					</a>
 				</li>
 				<li class='menu-item@(currentPage == "/Page2" ? " active" : "")'>
