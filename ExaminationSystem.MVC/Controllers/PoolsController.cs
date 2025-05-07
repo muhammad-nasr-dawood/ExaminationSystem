@@ -98,6 +98,28 @@ namespace ExaminationSystem.MVC.Controllers
 	  }
 	}
 
+	[HttpGet]
+	public async Task<IActionResult> ArchivedPoolQuestions(int PoolId, int CourseId, int Page, int Limit, byte QType, int OType)
+	{
+	  try
+	  {
+		PaginatedPoolQsVM poolQuestions = await _poolService.PoolQuestions(PoolId, Page, Limit, QType, OType);
+
+		ViewBag.PoolId = PoolId;
+		ViewBag.QType = QType;
+		ViewBag.OType = OType;
+
+		TempData["CurrentPoolId"] = PoolId;
+		TempData["CurrentCourseId"] = CourseId;
+
+		return Json(poolQuestions);
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+	}
+
 	[HttpPut]
 	public async Task<IActionResult> CreatePool(long staffId, int courseId, int deptId, int branchId)
 	{
@@ -186,7 +208,7 @@ namespace ExaminationSystem.MVC.Controllers
 		int result = await _poolService.AddQuestionsToPool(staffId, poolId, QIDS);
 
 		if (result == 0)
-		  return View(result);
+		  return Ok("Question Added Successfully");
 
 		if (result == -1)
 		  return BadRequest("System/unknown error occurred");
