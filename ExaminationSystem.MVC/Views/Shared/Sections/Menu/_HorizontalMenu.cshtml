@@ -44,11 +44,52 @@
 						<div data-i18n="Arcived Pool">Archived Pool</div>
 					</a>
 				</li>
-				<li class='menu-item@(currentPage == "/Page2" ? " active" : "")'>
+				@* <li class='menu-item@(currentPage == "/Page2" ? " active" : "")'>
 					<a asp-controller="Instructors" asp-action="CreateQuestion" class="menu-link">
 						<i class="menu-icon tf-icons ti ti-pencil-plus"></i>
 						<div data-i18n="Create New Question">Create New Question</div>
 					</a>
+				</li> *@
+				<li class='menu-item@(currentPage.StartsWith("/Questions") ? " active" : "")'>
+					<a href="javascript:void(0)" class="menu-link menu-toggle">
+						<i class="menu-icon tf-icons ti ti-pencil-plus"></i>
+						<div data-i18n="Add Questions">Add Questions</div>
+					</a>
+					<ul class="menu-sub">
+						<li class='menu-item@(currentPage == "/Questions/AddMCQQuestion" ? " active" : "")'>
+							<a asp-controller="Questions" asp-action="AddMCQQuestion" class="menu-link">
+								<i class="menu-icon tf-icons ti ti-grid-dots"></i>
+								<div data-i18n="Multiple Choice">Multiple Choice</div>
+							</a>
+						</li>
+						<li class='menu-item@(currentPage == "/Questions/AddTFQuestion" ? " active" : "")'>
+							<a asp-controller="Questions" 
+							   asp-action="AddTFQuestion" 
+							   asp-route-courseId="@TempData.Peek("CurrentCourseId")"
+							   class="menu-link">
+							    <i class="menu-icon tf-icons ti ti-checkbox"></i>
+							    <div data-i18n="True / False">True / False</div>
+							</a>
+						</li>
+						<li class='menu-item@(currentPage == "/Ecommerce/Dashboard" ? " active" : "")'>
+							<a asp-controller="Ecommerce" asp-action="Dashboard" class="menu-link">
+								<i class='menu-icon tf-icons ti ti-shopping-cart'></i>
+								<div data-i18n="eCommerce">eCommerce</div>
+							</a>
+						</li>
+						<li class='menu-item@(currentPage == "/Logistics/Dashboard" ? " active" : "")'>
+							<a asp-controller="Logistics" asp-action="Dashboard" class="menu-link">
+								<i class='menu-icon tf-icons ti ti-truck'></i>
+								<div data-i18n="Logistics">Logistics</div>
+							</a>
+						</li>
+						<li class='menu-item@(currentPage == "/Academy/Dashboard" ? " active" : "")'>
+							<a asp-controller="Academy" asp-action="Dashboard" class="menu-link">
+								<i class='menu-icon tf-icons ti ti-book'></i>
+								<div data-i18n="Academy">Academy</div>
+							</a>
+						</li>
+					</ul>
 				</li>
 			</ul>
 		</div>

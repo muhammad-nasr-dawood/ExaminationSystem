@@ -8,11 +8,13 @@ namespace ExaminationSystem.MVC.Controllers
 {
   public class QuestionsController : Controller
   {
-	private IQuestionService _questionService;
+	private readonly IQuestionService _questionService;
+	private readonly ITopicService _topicService;
 
-	public QuestionsController(IQuestionService questionService)
+	public QuestionsController(IQuestionService questionService, ITopicService topicService)
 	{
 	  _questionService = questionService;
+	  _topicService = topicService;
 	}
 
 
@@ -33,46 +35,57 @@ namespace ExaminationSystem.MVC.Controllers
 
 	[HttpGet]
 
-	public IActionResult AddTFQuestion()
+	public async Task<IActionResult> AddTFQuestion(int courseId)
 	{
-	  AddTFQuestionVM TFQObj = new AddTFQuestionVM();
-	  return View(model:TFQObj);
+	  try
+	  {
+		var topics = await _topicService.GetTopicsByCourse(courseId, null, null);
+		ViewBag.Topics = topics;
+		ViewBag.CourseId = courseId;
+
+		AddTFQuestionVM TFQObj = new AddTFQuestionVM();
+		return View(model: TFQObj);
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> AddTFQuestion([FromForm]AddTFQuestionVM TFQObj)
+	public async Task<IActionResult> AddTFQuestion([FromForm] AddTFQuestionVM TFQObj)
 	{
-	  if (!ModelState.IsValid)
-		return BadRequest(ModelState);
-
-	 
-	  int result = await _questionService.AddTFQueston(TFQObj);
-
-	  // faild to add question 
-	  if (result == -1)
+	  try
 	  {
-		ModelState.AddModelError(string.Empty, "Failed to add question. Please try again.");
-		return View(TFQObj); // return to same view with validation message
+		if (!ModelState.IsValid)
+		  return BadRequest(ModelState);
+
+		int result = await _questionService.AddTFQueston(TFQObj);
+
+		if (result == -1)
+		{
+		  return BadRequest("Failed to add question. Please try again.");
+		}
+		return Ok("Question added successfully! 😊");
 	  }
-
-	  string successMessage = "Question added successfully.😊😊";
-	  
-	  return RedirectToAction("Index",successMessage); // index must the incomming page till now i don't know it 
-
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
 	}
 
 
 	[HttpGet]
+
 	public IActionResult AddMCQQuestion()
 	{
 	  AddMCQQuestionVM MCQObj = new AddMCQQuestionVM();
 	  return View(model: MCQObj);
 	}
 
-	[HttpPost]
+
 	public async Task<IActionResult> AddMCQQuestion([FromForm] AddMCQQuestionVM MCQObj)
 	{
-
 	  if (!ModelState.IsValid)
 		return BadRequest(ModelState);
 	  int result = await _questionService.AddMCQQuestion(MCQObj);
@@ -90,6 +103,6 @@ namespace ExaminationSystem.MVC.Controllers
 
 
 
-	}
+  }
 }
 

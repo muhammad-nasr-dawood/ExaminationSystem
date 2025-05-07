@@ -1,0 +1,128 @@
+@using ExaminationSystem.MVC.ViewModels.Questions
+
+@model AddTFQuestionVM
+@{
+    ViewData["Title"] = "Add T/F Question";
+    Layout = "_HorizontalLayout";
+}
+
+@section PageScripts {
+    <script src="~/js/form-input-group.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#addQuestionForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                var formData = {
+                    Content: $('.message-input').val(),
+                    IsTrue: $('#customRadioTemp1').is(':checked'),
+                    Level: $('#questionLevel').val(),
+                    TopicId: $('#topicSelect').val(),
+                    StaffId: 40404040404040 // Replace with actual staff ID
+                };
+
+                $.ajax({
+                    url: '@Url.Action("AddTFQuestion", "Questions")',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response,
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            },
+                            buttonsStyling: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: xhr.responseText,
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            },
+                            buttonsStyling: false
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<div class="card mb-6">
+    <h5 class="card-header">Add True/False Question</h5>
+    <div class="card-body">
+        <form id="addQuestionForm">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Topic</label>
+                    <select id="topicSelect" class="form-select" required>
+                        <option value="">Select Topic</option>
+                        @foreach (var topic in ViewBag.Topics)
+                        {
+                            <option value="@topic.Id">@topic.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Question Level</label>
+                    <select id="questionLevel" class="form-select" required>
+                        <option value="">Select Level</option>
+                        <option value="0">Easy</option>
+                        <option value="1">Intermediate</option>
+                        <option value="2">Hard</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Question Content</label>
+                <div class="input-group input-group-merge form-send-message">
+                    <input type="text" class="form-control message-input" 
+                           placeholder="Enter your question" 
+                           required
+                           minlength="30">
+                    <span class="message-actions input-group-text">
+                        <i class="ti ti-microphone cursor-pointer speech-to-text"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="form-label">Correct Answer</label>
+                <div class="col-md-6">
+                    <div class="form-check custom-option custom-option-success">
+                        <label class="form-check-label custom-option-content" for="customRadioTemp1">
+                            <input name="customRadioTemp" class="form-check-input" type="radio" value="true" id="customRadioTemp1" checked>
+                            <span class="custom-option-header">
+                                <span class="h6 mb-0">True</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check custom-option custom-option-success">
+                        <label class="form-check-label custom-option-content" for="customRadioTemp2">
+                            <input name="customRadioTemp" class="form-check-input" type="radio" value="false" id="customRadioTemp2">
+                            <span class="custom-option-header">
+                                <span class="h6 mb-0">False</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">
+                    <span class="ti-xs ti ti-plus me-1"></span>Add Question
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
