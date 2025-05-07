@@ -38,7 +38,7 @@ namespace ExaminationSystem.MVC.Controllers
 	public async Task<IActionResult> Active()
 	{
 	  //i need to get on the staff id from claim
-	  List<GenaricPoolState<ActivePoolsResult>>? GActivePoolList = await _poolService.ActivePools(40404040404040);
+	   GenaricPoolState<ActivePoolsResult>? GActivePoolList = await _poolService.ActivePools(40404040404040);
 
 	  if (GActivePoolList == null)
 		return BadRequest("No Active Pools Found");
@@ -314,10 +314,6 @@ namespace ExaminationSystem.MVC.Controllers
 		return BadRequest(ex.Message);
 	  }
 	}
-
-
-
-
 
 	[HttpGet]
 	public async Task<IActionResult> Bank(int? CourseId)

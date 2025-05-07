@@ -1,6 +1,6 @@
 @using ExaminationSystem.MVC.ViewModels.PoolViewModels
 
-@model List<GenaricPoolState<ActivePoolsResult>>
+@model  GenaricPoolState<ActivePoolsResult>
 
 <table class="table table-hover" id="poolsTable">
     <thead>
@@ -13,7 +13,11 @@
         </tr>
     </thead>
     <tbody class="table-border-bottom-0">
-        @foreach (var branch in Model.First().Branches)
+
+
+      @* //the outer for each is going to execute only once *@
+
+        @foreach (var branch in Model.Branches) 
         {
             foreach (var dept in branch.Value.Departments)
             {

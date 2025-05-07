@@ -8,10 +8,14 @@ namespace ExaminationSystem.MVC.MappingProfiles
   {
 	public GenericPoolStateProfile()
 	{
-	  CreateMap< T, GenaricPoolState<T> >().AfterMap((src, dest) =>
+	  CreateMap< List<T>, GenaricPoolState<T> >().AfterMap((src, dest) =>
 	  {
-		dynamic dynamicSrc = src;
 
+		//dynamic dynamicSrc = src;
+
+
+		foreach(dynamic dynamicSrc in src)
+		{
 		  // Get values
 		  int branchId = dynamicSrc.PBranchId;
 		  int deptId = dynamicSrc.PDeptId;
@@ -69,6 +73,7 @@ namespace ExaminationSystem.MVC.MappingProfiles
 		  }
 		 
 		 
+		} 
 
 	  });
 	}

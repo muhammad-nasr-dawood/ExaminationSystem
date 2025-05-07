@@ -31,14 +31,14 @@ namespace ExaminationSystem.MVC.Services
 	  return Map.Map<TeachAtVM>(TAL);
 	}
 
-	public async Task<List<GenaricPoolState<ActivePoolsResult>>?> ActivePools(long staffId)
+	public async Task<GenaricPoolState<ActivePoolsResult>?> ActivePools(long staffId)
 	{
 	  List<ActivePoolsResult> activePools = await UnitOfWork.PoolRepo.ActivePools(staffId);
 
 	  if (activePools == null)
 		return null;
 
-	  return Map.Map<List<GenaricPoolState<ActivePoolsResult>>>(activePools);
+	  return Map.Map<GenaricPoolState<ActivePoolsResult>>(activePools);
 	}
 
 	public async Task<List<GenaricPoolState<ProcessedPoolsResult>>?> ProcessedPools(long staffId)
@@ -73,6 +73,7 @@ namespace ExaminationSystem.MVC.Services
 		{
 		  AllPools.Append(pool.JSON_F52E2B6118A111d1B10500805F49916B);
 		}
+
 		// Map the result to the desired view model  
 		PaginatedArchivedPoolsVM? result = JsonConvert.DeserializeObject<PaginatedArchivedPoolsVM>(AllPools.ToString());
 

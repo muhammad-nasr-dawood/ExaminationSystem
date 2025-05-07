@@ -14,7 +14,7 @@ namespace ExaminationSystem.MVC.IService
 
 	public Task<TeachAtVM?> TeachAt(long staffId);
 
-	public Task<List<GenaricPoolState<ActivePoolsResult>>?> ActivePools(long staffId);
+	public Task<GenaricPoolState<ActivePoolsResult>?> ActivePools(long staffId);
 
 	public Task<List<GenaricPoolState<ProcessedPoolsResult>>?> ProcessedPools(long staffId);
 
