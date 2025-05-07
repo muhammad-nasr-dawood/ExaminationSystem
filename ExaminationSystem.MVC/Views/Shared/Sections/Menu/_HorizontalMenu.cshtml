@@ -57,9 +57,12 @@
 					</a>
 					<ul class="menu-sub">
 						<li class='menu-item@(currentPage == "/Questions/AddMCQQuestion" ? " active" : "")'>
-							<a asp-controller="Questions" asp-action="AddMCQQuestion" class="menu-link">
-								<i class="menu-icon tf-icons ti ti-grid-dots"></i>
-								<div data-i18n="Multiple Choice">Multiple Choice</div>
+							<a asp-controller="Questions" 
+							   asp-action="AddMCQQuestion" 
+							   asp-route-courseId="@TempData.Peek("CurrentCourseId")"
+							   class="menu-link">
+							    <i class="menu-icon tf-icons ti ti-grid-dots"></i>
+							    <div data-i18n="Multiple Choice">Multiple Choice</div>
 							</a>
 						</li>
 						<li class='menu-item@(currentPage == "/Questions/AddTFQuestion" ? " active" : "")'>

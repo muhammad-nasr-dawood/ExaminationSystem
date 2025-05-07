@@ -77,28 +77,54 @@ namespace ExaminationSystem.MVC.Controllers
 
 	[HttpGet]
 
-	public IActionResult AddMCQQuestion()
+	[HttpGet]
+	public async Task<IActionResult> AddMCQQuestion(int courseId)
 	{
-	  AddMCQQuestionVM MCQObj = new AddMCQQuestionVM();
-	  return View(model: MCQObj);
+	    try
+	    {
+	        if (courseId <= 0)
+	        {
+	            return BadRequest("Invalid Course ID. It must be a positive integer.");
+	        }
+	
+	        var topics = await _topicService.GetTopicsByCourse(courseId, null, null);
+	        ViewBag.Topics = topics;
+	        ViewBag.CourseId = courseId;
+	        
+	        AddMCQQuestionVM MCQObj = new AddMCQQuestionVM();
+	        return View(model: MCQObj);
+	    }
+	    catch (Exception ex)
+	    {
+	        return BadRequest(ex.Message);
+	    }
 	}
-
-
+	
+	[HttpPost]
 	public async Task<IActionResult> AddMCQQuestion([FromForm] AddMCQQuestionVM MCQObj)
 	{
-	  if (!ModelState.IsValid)
-		return BadRequest(ModelState);
-	  int result = await _questionService.AddMCQQuestion(MCQObj);
-	  // faild to add question 
-	  if (result == -1)
-	  {
-		ModelState.AddModelError(string.Empty, "Failed to add question. Please try again.");
-		return View(MCQObj); // return to same view with validation message
-	  }
-	  string successMessage = "Question added successfully.😊😊";
-
-	  return RedirectToAction("Index", successMessage); // index must the incomming page till now i don't know it 
-
+	    try
+	    {
+	        if (!ModelState.IsValid)
+	            return BadRequest(ModelState);
+	
+	        if (MCQObj.Answers.Count < 3)
+	            return BadRequest("At least 3 answers are required.");
+	
+	        if (MCQObj.AnswerIndex >= MCQObj.Answers.Count)
+	            return BadRequest("Invalid correct answer index.");
+	
+	        int result = await _questionService.AddMCQQuestion(MCQObj);
+	        
+	        if (result == -1)
+	            return BadRequest("Failed to add question. Please try again.");
+	
+	        return Ok("Question added successfully! 😊");
+	    }
+	    catch (Exception ex)
+	    {
+	        return BadRequest(ex.Message);
+	    }
 	}
 
 
