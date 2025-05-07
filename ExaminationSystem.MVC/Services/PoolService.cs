@@ -71,11 +71,10 @@ namespace ExaminationSystem.MVC.Services
 
 		foreach (var pool in jsonList)
 		{
-		  AllPools.Append(pool);
+		  AllPools.Append(pool.JSON_F52E2B6118A111d1B10500805F49916B);
 		}
 		// Map the result to the desired view model  
-		PaginatedArchivedPoolsVM? result =
-		  JsonConvert.DeserializeObject<PaginatedArchivedPoolsVM>(AllPools.ToString());
+		PaginatedArchivedPoolsVM? result = JsonConvert.DeserializeObject<PaginatedArchivedPoolsVM>(AllPools.ToString());
 
 		if (result == null)
 		  throw new Exception("Mapping failed");
