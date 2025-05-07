@@ -43,7 +43,7 @@
                         <td>
                             <button type="button" class="btn btn-icon btn-primary waves-effect waves-light"
                                     onclick="viewPool(@pool.Id)">
-                                <span class="icon-base ti tabler-eye icon-22px"></span>
+                                <span class="icon-base ti ti-eye icon-22px"></span>
                             </button>
                         </td>
                     </tr>
@@ -91,7 +91,7 @@
             currentPoolId = poolId;
             
             // Fetch pool questions
-            $.get('@Url.Action("PoolQuestions", "Pools")', {
+            $.get('@Url.Action("ArchivedPoolQuestions", "Pools")', {
                 PoolId: poolId,
                 CourseId: @TempData.Peek("CurrentCourseId"),
                 Page: 1,

@@ -17,7 +17,12 @@
 
 <div class="row">
     <div class="card mb-6" id="btn-dropdown-demo">
-        <h5 class="card-header">Choose Question Type</h5>
+        <h5 class="card-header d-flex justify-content-between align-items-center">
+            <span>Choose Question Type</span>
+            <button type="button" class="btn btn-danger waves-effect" onclick="removeAllQuestions()">
+                <span class="ti-xs ti ti-trash me-1"></span>Delete All
+            </button>
+        </h5>
         <div class="card-body">
             <div class="btn-group">
                 <button type="button" class="btn btn-primary dropdown-toggle waves-effect" data-bs-toggle="dropdown" aria-expanded="false">
@@ -193,54 +198,122 @@
 
 
 @section PageScripts {
-	<script>
-		function removeQuestion(questionId) {
-			console.log("asjobncjndl");
-			Swal.fire({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonText: 'Yes, delete it!',
-				customClass: {
-					confirmButton: 'btn btn-danger me-3',
-					cancelButton: 'btn btn-label-secondary'
-				},
-				buttonsStyling: false
-			}).then((result) => {
-				if (result.isConfirmed) {
-					$.post('@Url.Action("RemoveQuestionFromPool", "Pools")', {
-						staffId: 40404040404040, // Replace with actual staff ID from claims
-						poolId: @ViewBag.PoolId,
-						QIDS: [questionId]
-					})
-					.done(function() {
-						Swal.fire({
-							icon: 'success',
-							title: 'Deleted!',
-							text: 'Question has been removed.',
-							customClass: {
-								confirmButton: 'btn btn-success'
-							},
-							buttonsStyling: false
-						}).then(() => {
-							// Reload the current page to reflect changes
-							window.location.reload();
-						});
-					})
-					.fail(function(response) {
-						Swal.fire({
-							icon: 'error',
-							title: 'Error!',
-							text: response.responseText,
-							customClass: {
-								confirmButton: 'btn btn-danger'
-							},
-							buttonsStyling: false
-						});
-					});
-				}
-			});
-		}
-	</script>
-                                    }
+    <script>
+        function removeQuestion(questionId) {
+            console.log("asjobncjndl");
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                customClass: {
+                    confirmButton: 'btn btn-danger me-3',
+                    cancelButton: 'btn btn-label-secondary'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("RemoveQuestionFromPool", "Pools")', {
+                        staffId: 40404040404040, // Replace with actual staff ID from claims
+                        poolId: @ViewBag.PoolId,
+                        QIDS: [questionId]
+                    })
+                    .done(function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'Question has been removed.',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            },
+                            buttonsStyling: false
+                        }).then(() => {
+                            // Reload the current page to reflect changes
+                            window.location.reload();
+                        });
+                    })
+                    .fail(function(response) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.responseText,
+                            customClass: {
+                                confirmButton: 'btn btn-danger'
+                            },
+                            buttonsStyling: false
+                        });
+                    });
+                }
+            });
+        }
+
+        function removeAllQuestions() {
+        // Collect all question IDs
+        const questionIds = [];
+        @foreach (var question in Model.Questions) {
+            @:questionIds.push(@question.Id);
+        }
+
+        if (questionIds.length === 0) {
+            Swal.fire({
+                title: 'No Questions',
+                text: 'There are no questions to delete.',
+                icon: 'info',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Delete All Questions?',
+            text: `Are you sure you want to delete all ${questionIds.length} questions? This cannot be undone!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete all!',
+            customClass: {
+                confirmButton: 'btn btn-danger me-3',
+                cancelButton: 'btn btn-label-secondary'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post('@Url.Action("RemoveQuestionFromPool", "Pools")', {
+                    staffId: 40404040404040, // Replace with actual staff ID from claims
+                    poolId: @ViewBag.PoolId,
+                    QIDS: questionIds
+                })
+                .done(function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'All questions have been removed.',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        },
+                        buttonsStyling: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                })
+                .fail(function(response) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.responseText,
+                        customClass: {
+                            confirmButton: 'btn btn-danger'
+                        },
+                        buttonsStyling: false
+                    });
+                });
+            }
+        });
+    }
+    </script>
+
+    
+}

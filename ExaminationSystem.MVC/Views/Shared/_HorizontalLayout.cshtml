@@ -25,7 +25,29 @@
 
 @section VendorStyles{ @RenderSection("VendorStyles", required: false)}
 
-@section PageStyles{ @RenderSection("PageStyles", required: false)}
+@section PageStyles {
+    <style>
+        body.modal-open {
+            overflow: hidden;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999 !important;
+        }
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9998 !important;
+        }
+        .modal-dialog {
+            z-index: 10000 !important;
+        }
+    </style>
+    @RenderSection("PageStyles", required: false)
+}
 
 @section VendorScripts{ @RenderSection("VendorScripts", required: false)}
 
@@ -78,3 +100,41 @@
 }
 <!-- Drag Target Area To SlideIn Menu On Small Screens -->
 <div class="drag-target"></div>
+
+<!-- After the drag-target div, at the very end of the file -->
+<!-- Global Modal -->
+<div class="modal fade" id="exLargeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel4">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col mb-4">
+                        <label for="nameExLarge" class="form-label">Name</label>
+                        <input type="text" id="nameExLarge" class="form-control" placeholder="Enter Name">
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col mb-0">
+                        <label for="emailExLarge" class="form-label">Email</label>
+                        <input type="email" id="emailExLarge" class="form-control" placeholder="xxxx&#64;xxx.xx">
+                    </div>
+                    <div class="col mb-0">
+                        <label for="dobExLarge" class="form-label">DOB</label>
+                        <input type="date" id="dobExLarge" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- At the very end of the body -->
+@await Html.PartialAsync("_Modals")
