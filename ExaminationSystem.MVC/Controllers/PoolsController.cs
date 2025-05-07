@@ -228,8 +228,8 @@ namespace ExaminationSystem.MVC.Controllers
 	{
 	  try
 	  {
-		if (excludedStdIds == null || excludedStdIds.Length == 0)
-		  return BadRequest("No Questions Found");
+		//if (excludedStdIds == null || excludedStdIds.Length == 0)
+		//  return BadRequest("No Questions Found");
 		if (noOfDiff < 0 || noOfMed < 0 || noOfEasy < 0 || gradeForDiff < 0 || gradeForMid < 0 || gradeForEasy < 0 || noOfModels < 0)
 		  return BadRequest("invalid params");
 
