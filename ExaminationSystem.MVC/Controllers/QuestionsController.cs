@@ -63,16 +63,16 @@ namespace ExaminationSystem.MVC.Controllers
 
 
 	[HttpGet]
-
 	public IActionResult AddMCQQuestion()
 	{
 	  AddMCQQuestionVM MCQObj = new AddMCQQuestionVM();
 	  return View(model: MCQObj);
 	}
 
-
+	[HttpPost]
 	public async Task<IActionResult> AddMCQQuestion([FromForm] AddMCQQuestionVM MCQObj)
 	{
+
 	  if (!ModelState.IsValid)
 		return BadRequest(ModelState);
 	  int result = await _questionService.AddMCQQuestion(MCQObj);

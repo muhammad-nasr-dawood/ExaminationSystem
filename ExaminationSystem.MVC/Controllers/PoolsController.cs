@@ -147,18 +147,18 @@ namespace ExaminationSystem.MVC.Controllers
 	  {
 		int result = await _poolService.UsePool(staffId, srcPoolId, destPoolId);
 
-		if (result == 0)
-		  return View(result);
+		if (result >=0)
+		  return View(result); 
 
 		if (result == -1)
 		  return BadRequest("System/unknown error occurred");
 
-		else if (result == 1)
+		else if (result == -2)
 		  return BadRequest("invalid src pool Id");
 
-		else if (result == 2)
+		else if (result == -3)
 		  return BadRequest("you cannot modify this pool");
-		else // 3 
+		else // -4 
 		  return BadRequest("invalid des pool Id");
 
 
