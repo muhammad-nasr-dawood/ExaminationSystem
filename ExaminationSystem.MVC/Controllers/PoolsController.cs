@@ -181,7 +181,7 @@ namespace ExaminationSystem.MVC.Controllers
 		int result = await _poolService.RemoveQuestionFromPool(staffId, poolId, QIDS);
 
 		if (result == 0)
-		  return View(result);
+		  return Ok("Question Removed Successfully");
 		if (result == -1)
 		  return BadRequest("System/unknown error occurred");
 		else if (result == 1)
