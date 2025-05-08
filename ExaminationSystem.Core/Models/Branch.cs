@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExaminationSystem.Core.Models;
 
-[Index("ZipCode", Name = "UQ_Branches_ZipCode", IsUnique = true)]
 public partial class Branch
 {
     [Key]
@@ -34,9 +33,9 @@ public partial class Branch
     [InverseProperty("Branch")]
     public virtual ICollection<StaffBranchDepartmentManagement> StaffBranchDepartmentManagements { get; set; } = new List<StaffBranchDepartmentManagement>();
 
-    
     [InverseProperty("Branch")]
-    public virtual ICollection<StaffBranchIntakeWorksFor> StaffBranchIntakeWorksFors { get; set; } = new List<StaffBranchIntakeWorksFor>();
+    public virtual ICollection<StaffBranchIntakeDepartmentCourseTeach> StaffBranchIntakeDepartmentCourseTeaches { get; set; } = new List<StaffBranchIntakeDepartmentCourseTeach>();
+
     [InverseProperty("Branch")]
     public virtual ICollection<StaffBranchIntakeWorksFor> StaffBranchIntakeWorksFors { get; set; } = new List<StaffBranchIntakeWorksFor>();
 

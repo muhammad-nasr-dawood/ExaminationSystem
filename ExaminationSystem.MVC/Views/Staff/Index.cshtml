@@ -143,10 +143,6 @@
 	<div class="card-header border-bottom">
 		<h5 class="card-title mb-0">Filters</h5>
 		<div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
-			<div class="col-md-4 user_role"></div>
-			<div class="col-md-4 user_plan"></div>
-			<div class="col-md-4 user_status"></div>
-			<div class="col-md-4">
 
 			<div class="col-md-3">
 				<select id="branchFilter" class="form-select">
@@ -159,16 +155,6 @@
 					}
 				</select>
 			</div>
-			@* <div class="col-md-3"> *@
-			@* 	<select id="departmentFilter" class="form-select"> *@
-			@* 		<option value="">Filter by Department</option>  *@
-			@* 		@foreach (var dept in ViewBag.Departments)  *@
-			@* 		 {  *@
-			@* 			<option value="@dept.Id">@dept.Name</option>  *@
-			@* 		}  *@
-			@* 	</select> *@
-			@* </div> *@
-			<div class="col-md-4">
 
 			<div class="col-md-3">
 				<select id="departmentFilter" class="form-select">
@@ -187,17 +173,12 @@
 					<option value="false">Inactive</option>
 				</select>
 			</div>
-			<div class="col-md-4">
-				<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
-					Add Staff
-				</button>
-			</div>
 
 			@if (ViewBag.BranchId == null)
 			{
 				<div class="col-md-3">
 					<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
-						Add Student
+						Add Staff
 					</button>
 				</div>
 			}
@@ -378,19 +359,18 @@
 									</select>
 									<span asp-validation-for="Gender"></span>
 								</div>
-								<div class="col-6 mb-0">
+								<div class="col-12 mb-0">
 									<label for="dobBasic" asp-for="Bd" class="form-label">DOB</label>
 									<input type="date" asp-for="Bd" class="form-control">
 									<span asp-validation-for="Bd"></span>
 								</div>
-
 								<div class="col-sm-6">
 									<label class="form-label" asp-for="BranchId">Branch</label>
 									<select class="select2 form-select  w-auto" data-allow-clear="true" asp-for="BranchId" data-style="btn-transparent" data-icon-base="ti" data-tick-icon="ti-check text-white">
 										<option value="">No branch assigned</option>
 										@foreach (var branch in ViewBag.Branches)
 										{
-											<option value="@branch.Id">@branch.Location</option>
+											<option value="@branch.Id">@branch.LocationName</option>
 										}
 									</select>
 									<span asp-validation-for="BranchId"></span>

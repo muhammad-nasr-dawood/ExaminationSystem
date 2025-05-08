@@ -104,6 +104,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="col-sm-6 col-xl-3">
 		<div class="card">
 			<div class="card-body">
@@ -130,24 +131,24 @@
 	@if (ViewBag.DeptId != null || ViewBag.BranchId != null)
 	{
 		<div>
-		@if (ViewBag.BranchId != 0)
-		{
-			<a href="@Url.Action("ShowDepartments", "Branches",new{branchId = ViewBag.BranchId})" class="btn btn-primary">
+			@if (ViewBag.BranchId != 0)
+			{
+				<a href="@Url.Action("ShowDepartments", "Branches",new{branchId = ViewBag.BranchId})" class="btn btn-primary">
 
 					<i class="ti ti-arrow-left"></i> Go Back to Department List
-			</a>
-		}
-		else
-		{
-		<a href="@Url.Action("Index", "Departments")" class="btn btn-primary">
+				</a>
+			}
+			else
+			{
+				<a href="@Url.Action("Index", "Departments")" class="btn btn-primary">
 					<i class="ti ti-arrow-left"></i> Go Back to Department List
-		</a>
-		}
+				</a>
+			}
 		</div>
 	}
-	
 
-	</div>
+
+</div>
 <!-- Users List Table -->
 <div class="card">
 	<div class="card-header border-bottom">
@@ -161,7 +162,9 @@
 					<option value="">Filter by Branch</option>
 					@foreach (var branch in ViewBag.Branches)
 					{
-						<option value="@branch.Id">@branch.ZipCodeNavigation?.Governate</option>
+						<option value="@branch.Id" selected="@(ViewBag.BranchId != null && ViewBag.BranchId == branch.Id)">
+							@branch.LocationName
+						</option>
 					}
 				</select>
 			</div>
@@ -170,34 +173,12 @@
 					<option value="">Filter by Department</option>
 					@foreach (var dept in ViewBag.Departments)
 					{
-						<option value="@dept.Id">@dept.Name</option>
-					}
-				</select>
-			</div>
-         <div class="col-md-3">
-         <select id="branchFilter" class="form-select">
-        <option value="">Filter by Branch</option>
-        @foreach (var branch in ViewBag.Branches)
-        {
-						<option value="@branch.Id" selected="@(ViewBag.BranchId != null && ViewBag.BranchId == branch.Id)">
-							@branch.ZipCode
-						</option>
-
-        }
-    </select>
-</div>
-<div class="col-md-3">
-    <select id="departmentFilter" class="form-select">
-        <option value="">Filter by Department</option>
-        @foreach (var dept in ViewBag.Departments)
-        {
 						<option value="@dept.Id" selected="@(ViewBag.DeptId != null && ViewBag.DeptId == dept.Id)">
 							@dept.Name
 						</option>
-
-        }
-    </select>
-</div>
+					}
+				</select>
+			</div>
 			<div class="col-md-3">
 				<select id="statusFilter" class="form-select">
 					<option value="">Filter by Status</option>
@@ -205,16 +186,14 @@
 					<option value="false">In Active</option>
 				</select>
 			</div>
-
-			@if (ViewBag.BranchId==null && ViewBag.DeptId==null)
-				{
-					<div class="col-md-3">
-						<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
-							Add Student
-						</button>
-					</div>
-				}
-			
+			@if (ViewBag.BranchId == null && ViewBag.DeptId == null)
+			{
+				<div class="col-md-3">
+					<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
+						Add Student
+					</button>
+				</div>
+			}
 		</div>
 		<div class="table-responsive text-nowrap">
 			<table id="studentTable" class="table table-hover">
@@ -369,7 +348,7 @@
 										<option value="">-- Select Branch --</option>
 										@foreach (var branch in ViewBag.Branches)
 										{
-											<option value="@branch.Id">@branch.ZipCodeNavigation?.Governate</option>
+											<option value="@branch.Id">@branch.LocationName</option>
 										}
 									</select>
 									<span class="text-danger" asp-validation-for="SelectedBranchId"></span>
@@ -492,7 +471,7 @@
 								@* 	</button> *@
 								@* 	<button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-2">Next</span> <i class="ti ti-arrow-right ti-xs"></i></button> *@
 								@* </div> *@
-										<div class="col-12 d-flex justify-content-between">
+								<div class="col-12 d-flex justify-content-between">
 									<button class="btn btn-label-secondary btn-prev">
 										<i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
 										<span class="align-middle d-sm-inline-block d-none">Previous</span>
@@ -533,7 +512,7 @@
 						@* 		</div> *@
 						@* 	</div> *@
 						@* </div> *@
-							</form>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -552,204 +531,203 @@
 	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 	<script>
-		$(document).ready(function () {
-					$('.btn-submit').on('click', function (e) {
-				e.preventDefault();
+		  $(document).ready(function () {
+					  $('.btn-submit').on('click', function (e) {
+				  e.preventDefault();
 
-				let formData = {
-					Fname: $('input[name="Fname"]').val(),
-					Lname: $('input[name="Lname"]').val(),
-					Email: $('input[name="Email"]').val(),
-					Ssn: $('input[name="Ssn"]').val(),
-					PhoneNumber: $('input[name="PhoneNumber"]').val(),
-					Gender: $('select[name="Gender"]').val(),
-					Bd: $('input[name="Bd"]').val(),
-					ZipCode: $('select[name="ZipCode"]').val(),
-					StreetNo: $('input[name="StreetNo"]').val(),
-					Faculty: $('select[name="Faculty"]').val(),
-					GradYear: $('select[name="GradYear"]').val(),
-					Gpa: $('input[name="Gpa"]').val(),
-					SelectedDepartmentId: $('select[name="SelectedDepartmentId"]').val(),
-					SelectedBranchId: $('select[name="SelectedBranchId"]').val()
+				  let formData = {
+					  Fname: $('input[name="Fname"]').val(),
+					  Lname: $('input[name="Lname"]').val(),
+					  Email: $('input[name="Email"]').val(),
+					  Ssn: $('input[name="Ssn"]').val(),
+					  PhoneNumber: $('input[name="PhoneNumber"]').val(),
+					  Gender: $('select[name="Gender"]').val(),
+					  Bd: $('input[name="Bd"]').val(),
+					  ZipCode: $('select[name="ZipCode"]').val(),
+					  StreetNo: $('input[name="StreetNo"]').val(),
+					  Faculty: $('select[name="Faculty"]').val(),
+					  GradYear: $('select[name="GradYear"]').val(),
+					  Gpa: $('input[name="Gpa"]').val(),
+					  SelectedDepartmentId: $('select[name="SelectedDepartmentId"]').val(),
+					  SelectedBranchId: $('select[name="SelectedBranchId"]').val()
 
-				  };
+					};
 
-				$.ajax({
-					type: 'POST',
-					url: '/Students/Add',
-					data: formData,
-					success: function (response) {
-						if (response.success) {
-							$('#largeModal').modal('hide');
-							$('#studentTable').DataTable().ajax.reload();
-							Swal.fire('Success!', response.message, 'success');
-						} else {
-							Swal.fire('Failed!', response.message || 'Student could not be added.', 'error');
-						}
-					},
-					error: function (xhr) {
-						Swal.fire('Error!', 'Something went wrong while adding student.', 'error');
-					}
-				});
-			});
-					var table = $('#studentTable').DataTable({
-				processing: true,
-				serverSide: true,
-				ajax: {
-					url: '/Students/GetAllStudent',
-					type: 'POST',
-		data: function (d) {
-			d.branchId = $('#branchFilter').length && $('#branchFilter').is(':visible') ? $('#branchFilter').val() : '@(ViewBag.BranchId ?? 0)';
-			d.DeptId = $('#departmentFilter').length && $('#departmentFilter').is(':visible') ? $('#departmentFilter').val() : '@(ViewBag.DeptId ?? 0)';
-			d.statusFilter = $('#statusFilter').val();
-		},
+				  $.ajax({
+					  type: 'POST',
+					  url: '/Students/Add',
+					  data: formData,
+					  success: function (response) {
+						  if (response.success) {
+							  $('#largeModal').modal('hide');
+							  $('#studentTable').DataTable().ajax.reload();
+							  Swal.fire('Success!', response.message, 'success');
+						  } else {
+							  Swal.fire('Failed!', response.message || 'Student could not be added.', 'error');
+						  }
+					  },
+					  error: function (xhr) {
+						  Swal.fire('Error!', 'Something went wrong while adding student.', 'error');
+					  }
+				  });
+			  });
+					  var table = $('#studentTable').DataTable({
+				  processing: true,
+				  serverSide: true,
+				  ajax: {
+					  url: '/Students/GetAllStudent',
+					  type: 'POST',
+					  data: function (d) {
+						  d.branchId = $('#branchFilter').val();
+						  d.DeptId = $('#departmentFilter').val();
+						  d.statusFilter = $('#statusFilter').val();
+					  },
+					  dataSrc: function (json) {
+						  if (!json.data || json.data.length === 0) {
+							  console.log("No data returned from server.");
+						  } else {
+							  console.log("Returned data:", json.data);
+						  }
+						  return json.data;
+					  }
+				  },
+				  columns: [
+					  {
+						  data: 'imageUrl',
+						  render: function (data, type, row) {
+							  return `
+								  <img src="${data}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px;">
+							  `;
+						  }
+					  },
+					  { data: 'fullName' },
+					  { data: 'email' },
+					  { data: 'gender' },
+					  { data: 'faculty' },
+					  {
+						  data: 'isActive',
+						  render: function (isActive) {
+							  return isActive
+								  ? '<span class="badge bg-label-primary me-1">Active</span>'
+								  : '<span class="badge bg-label-danger me-1">Inactive</span>';
+						  }
+					  },
+					  {
+						  data: null,
+						  render: function (data) {
+							  return `
+								  <div class="dropdown">
+									  <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+										  <i class="ti ti-dots-vertical"></i>
+									  </button>
+									  <div class="dropdown-menu">
+										  <a class="dropdown-item" href="/Students/Details/${data.ssn}">
+											  <i class="ti ti-pencil me-1"></i> Details
+										  </a>
+									  </div>
+								  </div>`;
+						  }
+					  }
+				  ]
+				  ,
+				  language: {
+					  paginate: {
+						  previous: '<span aria-hidden="true">⟨</span>',
+						  next: '<span aria-hidden="true">⟩</span>'
+					  }
+				  }
+			  });
 
-					dataSrc: function (json) {
-						if (!json.data || json.data.length === 0) {
-							console.log("No data returned from server.");
-						} else {
-							console.log("Returned data:", json.data);
-						}
-						return json.data;
-					}
-				},
-				columns: [
-					{
-						data: 'imageUrl',
-						render: function (data, type, row) {
-							return `
-								<img src="${data}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px;">
-							`;
-						}
-					},
-					{ data: 'fullName' },
-					{ data: 'email' },
-					{ data: 'gender' },
-					{ data: 'faculty' },
-					{
-						data: 'isActive',
-						render: function (isActive) {
-							return isActive
-								? '<span class="badge bg-label-primary me-1">Active</span>'
-								: '<span class="badge bg-label-danger me-1">Inactive</span>';
-						}
-					},
-					{
-						data: null,
-						render: function (data) {
-							return `
-								<div class="dropdown">
-									<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-										<i class="ti ti-dots-vertical"></i>
-									</button>
-									<div class="dropdown-menu">
-										<a class="dropdown-item" href="/Students/Details/${data.ssn}">
-											<i class="ti ti-pencil me-1"></i> Details
-										</a>
-									</div>
-								</div>`;
-						}
-					}
-				]
-				,
-				language: {
-					paginate: {
-						previous: '<span aria-hidden="true">⟨</span>',
-						next: '<span aria-hidden="true">⟩</span>'
-					}
-				}
-			});
+			  // Search filter
+			  $('#searchTerm').on('input', function () {
+				  table.search($(this).val()).draw();
+			  });
 
-			// Search filter
-			$('#searchTerm').on('input', function () {
-				table.search($(this).val()).draw();
-			});
+			  // Dropdown filters
+			  $('#branchFilter, #departmentFilter, #statusFilter').change(function () {
+				  table.draw();
+			  });
+		  });
 
-			// Dropdown filters
-			$('#branchFilter, #departmentFilter, #statusFilter').change(function () {
-				table.draw();
+
+
+
+
+				  function confirmDelete(studentId) {
+			  Swal.fire({
+				  title: 'Are you sure?',
+				  text: "You won't be able to revert this!",
+				  icon: 'warning',
+				  showCancelButton: true,
+				  confirmButtonColor: '#3085d6',
+				  cancelButtonColor: '#d33',
+				  confirmButtonText: 'Yes, delete it!'
+			  }).then((result) => {
+				  if (result.isConfirmed) {
+					  $.ajax({
+						  url: `/Students/Delete/${studentId}`,
+						  type: 'POST',
+						  success: function (response) {
+							  if (response.success) {
+								  $('#studentTable').DataTable().ajax.reload();
+								  Swal.fire(
+									  'Deleted!',
+									  'Student member has been deleted.',
+									  'success'
+								  );
+							  } else {
+								  Swal.fire(
+									  'Error!',
+									  response.message || 'Failed to delete student member.',
+									  'error'
+								  );
+							  }
+						  },
+						  error: function () {
+							  Swal.fire(
+								  'Error!',
+								  'An error occurred while deleting the student member.',
+								  'error'
+							  );
+						  }
+					  });
+				  }
+			  });
+		  }
+
+
+		  $('#SelectedBranchId').on('change', function () {
+		  const branchId = $(this).val();
+		  const $departmentDropdown = $('#SelectedDepartmentId');
+
+		  $departmentDropdown.empty().append('<option value="">-- Select Department --</option>');
+
+		  if (!branchId) {
+			  $departmentDropdown.prop('disabled', true);
+			  return;
+		  }
+
+		  $.ajax({
+			  url: '/Students/GetDepartmentsByBranch',
+			  type: 'GET',
+			  data: { branchId: branchId },
+			  success: function (departments) {
+				  departments.forEach(function (dept) {
+					  $departmentDropdown.append(
+						  $('<option>', {
+							  value: dept.id,
+							  text: dept.name
+						  })
+					  );
+				  });
+				  $departmentDropdown.prop('disabled', false);
+				  },
+				  error: function () {
+					  alert('Failed to load departments.');
+					  $departmentDropdown.prop('disabled', true);
+				  }
 			});
 		});
-
-
-
-
-
-				function confirmDelete(studentId) {
-			Swal.fire({
-				title: 'Are you sure?',
-				text: "You won't be able to revert this!",
-				icon: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Yes, delete it!'
-			}).then((result) => {
-				if (result.isConfirmed) {
-					$.ajax({
-						url: `/Students/Delete/${studentId}`,
-						type: 'POST',
-						success: function (response) {
-							if (response.success) {
-								$('#studentTable').DataTable().ajax.reload();
-								Swal.fire(
-									'Deleted!',
-									'Student member has been deleted.',
-									'success'
-								);
-							} else {
-								Swal.fire(
-									'Error!',
-									response.message || 'Failed to delete student member.',
-									'error'
-								);
-							}
-						},
-						error: function () {
-							Swal.fire(
-								'Error!',
-								'An error occurred while deleting the student member.',
-								'error'
-							);
-						}
-					});
-				}
-			});
-		}
-
-
-		$('#SelectedBranchId').on('change', function () {
-		const branchId = $(this).val();
-		const $departmentDropdown = $('#SelectedDepartmentId');
-
-		$departmentDropdown.empty().append('<option value="">-- Select Department --</option>');
-
-		if (!branchId) {
-			$departmentDropdown.prop('disabled', true);
-			return;
-		}
-
-		$.ajax({
-			url: '/Students/GetDepartmentsByBranch',
-			type: 'GET',
-			data: { branchId: branchId },
-			success: function (departments) {
-				departments.forEach(function (dept) {
-					$departmentDropdown.append(
-						$('<option>', {
-							value: dept.id,
-							text: dept.name
-						})
-					);
-				});
-				$departmentDropdown.prop('disabled', false);
-				},
-				error: function () {
-					alert('Failed to load departments.');
-					$departmentDropdown.prop('disabled', true);
-				}
-		  });
-	  });
 
 
 

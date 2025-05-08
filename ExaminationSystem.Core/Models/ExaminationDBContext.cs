@@ -59,8 +59,6 @@ public partial class ExaminationDBContext : DbContext
 
     public virtual DbSet<StaffBranchIntakeWorksFor> StaffBranchIntakeWorksFors { get; set; }
 
-    public virtual DbSet<StaffBranchIntakeWorksFor> StaffBranchIntakeWorksFors { get; set; }
-
     public virtual DbSet<StaffBranchManage> StaffBranchManages { get; set; }
 
     public virtual DbSet<Student> Students { get; set; }

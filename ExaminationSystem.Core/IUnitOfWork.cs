@@ -17,7 +17,7 @@ namespace ExaminationSystem.Core
         IBaseRepo<Student> StudentRepo { get; }
         IBaseRepo<User> UserRepo { get; }
         IBaseRepo<StudentIntakeBranchDepartmentStudy> StudentIntakeBranchDepartmentStudyRepo { get; }
-        IBaseRepo<Location> LocationRepo { get; }
+       
         IBaseRepo<Topic> TopicRepo { get; }
 
         ILocationRepo LocationRepo { get; }
@@ -50,8 +50,8 @@ namespace ExaminationSystem.Core
 
 
 
-        IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo { get; }
-        IBaseRepo<Intake> IntakeRepo { get; }
+        
+        
         int Complete();
 
         Task<int> CompleteAsync();

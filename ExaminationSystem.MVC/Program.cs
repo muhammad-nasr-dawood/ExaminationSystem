@@ -49,7 +49,6 @@ builder.Services.AddScoped<IBranchRepo, BranchRepo>();
 builder.Services.AddScoped<IStaffBranchManageRepo, StaffBranchManageRepo>();
 
 builder.Services.AddScoped<IBaseRepo<Department>, BaseRepo<Department>>();
-builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
 builder.Services.AddScoped<ILocationRepo, LocationRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
@@ -87,8 +86,6 @@ builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
 builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();
 builder.Services.AddScoped<IBaseRepo<Topic>, BaseRepo<Topic>>();
 builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();  
-
-
 
 builder.Services.AddTransient<IEmailService, EmailService>();
 

@@ -13,14 +13,22 @@ namespace ExaminationSystem.MVC.Controllers;
 public class StaffController : Controller
 {
   private readonly IStaffService _staffService;
+  private readonly IDepartmentService _departmentService;
   private readonly IAccountService _accountService;
+  private readonly IBranchService _branchService;
+  private readonly ICourseService _courseService;
   private readonly IMapper _mapper;
   public StaffController(
-	  IStaffService staffService, IMapper mapper, IAccountService accountService)
+	  IStaffService staffService, IMapper mapper, IAccountService accountService, IDepartmentService departmentService,IBranchService branchService, ICourseService courseService)
   {
 	_staffService = staffService;
+
 	_mapper = mapper;
 	_accountService = accountService;
+	_departmentService = departmentService;
+	_branchService = branchService;
+	_courseService = courseService;
+	
   }
   [HttpGet]
   public async Task<IActionResult> IsEmailExist(string Email, long Ssn)
@@ -44,8 +52,8 @@ public class StaffController : Controller
 
   public IActionResult Index()
   {
-	ViewBag.Branches = _mapper.Map<List<BranchViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
-	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
+	ViewBag.Branches = _branchService.GetAll();
+	ViewBag.Departments = _departmentService.GetAll();
 
 	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
 
@@ -136,11 +144,11 @@ public class StaffController : Controller
 
   public IActionResult Details(long id)
   {
-	ViewBag.Branches = _mapper.Map<List<BranchViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
-	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
+	ViewBag.Branches = _branchService.GetAll();
+	ViewBag.Departments = _departmentService.GetAll();
 
 	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
-	ViewBag.Courses = _staffService.UnitOfWork.CoursesRepo.GetAll();
+	ViewBag.Courses = _courseService.GetAll();
 	var staffDetail = _staffService.GetById(id);
 	return View(staffDetail);
   }

@@ -11,6 +11,7 @@ namespace ExaminationSystem.MVC.Services
 	AddEditDeptViewModel GetDepartmentForEdit(int id);
 	DepartmentViewModel Add(AddEditDeptViewModel model);
 	void Update(AddEditDeptViewModel model);
+	Task<List<DepartmentViewModel>> GetDepartmentsByBranchIdAsync(int branchId);
 	bool Delete(int id);
   }
 }

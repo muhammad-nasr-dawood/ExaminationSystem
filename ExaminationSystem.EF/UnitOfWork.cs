@@ -17,7 +17,6 @@ namespace ExaminationSystem.EF
         public IAuthRepo AuthRepo {  get; }
         public IBaseRepo<Staff> StaffRepo { get; }
         public IBaseRepo<User> UserRepo { get; }
-        public IBaseRepo<Location> LocationRepo { get; }
         public IBaseRepo<Department> DepartmentRepo { get; }
         public IBranchRepo BranchesRepo { get; }
         public IStaffBranchManageRepo StaffBranchManageRepo { get; }
@@ -28,23 +27,11 @@ namespace ExaminationSystem.EF
 
 
 
-        public IBaseRepo<Staff> StaffRepo { get; }
+  
         public IBaseRepo<Course> CourseRepo { get; }
         public IBaseRepo<Topic> TopicRepo { get; }
 
-        
 
-        public IBaseRepo<User> UserRepo { get; }
-
-        public ILocationRepo LocationRepo { get; }
-
-
-
-
-
-
-        public IBaseRepo<Student> StudentRepo { get; }
-        public IBaseRepo<ProfileImage> ProfileImageRepo { get; }
 
        
 
@@ -62,32 +49,28 @@ namespace ExaminationSystem.EF
 
         public IBaseRepo<StudentIntakeBranchDepartmentStudy> StudentIntakeBranchDepartmentStudyRepo { get; }
 
-        public UnitOfWork(ExaminationDBContext dbContext, 
-            IBaseRepo<Student> studentRepo, 
-            IAuthRepo authRepo, 
-            IBaseRepo<Staff> staffRepo, 
-            IBaseRepo<Location> locationRepo, 
-            IBranchRepo branchRepo,
-            IBaseRepo<Department> departmentRepo, 
-            IBaseRepo<User> userRepo,
-            IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> teachRepo, 
-            IBaseRepo<Course> coursesRepo,
-            IBaseRepo<ProfileImage> profileImageRepo, 
-            IStaffBranchManageRepo staffBranchManageRepo,
-            IPoolRepo _poolRepo,
-            IQuestionRepo _questionRepo,
-            IBaseRepo<StaffBranchIntakeWorksFor> worksFor,
-            IBaseRepo<Intake> intakeRepo,
-            IBaseRepo<StudentIntakeBranchDepartmentStudy> studentIntakeBranchDepartmentStudyRepo
-            )
+       public ILocationRepo LocationRepo { get;}
 
-        public IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo 
-        { get; }
+        public UnitOfWork(ExaminationDBContext dbContext,
+              IBaseRepo<Student> studentRepo,
+              IAuthRepo authRepo,
+              IBaseRepo<Staff> staffRepo,
+              ILocationRepo locationRepo,
+              IBranchRepo branchRepo,
+              IBaseRepo<Department> departmentRepo,
+              IBaseRepo<User> userRepo,
+              IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> teachRepo,
+              IBaseRepo<Course> coursesRepo,
+              IBaseRepo<ProfileImage> profileImageRepo,
+              IStaffBranchManageRepo staffBranchManageRepo,
+              IPoolRepo _poolRepo,
+              IQuestionRepo _questionRepo,
+              IBaseRepo<StaffBranchIntakeWorksFor> worksFor,
+              IBaseRepo<Intake> intakeRepo,
+              IBaseRepo<Topic> topicRepo, 
+              IBaseRepo<StudentIntakeBranchDepartmentStudy> studentIntakeBranchDepartmentStudyRepo
+              )
 
-        public IBaseRepo<Intake> IntakeRepo  {get;}
-
-        public UnitOfWork(ExaminationDBContext dbContext, IBaseRepo<Student> studentRepo, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo,ILocationRepo locationRepo, IBranchRepo branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo, IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> teachRepo, IBaseRepo<Course> coursesRepo, IBaseRepo<ProfileImage> profileImageRepo,IStaffBranchManageRepo staffBranchManageRepo, IBaseRepo<Course> courseRepo,IBaseRepo<Topic> topicRepo,IBaseRepo<StaffBranchIntakeWorksFor> worksFor ,IBaseRepo<Intake> intake )
-       
         {
             _dbContext = dbContext;
             //Students = students;
@@ -98,11 +81,11 @@ namespace ExaminationSystem.EF
             StaffBranchManageRepo = staffBranchManageRepo;
 
             StudentIntakeBranchDepartmentStudyRepo = studentIntakeBranchDepartmentStudyRepo;
-            CourseRepo = courseRepo;
+           
             TopicRepo = topicRepo;
            
 
-            LocationRepo = locationRepo;
+            
             BranchesRepo = branchRepo;
             DepartmentRepo = departmentRepo;
             UserRepo = userRepo;
@@ -114,13 +97,9 @@ namespace ExaminationSystem.EF
 
             PoolRepo = _poolRepo; // Added PoolRepo to UnitOfWork
             QuestionRepo =  _questionRepo;
-
-
-
-            WorksForRepo = worksFor;
             IntakeRepo = intakeRepo;
             WorksForRepo = worksFor;
-            IntakeRepo = intake;
+          
       
 
         }
@@ -149,16 +128,6 @@ namespace ExaminationSystem.EF
             _dbContext.Dispose();
         }
 
-        public async Task<int> CompleteAsync()
-        {
-            try
-            {
-                return await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred while saving changes: {ex.Message}", ex);
-            }
-        }
+      
     }
 }
