@@ -28,54 +28,72 @@ public class AuthController : Controller
   [HttpPost]
   public async Task<IActionResult> LoginCover(LoginViewModel model)
   {
-	
 	if (ModelState.IsValid)
 	{
 	  UserLoginViewModel user = _authService.ValidateLoginByEmailAndPassword(model.Email, model.Password);
 	  if (user != null)
 	  {
-		Claim idClaim = new Claim(ClaimTypes.NameIdentifier, user.Ssn.ToString());
-		Claim nameClaim = new Claim(ClaimTypes.Name, $"{user.Fname} {user.Lname}");
-		Claim emailClaim = new Claim(ClaimTypes.Email, user.Email);
-		List<Claim> rolesClaims = new List<Claim>();
-		rolesClaims.Add(new Claim(ClaimTypes.Role, user.UserType));
-		if(user.UserType == "Staff")
+		// 1. Build the full list of claims
+		var claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.NameIdentifier, user.Ssn.ToString()),
+				new Claim(ClaimTypes.Name, $"{user.Fname} {user.Lname}"),
+				new Claim(ClaimTypes.Email, user.Email),
+				new Claim(ClaimTypes.Role, user.UserType) // main role (e.g., "super_admin", "Staff", etc.)
+            };
+
+		// 2. Add extra staff roles if applicable
+		if (user.UserType == "Staff" && user.StaffRoles != null)
 		{
-		  foreach(var role in user?.StaffRoles)
-			rolesClaims.Add(new Claim(ClaimTypes.Role, role));
+		  foreach (var role in user.StaffRoles)
+		  {
+			claims.Add(new Claim(ClaimTypes.Role, role));
+		  }
 		}
-		ClaimsIdentity card = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-		card.AddClaim(idClaim);
-		card.AddClaim(nameClaim);
-		card.AddClaim(emailClaim);
 
-		foreach(var roleClaim in rolesClaims)
-		  card.AddClaim(roleClaim);
 
-		ClaimsPrincipal principal = new ClaimsPrincipal();
-		principal.AddIdentity(card);
+		string highestRole = user.UserType;
+		if (user.UserType == "Staff" && user.StaffRoles != null && user.StaffRoles.Any())
+		{
+		  var rolePriority = new[] { "super_admin", "branch_manager", "dept_manager", "instructor", "Staff" };
+		  var allRoles = new List<string> { user.UserType };
+		  allRoles.AddRange(user.StaffRoles);
+		  highestRole = rolePriority.FirstOrDefault(r => allRoles.Contains(r)) ?? user.UserType;
+		}
+		highestRole = highestRole.Replace('_', ' ');
+		claims.Add(new Claim("HighestRole", highestRole));
+		claims.Add(new Claim("ImageURL", user.ImageURL));
 
+		// 3. Create identity with correct auth scheme
+		var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+		var principal = new ClaimsPrincipal(identity);
+
+		// 4. Create authentication properties
 		var authProperties = new AuthenticationProperties
 		{
-		  IsPersistent = true, // Makes the cookie persist across browser sessions
-		  ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7) // Cookie expires after 7 days
+		  IsPersistent = true,
+		  ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
 		};
 
+		// 5. Sign the user in
 		await HttpContext.SignInAsync(
 			CookieAuthenticationDefaults.AuthenticationScheme,
 			principal,
 			authProperties
 		);
 
-		return View("Index");
+		// 6. Redirect to home or dashboard
+		return RedirectToAction("Index", "Home");
 	  }
 	  else
 	  {
 		ModelState.AddModelError("", "Invalid Email or password!");
 	  }
 	}
+
 	return View(model);
   }
+
 
   [Authorize] 
   public async Task<IActionResult> Logout()

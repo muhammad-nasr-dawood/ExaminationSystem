@@ -111,6 +111,8 @@ builder.Services.AddTransient<ImagekitClient>(provider =>
 /*nasser*/
 builder.Services.AddScoped<IImageKit, ExaminationSystem.MVC.Services.ImageKit>();
 
+builder.Services.AddScoped<IUserClaimService, UserClaimService>();
+
 
 builder.Services.AddDbContext<ExaminationDBContext>(
             options => options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped // will create a new object for each request

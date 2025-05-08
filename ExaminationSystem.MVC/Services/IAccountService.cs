@@ -1,5 +1,8 @@
 using ExaminationSystem.Core;
 using ExaminationSystem.MVC.ViewModels.AccountViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace ExaminationSystem.MVC.Services;
 
@@ -21,4 +24,7 @@ public interface IAccountService
 
   Task<bool> VerifyPhone(long userId, string phoneNumber);
   Task<bool> VerifySSN(long userId);
+
+  Task RefreshUserClaim(HttpContext httpContext, string claimType, string newValue);
+
 }

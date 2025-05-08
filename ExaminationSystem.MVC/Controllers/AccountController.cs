@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace ExaminationSystem.MVC.Controllers;
 
-//[Authorize]
+[Authorize]
 public class AccountController : Controller
 {
     private readonly IAccountService _accountService;
