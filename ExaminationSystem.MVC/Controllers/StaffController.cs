@@ -13,14 +13,22 @@ namespace ExaminationSystem.MVC.Controllers;
 public class StaffController : Controller
 {
   private readonly IStaffService _staffService;
+  private readonly IDepartmentService _departmentService;
   private readonly IAccountService _accountService;
+  private readonly IBranchService _branchService;
+  private readonly ICourseService _courseService;
   private readonly IMapper _mapper;
   public StaffController(
-	  IStaffService staffService, IMapper mapper, IAccountService accountService)
+	  IStaffService staffService, IMapper mapper, IAccountService accountService, IDepartmentService departmentService,IBranchService branchService, ICourseService courseService)
   {
 	_staffService = staffService;
+
 	_mapper = mapper;
 	_accountService = accountService;
+	_departmentService = departmentService;
+	_branchService = branchService;
+	_courseService = courseService;
+	
   }
   [HttpGet]
   public async Task<IActionResult> IsEmailExist(string Email, long Ssn)
@@ -31,7 +39,7 @@ public class StaffController : Controller
   [HttpGet]
   public async Task<IActionResult> IsPhoneNumberExist(string PhoneNumber, long Ssn)
   {
-	 var isSuccess = await _accountService.VerifyPhone(Ssn, PhoneNumber);
+	var isSuccess = await _accountService.VerifyPhone(Ssn, PhoneNumber);
 	return Json(isSuccess);
   }
 
@@ -44,9 +52,8 @@ public class StaffController : Controller
 
   public IActionResult Index()
   {
-
-	ViewBag.Branches = _mapper.Map<List<BranchDisplayViewModel>>(_staffService.UnitOfWork.BranchesRepo.FindAll(b => !b.IsDeleted )) ;
-	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
+	ViewBag.Branches = _branchService.GetAll();
+	ViewBag.Departments = _departmentService.GetAll();
 
 	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
 
@@ -64,7 +71,7 @@ public class StaffController : Controller
 
 	  var searchValue = Request.Form["search[value]"].FirstOrDefault();
 
-	  var filterStatus = bool.TryParse( Request.Form["statusFilter"].FirstOrDefault(), out var fStatus) ? fStatus : (bool?) null;
+	  var filterStatus = bool.TryParse(Request.Form["statusFilter"].FirstOrDefault(), out var fStatus) ? fStatus : (bool?)null;
 
 	  var branchId = int.TryParse(Request.Form["branchId"].FirstOrDefault(), out var bId) ? bId : (int?)null;
 	  var deptId = int.TryParse(Request.Form["DeptId"].FirstOrDefault(), out var dId) ? dId : (int?)null;
@@ -72,7 +79,7 @@ public class StaffController : Controller
 	  var orderColumnIndex = int.Parse(Request.Form["order[0][column]"].FirstOrDefault() ?? "0");
 	  var orderDir = Request.Form["order[0][dir]"].FirstOrDefault() ?? "asc";
 
-	  string[] columnNames = { "FullName", "Ssn", "Salary", "", "" }; 
+	  string[] columnNames = { "FullName", "Ssn", "Salary", "", "" };
 	  string orderBy = columnNames[orderColumnIndex];
 
 	  int pageNumber = (start / length) + 1;
@@ -137,11 +144,11 @@ public class StaffController : Controller
 
   public IActionResult Details(long id)
   {
-	ViewBag.Branches = _mapper.Map<List<BranchDisplayViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
-	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
+	ViewBag.Branches = _branchService.GetAll();
+	ViewBag.Departments = _departmentService.GetAll();
 
 	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
-	ViewBag.Courses = _staffService.UnitOfWork.CoursesRepo.GetAll();
+	ViewBag.Courses = _courseService.GetAll();
 	var staffDetail = _staffService.GetById(id);
 	return View(staffDetail);
   }

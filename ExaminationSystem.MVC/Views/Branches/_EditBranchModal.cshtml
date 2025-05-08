@@ -1,110 +1,172 @@
 @model ExaminationSystem.MVC.ViewModels.BranchViewModels.BranchEditViewModel
 
 <style>
-	
-	.select2-container {
-		z-index: 9999 !important;
-	}
+	.select2-hidden-before-init {
+	visibility: hidden;
+}
 
-	.select2-search__field {
-		background-color: white !important; 
-		color: black !important; 
-	}
-
-	.modal-backdrop {
-		z-index: 1040 !important;
-	}
-
-	.modal-content {
-		z-index: 1050 !important;
-	}
-
-	.modal-dialog {
-		z-index: 1060 !important;
-	}
 </style>
 
 <div class="modal fade" id="editBranchModal-@Model.Id" tabindex="-1" aria-labelledby="editBranchModalLabel-@Model.Id" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="editBranchModalLabel-@Model.Id">Edit Branch - @Model.LocationName</h5>
+				<h5 class="modal-title" id="editBranchModalLabel-@Model.Id">
+					@if (Model.Id == 0)
+					{
+						<text>Add New Branch</text>
+					}
+					else
+					{
+						<text>Edit Branch - @Model.LocationName</text>
+					}
+				</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<form id="editBranchForm" method="post" asp-action="Edit" asp-route-id="@Model.Id">
+				<form id="editBranchForm" method="post" asp-action="@((Model.Id == 0) ? "Add" : "Edit")" asp-route-id="@Model.Id">
 					<input type="hidden" name="Id" value="@Model.Id" />
 
-					
-					<div class="mb-3">
-						<label for="ZipCode" class="form-label">Location (Zip Code)</label>
-						<select id="ZipCode" name="ZipCode" class="select2 form-select form-select-lg" required>
-							<option value="" disabled>Select a location</option>
-							@foreach (var location in ViewBag.Locations)
-							{
-								<option value="@location.ZipCode" selected="@(location.ZipCode == Model.ZipCode)">
-									@location.LocationName
-								</option>
-							}
-						</select>
-					</div>
 
-					
-					<div class="mb-3">
-						<label for="StreetNo" class="form-label">Street Number</label>
-						<input type="number" class="form-control" id="StreetNo" name="StreetNo" value="@Model.StreetNo" required />
-					</div>
+            <div class="mb-3">
+                <label asp-for="ZipCode" class="form-label"></label>
+               <select asp-for="ZipCode" id="ZipCode" class="select2 form-select select2-hidden-before-init ">
+
+                            <option value="" >Select a location</option>
+							@foreach (var location in ViewBag.Locations)
+{
+                         <option value="@location.ZipCode">@location.LocationName</option>
+}
+
+                </select>
+                 <span asp-validation-for="ZipCode" class="text-danger"></span>
+            </div>         
+
+
+				
+                   <div class="mb-3">
+                    <label asp-for="StreetNo" class="form-label"></label>
+                    <input asp-for="StreetNo" class="form-control" />
+                    <span asp-validation-for="StreetNo" class="text-danger"></span>
+                   </div>
+
 
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-						<button type="submit" class="btn btn-primary">Save Changes</button>
+						<button type="submit" class="btn btn-primary">
+							@(Model.Id == 0 ? "Add Branch" : "Save Changes")
+						</button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
 </div>
-
 <script>
-	$(document).ready(function () {
-		
+$(document).ready(function () {
+	$('#editBranchForm').on('submit', function (e) {
+		e.preventDefault();
+		if (!$(this).valid()) return;
 
-		
-		$(document).on('shown.bs.modal', '#editBranchModal', function () {
-			$('#ZipCode').select2({
-				placeholder: "Select a location",
-				allowClear: true,
-				dropdownParent: $('#editBranchModal-' + @Model.Id) 
-			}).trigger('change'); 
-		});
+		var formData = $(this).serialize();
 
-		
-		$('#editBranchForm').on('submit', function (e) {
-			e.preventDefault();
-
-			var formData = $(this).serialize();
-
-			$.ajax({
-				type: 'POST',
-				url: $(this).attr('action'),
-				data: formData,
-				success: function (response) {
-					console.log(response);
-
-					if (response.success) {
-						
+		$.ajax({
+			type: 'POST',
+			url: $(this).attr('action'),
+			data: formData,
+			success: function (response) {
+				try {
+					
+					if (typeof response === 'object' && response.success) {
 						$('#editBranchModal-' + response.id).modal('hide');
-						$('#branch-' + response.id + ' .location').text(response.branch.zipCode);
-						$('#branch-' + response.id + ' .streetNo').text(response.branch.streetNo);
-						$('#branch-' + response.id + ' .locName').text(response.branch.locationName + " Branch");
-					} else {
-						alert('Error: ' + response.message);
+
+						if (response.id !== 0) {
+							$('#branch-' + response.id + ' .location').text(response.branch.zipCode);
+							$('#branch-' + response.id + ' .streetNo').text(response.branch.streetNo);
+							$('#branch-' + response.id + ' .locName').text(response.branch.locationName + " Branch");
+						}
+
+						Swal.fire({
+							icon: 'success',
+							title: 'Success!',
+							text: 'Branch updated successfully.',
+							timer: 2000,
+							showConfirmButton: false
+						});
 					}
-				},
-				error: function () {
-					alert('An error occurred while updating the branch.');
+					
+	             else if (typeof response === 'string' && $(response).filter('div.col-lg-4').length > 0) {
+	             $('#editBranchModal-0').modal('hide');
+	             $('#branch-list').prepend(response);
+	             $('#branch-list .col-lg-4').last().remove();
+
+	            Swal.fire({
+	            icon: 'success',
+		        title: 'Success!',
+		        text: 'Branch added successfully.',
+		        timer: 2000,
+		        showConfirmButton: false
+
+	            });
+                }
+
+					
+					else {
+						$('#editBranchModal-0').modal('hide');
+						$('#branch-list').prepend(response);
+						$('#branch-list .col-lg-4').last().remove();
+
+						Swal.fire({
+							icon: 'warning',
+							title: 'Validation Failed',
+							text: 'Please check the required fields and try again.'
+						});
+					}
+				} catch (e) {
+					$('#editBranchModal-0').modal('hide');
+					$('#branch-list').prepend(response);
+					$('#branch-list .col-lg-4').last().remove();
+
+					Swal.fire({
+						icon: 'warning',
+						title: 'Validation Error',
+						text: 'Please check your inputs.'
+					});
 				}
-			});
+			},
+			error: function (xhr) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Error!',
+					text: xhr.responseText || 'An error occurred while processing your request.'
+				});
+			}
 		});
 	});
+
+	$('#editBranchModal-@Model.Id').on('shown.bs.modal', function () {
+		const $form = $('#editBranchForm');
+		const $select = $('#ZipCode');
+
+		if (!$select.hasClass('select2-initialized')) {
+			$select.select2().on('select2:close', function () {
+				$form.validate().element(this);
+			}).addClass('select2-initialized');
+		}
+	});
+
+	$('#editBranchModal-@Model.Id').on('hide.bs.modal', function () {
+		const modal = this;
+		const focused = document.activeElement;
+		if (modal.contains(focused)) {
+			focused.blur();
+		}
+	});
+		$('#editBranchForm input').on('blur', function () {
+		$(this).valid(); 
+	});
+});
+
+
 </script>
+

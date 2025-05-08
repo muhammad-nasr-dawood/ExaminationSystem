@@ -1,0 +1,43 @@
+@model ExaminationSystem.MVC.ViewModels.DepartmentViewModels.AddEditDeptViewModel
+
+<div class="modal fade" id="deleteDepartmentModal" tabindex="-1" aria-labelledby="deleteDepartmentModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="deleteDepartmentModalLabel">Confirm Delete</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to delete department <strong>@Model.Name</strong>?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-danger" id="confirmDeleteBtn" data-id="@Model.Id">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$("#confirmDeleteBtn").on('click', function () {
+			var deptId = $(this).data("id");
+
+			$.ajax({
+				type: "POST",
+				url: '/Departments/DeleteConfirmed/' + deptId,
+				success: function (response) {
+					if (response.success) {
+						$('#department-' + deptId).remove();
+						$('#deleteDepartmentModal').modal('hide');
+					} else {
+						alert('Error: ' + response.message);
+					}
+				},
+				error: function () {
+					alert('An error occurred while deleting the department.');
+				}
+			});
+		});
+	});
+</script>

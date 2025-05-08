@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using System.Data.Entity.Validation;
+using System.Data.SqlTypes;
 using System.Threading.Tasks;
 
 namespace ExaminationSystem.MVC.Controllers;
@@ -18,20 +19,25 @@ public class StudentsController : Controller
 {
   IStudentService _studentService;
   private readonly IDepartmentService departmentService;
+  private readonly IBranchService branchService;
+  
 
   public StudentsController(
 	IStudentService studentService,
-	IDepartmentService departmentService)
+	IDepartmentService departmentService,
+	IBranchService branchService)
   {
 	_studentService = studentService; // controller layer will only deal with the service layer any dirty work will be within the service layer // in order to keep our controller simple and clean
 	this.departmentService = departmentService;
+	this.branchService = branchService;
+	
   }
 
   public IActionResult Index()
   {
 	// Get branches and departments for filters
-	ViewBag.Departments = _studentService.UnitOfWork.DepartmentRepo.GetAll();
-	ViewBag.Branches = _studentService.UnitOfWork.BranchesRepo.GetAll();
+	ViewBag.Departments = departmentService.GetAll();
+	ViewBag.Branches = branchService.GetAll();
 	ViewBag.Locations = _studentService.UnitOfWork.LocationRepo.GetAll();
 
 	return View();

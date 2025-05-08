@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExaminationSystem.Core
 {
-    public interface IUnitOfWork: IDisposable
+    public interface IUnitOfWork : IDisposable
     {
         //IStudentRepo Students { get; }
         //IBaseRepo<Student> StudentRepo { get; }
@@ -17,9 +17,12 @@ namespace ExaminationSystem.Core
         IBaseRepo<Student> StudentRepo { get; }
         IBaseRepo<User> UserRepo { get; }
         IBaseRepo<StudentIntakeBranchDepartmentStudy> StudentIntakeBranchDepartmentStudyRepo { get; }
-        IBaseRepo<Location> LocationRepo { get; }
-        IBaseRepo<Department> DepartmentRepo { get; }
        
+        IBaseRepo<Topic> TopicRepo { get; }
+
+        ILocationRepo LocationRepo { get; }
+        IBaseRepo<Department> DepartmentRepo { get; }
+
         IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> TeachingRepo { get; }
 
         IBaseRepo<ProfileImage> ProfileImageRepo { get; }
@@ -39,6 +42,16 @@ namespace ExaminationSystem.Core
 
         IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo { get; }
         IBaseRepo<Intake> IntakeRepo { get; }
+
+  
+
+
+
+
+
+
+        
+        
         int Complete();
 
         Task<int> CompleteAsync();

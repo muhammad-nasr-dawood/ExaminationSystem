@@ -1,0 +1,16 @@
+
+@model PaginatedResult<BranchViewModel>
+
+<div id="branch-list" class="row g-4">
+	@foreach (var branch in Model.Items)
+	{
+		@Html.Partial("_BranchCardPartial", branch)
+	}
+</div>
+
+<div id="branchPagination" class="d-flex justify-content-end mt-4">
+	@for (int i = 1; i <= Model.TotalPages; i++)
+	{
+		<button class="btn btn-sm @(i == Model.CurrentPage ? "btn-primary" : "btn-outline-primary") mx-1" data-page="@i">@i</button>
+	}
+</div>

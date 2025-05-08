@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExaminationSystem.Core.Models;
 
-[Index("ZipCode", Name = "UQ_Branches_ZipCode", IsUnique = true)]
 public partial class Branch
 {
     [Key]

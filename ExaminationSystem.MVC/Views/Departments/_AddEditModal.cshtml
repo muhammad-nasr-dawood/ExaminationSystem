@@ -1,0 +1,126 @@
+@model ExaminationSystem.MVC.ViewModels.DepartmentViewModels.AddEditDeptViewModel
+
+<div class="modal fade" id="editDepartmentModal-@Model.Id" tabindex="-1" aria-labelledby="editDepartmentModalLabel-@Model.Id" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="editDepartmentModalLabel-@Model.Id">
+					@if (Model.Id == 0)
+					{
+						<text>Add New Department</text>
+					}
+					else
+					{
+						<text>Edit Department - @Model.Name</text>
+					}
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="editDepartmentForm" method="post" asp-action="@((Model.Id == 0) ? "Add" : "Edit")">
+					<input type="hidden" name="Id" value="@Model.Id" />
+
+					<div class="mb-3">
+						<label asp-for="Name" class="form-label"></label>
+						<input asp-for="Name" class="form-control" maxlength="" />
+						<span asp-validation-for="Name" class="text-danger"></span>
+					</div>
+
+					<div class="mb-3">
+						<label asp-for="Disc" class="form-label"></label>
+						<input asp-for="Disc" class="form-control" maxlength="" />
+						<span asp-validation-for="Disc" class="text-danger"></span>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-primary">
+							@(Model.Id == 0 ? "Add Department" : "Save Changes")
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(document).ready(function () {
+		$('#editDepartmentForm').on('submit', function (e) {
+			e.preventDefault();
+			if (!$(this).valid()) return;
+
+			var formData = $(this).serialize();
+
+			$.ajax({
+				type: 'POST',
+				url: $(this).attr('action'),
+				data: formData,
+				success: function (response) {
+					try {
+						if (typeof response === 'string' && $(response).filter('div.col-lg-4').length > 0) {
+							// Add 
+							$('#editDepartmentModal-0').modal('hide');
+							$('#department-list').prepend(response);
+							$('#department-list .col-lg-4').last().remove();
+
+							Swal.fire({
+								icon: 'success',
+								title: 'Success!',
+								text: 'Department added successfully.',
+								timer: 2000,
+								showConfirmButton: false
+							});
+						}
+						else if (typeof response === 'object' && response.success) {
+							// Edit 
+							$('#editDepartmentModal-' + response.id).modal('hide');
+							$('#department-' + response.id + ' .fw-bold').text(response.department.name);
+							$('#department-' + response.id + ' .text-muted strong:first').text(response.department.disc);
+							$('#department-' + response.id + ' .text-muted strong:last').text(response.department.capacity);
+
+							Swal.fire({
+								icon: 'success',
+								title: 'Success!',
+								text: 'Department updated successfully.',
+								timer: 2000,
+								showConfirmButton: false
+							});
+						} else {
+							Swal.fire({
+								icon: 'warning',
+								title: 'Validation Failed',
+								text: 'Please check the required fields and try again.'
+							});
+						}
+					} catch (e) {
+						Swal.fire({
+							icon: 'warning',
+							title: 'Unexpected Response',
+							text: 'Please try again.'
+						});
+					}
+				},
+				error: function (xhr) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Error!',
+						text: xhr.responseText || 'An error occurred while processing your request.'
+					});
+				}
+			});
+		});
+
+		$('#editDepartmentModal-@Model.Id').on('hide.bs.modal', function () {
+			const modal = this;
+			const focused = document.activeElement;
+			if (modal.contains(focused)) {
+				focused.blur();
+			}
+		});
+			$('#editDepartmentForm input').on('blur', function () {
+		$(this).valid(); 
+	});
+
+	});
+</script>
+

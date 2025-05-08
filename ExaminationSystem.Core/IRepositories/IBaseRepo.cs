@@ -62,7 +62,8 @@ namespace ExaminationSystem.Core.IRepositories
                 string orderByDirection = OrderBy.Ascending,
                 params Expression<Func<T, object>>[] includes);
 
-
+        IQueryable<T> FindAllQueryable(Expression<Func<T, bool>> criteria);
 
     }
+
 }

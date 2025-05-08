@@ -1,3 +1,4 @@
+using AutoMapper;
 using ExaminationSystem.Core;
 using ExaminationSystem.Core.Helpers;
 using ExaminationSystem.Core.IRepositories;
@@ -15,6 +16,8 @@ using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -39,14 +42,18 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddScoped<IStudentService, StudentService>(); // this is the only layer that can deal with the controller directly (any other dirty work like auto-mapping etc will be within it)
 builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<IDepartmentService, DeparmentService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ITopicService,TopicService>();
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
 builder.Services.AddScoped<IBranchRepo, BranchRepo>();
 builder.Services.AddScoped<IStaffBranchManageRepo, StaffBranchManageRepo>();
 
-builder.Services.AddScoped<IDepartmentRepo, DepartmentRepo>();
+builder.Services.AddScoped<IBaseRepo<Department>, BaseRepo<Department>>();
 builder.Services.AddScoped<ILocationRepo, LocationRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeWorksFor>, BaseRepo<StaffBranchIntakeWorksFor>>();
+builder.Services.AddScoped<IBaseRepo<Intake>, BaseRepo<Intake>>();
 
 
 
@@ -67,6 +74,8 @@ builder.Services.AddScoped<IBaseRepo<Department>, BaseRepo<Department>>();
 builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();
 builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeWorksFor>, BaseRepo<StaffBranchIntakeWorksFor>>();
 
+
+
 builder.Services.AddScoped<IStudentService, StudentService>(); // this is the only layer that can deal with the controller directly (any other dirty work like auto-mapping etc will be within it)
 
 builder.Services.AddScoped<IBaseRepo<Location>, BaseRepo<Location>>();
@@ -75,8 +84,8 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeDepartmentCourseTeach>, BaseRepo<StaffBranchIntakeDepartmentCourseTeach>>();
 builder.Services.AddScoped<IBaseRepo<Course>, BaseRepo<Course>>();
 builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();
-
-
+builder.Services.AddScoped<IBaseRepo<Topic>, BaseRepo<Topic>>();
+builder.Services.AddScoped<IBaseRepo<ProfileImage>, BaseRepo<ProfileImage>>();  
 
 builder.Services.AddTransient<IEmailService, EmailService>();
 

@@ -10,7 +10,6 @@ namespace ExaminationSystem.Core.Models;
 
 [PrimaryKey("StaffSsn", "BranchId", "IntakeId")]
 [Table("StaffBranchIntakeWorksFor")]
-[Index("StaffSsn", "IntakeId", Name = "UQ_StaffSSN_IntakeId", IsUnique = true)]
 public partial class StaffBranchIntakeWorksFor
 {
     [Key]

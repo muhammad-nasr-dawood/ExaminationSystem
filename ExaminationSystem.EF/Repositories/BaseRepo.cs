@@ -321,5 +321,10 @@ namespace ExaminationSystem.EF.Repositories
         {
             return _context.Set<T>().Find(id);
         }
+        public IQueryable<T> FindAllQueryable(Expression<Func<T, bool>> criteria)
+        {
+            return _context.Set<T>().Where(criteria);  
+        }
+
     }
 }
