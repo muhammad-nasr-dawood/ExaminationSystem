@@ -98,35 +98,6 @@ namespace ExaminationSystem.MVC.Services
 	  return res;
 	}
 
-	//public List<StudentViewModel> GetAll()
-	//{
-	//  var stds = UnitOfWork.StudentRepo.GetAll();
-
-	//  return _mapper.Map<List<StudentViewModel>>(stds); // List<StudentViewModel> is the destination object // stds is the source object
-	//}
-
-
-
-
-
-	//public async Task<PaginatedResult<StudentVM>> GetAllAsync(
-	//  	int? pageNumber,
-	//	int? pageSize,
-	//	params Expression<Func<Student, object>>[] _includes
-	//  )
-	//{
-	//  pageNumber ??= 1;
-	//  pageSize ??= 10;
-
-	//  IEnumerable<Student> stdRes = await UnitOfWork.Students.FindAllAsync(take: pageSize, skip: (pageNumber - 1) * pageSize, includes: _includes);
-
-	//  IEnumerable<StudentVM> stdResVM = _mapper.Map<IEnumerable<StudentVM>>(stdRes);
-
-	//  return new PaginatedResult<StudentVM>()
-	//  {
-
-	//  };
-	//}
 
 	public async Task<PaginatedResult<StudentVM>> GetAllAsync(
 	int? pageNumber,
@@ -171,13 +142,14 @@ namespace ExaminationSystem.MVC.Services
 
 	  Student std = await UnitOfWork.StudentRepo.GetByIdAsync(id);
 
-	  if (std == null)
-		throw new NullReferenceException("No Student With that SSN");
 	  return _mapper.Map<StudentDetailsVM>(std);
 	}
 
 	public bool Add(StudentAddVM studentAddVM)
 	{
+	  if (studentAddVM.PhoneNumber != null)
+		studentAddVM.PhoneNumber = NormalizePhoneNumber(studentAddVM.PhoneNumber);
+
 	  var userEntity = _mapper.Map<User>(studentAddVM);
 	  if (userEntity != null)
 	  {
@@ -185,12 +157,134 @@ namespace ExaminationSystem.MVC.Services
 	  }
 	  var studentEntity = _mapper.Map<Student>(studentAddVM);
 
+
 	  UnitOfWork.UserRepo.Add(userEntity);
 	  UnitOfWork.StudentRepo.Add(studentEntity);
-
 	  var numOfRowsAffected = UnitOfWork.Complete();
+
+	  var latestIntake = (UnitOfWork.IntakeRepo.GetAll())
+				  .OrderByDescending(i => i.Id)
+				  .FirstOrDefault();
+
+	  var assignStdToDept = new StudentIntakeBranchDepartmentStudy()
+	  {
+		BranchId = studentAddVM.SelectedBranchId.Value,
+		DepartmentId = studentAddVM.SelectedDepartmentId.Value,
+		IntakeId = latestIntake.Id,
+		StudentSsn = studentAddVM.Ssn
+	  };
+
+	  UnitOfWork.StudentIntakeBranchDepartmentStudyRepo.Add(assignStdToDept);
+
+	  UnitOfWork.Complete();
 
 	  return numOfRowsAffected == 2;
 	}
+    public User ResetPassword(long userId)
+	{
+	  var user = UnitOfWork.UserRepo.GetById(userId);
+	  user.PasswordHash = _passwordService.HashPassword(userId.ToString());
+	  UnitOfWork.Complete();
+	  return user;
+	}
+	public User ToggleUserStatus(long userId)
+	{
+	  var user = UnitOfWork.UserRepo.GetById(userId);
+
+	  user.IsActive = !user.IsActive;
+
+	  UnitOfWork.Complete();
+	  return user;
+	}
+
+	public StudentDetailsVM GetById(long id)
+	{
+	  var student = UnitOfWork.StudentRepo.GetById(id);
+	  var StudentMapped = _mapper.Map<StudentDetailsVM>(student);
+
+	  return StudentMapped;
+	}
+
+
+	public async Task<StudentDetailsVM> GetByEmailAsync(string email, long? Ssn)
+	{
+	  Expression<Func<Student, bool>> criteria = std =>
+		  std.SsnNavigation.Email == email &&
+		  (!Ssn.HasValue || std.SsnNavigation.Ssn != Ssn.Value);
+
+	  var student = await UnitOfWork.StudentRepo.FindAsync(criteria);
+	  return _mapper.Map<StudentDetailsVM>(student);
+	}
+
+
+	public async Task<StudentDetailsVM> GetByPhoneNumberAsync(string phone, long? Ssn)
+	{
+	  var normalizedPhone = NormalizePhoneNumber(phone);
+
+	  Expression<Func<Student, bool>> criteria = std =>
+		  std.SsnNavigation.PhoneNumber == normalizedPhone &&
+		  (!Ssn.HasValue || std.SsnNavigation.Ssn != Ssn.Value);
+
+	  var student = await UnitOfWork.StudentRepo.FindAsync(criteria);
+
+	  return _mapper.Map<StudentDetailsVM>(student);
+	}
+
+
+	private string NormalizePhoneNumber(string phone)
+	{
+	  if (string.IsNullOrWhiteSpace(phone))
+		return phone;
+
+	  phone = phone.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "");
+
+	  if (phone.StartsWith("+"))
+	  {
+		phone = phone.Substring(1);
+		phone = phone.TrimStart("0123456789".ToCharArray()); 
+	  }
+	  else if (phone.StartsWith("00"))
+	  {
+		phone = phone.Substring(2);
+		phone = phone.TrimStart("0123456789".ToCharArray()); 
+	  }
+
+	  // If there's still a leading country code (e.g., 20 for Egypt), remove first few digits
+	  // Assuming local numbers are always 10 or 11 digits in your DB
+	  if (phone.Length > 11)
+		phone = phone.Substring(phone.Length - 11); // take last 11 digits only
+
+	  return phone;
+	}
+
+
+	public bool UpdateStudent (StudentDetailsVM stdvm)
+	{
+	  var std = UnitOfWork.StudentRepo.GetById(stdvm.Ssn);
+
+	  std.Faculty = stdvm.Faculty;
+	  std.SsnNavigation.Fname = stdvm.Fname;
+	  std.SsnNavigation.Lname = stdvm.Lname;
+	  std.SsnNavigation.Email = stdvm.Email;
+	  std.Gpa = (decimal)stdvm.Gpa;
+	  std.GradYear = stdvm.GradYear;
+	  std.SsnNavigation.Bd = stdvm.Bd;
+	  std.SsnNavigation.Gender = stdvm.Gender;
+	  std.SsnNavigation.StreetNo = stdvm.StreetNo;
+	  std.SsnNavigation.ZipCode = stdvm.ZipCode;
+
+
+	  UnitOfWork.StudentRepo.Update(std);
+
+	  UnitOfWork.Complete();
+
+	  return true;
+	}
+
+
+
+
+
   }
+
 }

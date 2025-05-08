@@ -16,6 +16,8 @@ namespace ExaminationSystem.Core
         IBaseRepo<Staff> StaffRepo { get; }
         IBaseRepo<Student> StudentRepo { get; }
         IBaseRepo<User> UserRepo { get; }
+        IBaseRepo<StudentIntakeBranchDepartmentStudy> StudentIntakeBranchDepartmentStudyRepo { get; }
+        IBaseRepo<Location> LocationRepo { get; }
         IBaseRepo<Topic> TopicRepo { get; }
 
         ILocationRepo LocationRepo { get; }
@@ -28,6 +30,18 @@ namespace ExaminationSystem.Core
         IBranchRepo BranchesRepo { get; }
 
         IBaseRepo<Course> CoursesRepo { get; }
+
+        IPoolRepo PoolRepo { get; } // Added PoolRepo to UnitOfWork
+
+        IQuestionRepo QuestionRepo { get; } // Added QuestionRepo to UnitOfWork
+
+
+
+
+
+
+        IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo { get; }
+        IBaseRepo<Intake> IntakeRepo { get; }
 
   
 

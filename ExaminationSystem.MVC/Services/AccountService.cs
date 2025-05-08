@@ -31,7 +31,13 @@ public class AccountService: IAccountService
 
   public async Task<string> UpdateImage(IFormFile file, long userId)
   {
-	var (id, url) = await _imageService.UploadImageAsync(file);
+	//var (id, url) = await _imageService.UploadImageAsync(file);
+	//nasser changing
+	string folderName = "/ExaminationImagesFolder";
+
+	// Pass the folderName argument to the UploadImageAsync method  
+	var (id, url) = await _imageService.UploadImageAsync(file, folderName);
+
 	var user = UnitOfWork.UserRepo.GetById(userId);
 	ProfileImage currentImage;
 	if(user.ImageId is not null)
@@ -115,7 +121,7 @@ public class AccountService: IAccountService
 
   public async Task<bool> VerifyPhone(long userId, string phoneNumber)
   {
-	Expression<Func<User, bool>> criteria = user => user.PhoneNumber == phoneNumber; // we used expression in order to deal with the database --> cannot use delgates directly when dealing with database
+	Expression<Func<User, bool>> criteria = user => user.PhoneNumber == phoneNumber; // we used expression in order to deal with the database --> cannot use delgates directly when dealing with database input is user and return is bool
 	var user = await UnitOfWork.UserRepo.FindAsync(criteria);
 
 	if (user is not null && user.Ssn != userId) return false; // it means that email already taken by another user

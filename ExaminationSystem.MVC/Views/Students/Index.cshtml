@@ -14,6 +14,8 @@
 	<link rel="stylesheet" href="~/vendor/libs/bs-stepper/bs-stepper.css" />
 	<link rel="stylesheet" href="~/vendor/libs/bootstrap-select/bootstrap-select.css" />
 	<link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css">
+	<link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
+
 }
 
 @section VendorScripts {
@@ -31,6 +33,8 @@
 	<script src="~/vendor/libs/&#64;form-validation/popular.js"></script>
 	<script src="~/vendor/libs/&#64;form-validation/bootstrap5.js"></script>
 	<script src="~/vendor/libs/&#64;form-validation/auto-focus.js"></script>
+	<script src="~/vendor/libs/sweetalert2/sweetalert2.js"></script>
+
 }
 
 
@@ -152,6 +156,24 @@
 			<div class="col-md-4 user_role"></div>
 			<div class="col-md-4 user_plan"></div>
 			<div class="col-md-4 user_status"></div>
+			<div class="col-md-3">
+				<select id="branchFilter" class="form-select">
+					<option value="">Filter by Branch</option>
+					@foreach (var branch in ViewBag.Branches)
+					{
+						<option value="@branch.Id">@branch.ZipCodeNavigation?.Governate</option>
+					}
+				</select>
+			</div>
+			<div class="col-md-3">
+				<select id="departmentFilter" class="form-select">
+					<option value="">Filter by Department</option>
+					@foreach (var dept in ViewBag.Departments)
+					{
+						<option value="@dept.Id">@dept.Name</option>
+					}
+				</select>
+			</div>
          <div class="col-md-3">
          <select id="branchFilter" class="form-select">
         <option value="">Filter by Branch</option>
@@ -198,12 +220,14 @@
 			<table id="studentTable" class="table table-hover">
 				<thead>
 					<tr>
+						<th>ImageUrl</th>
 						<th>FullName</th>
 						<th>Email</th>
 						<th>Gender</th>
 						<th>Faculty</th>
 						<th>IsActive</th>
-						<th>ImageUrl</th>
+						<th>Actions</th>
+
 					</tr>
 				</thead>
 				<tbody class="table-border-bottom-0">
@@ -260,7 +284,7 @@
 			@* <small class="text-light fw-medium">Basic</small> *@
 			<div class="bs-stepper wizard-numbered mt-2">
 				<div class="bs-stepper-header row">
-					<div class="step col-5" data-target="#account-details">
+					<div class="step col-3" data-target="#account-details">
 						<button type="button" class="step-trigger">
 							<span class="bs-stepper-circle">1</span>
 							<span class="bs-stepper-label">
@@ -272,9 +296,23 @@
 					<div class="line">
 						<i class="ti ti-chevron-right"></i>
 					</div>
-					<div class="step col-5" data-target="#personal-info">
+					<div class="step col-3" data-target="#academic-info">
 						<button type="button" class="step-trigger">
 							<span class="bs-stepper-circle">2</span>
+							<span class="bs-stepper-label">
+								<span class="bs-stepper-title">Academic Info</span>
+								<span class="bs-stepper-subtitle">Setup Academic Info</span>
+							</span>
+						</button>
+					</div>
+
+					<div class="line">
+						<i class="ti ti-chevron-right"></i>
+					</div>
+
+					<div class="step col-3" data-target="#personal-info">
+						<button type="button" class="step-trigger">
+							<span class="bs-stepper-circle">3</span>
 							<span class="bs-stepper-label">
 								<span class="bs-stepper-title">Personal Info</span>
 								<span class="bs-stepper-subtitle">Add personal info</span>
@@ -324,22 +362,78 @@
 									<input type="number" asp-for="Ssn" class="form-control" placeholder="john.doe&#64;email.com" aria-label="john.doe" />
 									<span asp-validation-for="Ssn"></span>
 								</div>
-								@* <div class="col-sm-6 form-password-toggle"> *@
-								@* 	<label class="form-label" for="password">Password</label> *@
-								@* 	<div class="input-group input-group-merge"> *@
-								@* 		<input type="password" id="password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password2" /> *@
-								@* 		<span class="input-group-text cursor-pointer" id="password2"><i class="ti ti-eye-off"></i></span> *@
-								@* 	</div> *@
-								@* </div> *@
-								@* <div class="col-sm-6 form-password-toggle"> *@
-								@* 	<label class="form-label" for="confirm-password">Confirm Password</label> *@
-								@* 	<div class="input-group input-group-merge"> *@
-								@* 		<input type="password" id="confirm-password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="confirm-password2" /> *@
-								@* 		<span class="input-group-text cursor-pointer" id="confirm-password2"><i class="ti ti-eye-off"></i></span> *@
-								@* 	</div> *@
-								@* </div> *@
+
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="SelectedBranchId">Branch</label>
+									<select id="SelectedBranchId" name="SelectedBranchId" class="form-select" required>
+										<option value="">-- Select Branch --</option>
+										@foreach (var branch in ViewBag.Branches)
+										{
+											<option value="@branch.Id">@branch.ZipCodeNavigation?.Governate</option>
+										}
+									</select>
+									<span class="text-danger" asp-validation-for="SelectedBranchId"></span>
+								</div>
+
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="SelectedDepartmentId">Department</label>
+									<select id="SelectedDepartmentId" name="SelectedDepartmentId" class="form-select" required disabled>
+										<option value="">-- Select Department --</option>
+									</select>
+									<span class="text-danger" asp-validation-for="SelectedDepartmentId"></span>
+								</div>
+
+
+
 								<div class="col-12 d-flex justify-content-between">
 									<button class="btn btn-label-secondary btn-prev" disabled>
+										<i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
+										<span class="align-middle d-sm-inline-block d-none">Previous</span>
+									</button>
+									<button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-2">Next</span> <i class="ti ti-arrow-right ti-xs"></i></button>
+								</div>
+							</div>
+						</div>
+						<!-- Academic Information -->
+						<div id="academic-info" class="content">
+							<div class="content-header mb-4">
+								<h6 class="mb-0">Academic Information</h6>
+								<small>Enter Your Academic Information.</small>
+							</div>
+							<div class="row g-6">
+
+								<div class="col-sm-12">
+									<label class="form-label" asp-for="Faculty">Faculty</label>
+									<select asp-for="Faculty" class="form-select">
+										<option value="">-- Select Faculty --</option>
+										<option value="Information Technology">Information Technology</option>
+										<option value="Computer Science">Computer Science</option>
+										<option value="Information Systems">Information Systems</option>
+										<option value="Software Engineering">Software Engineering</option>
+										<option value="Computer Engineering">Computer Engineering</option>
+										<option value="Other">Other</option>
+										<!-- Add more faculties as needed -->
+									</select>
+									<span asp-validation-for="Faculty"></span>
+								</div>
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="Gpa">GPA</label>
+									<input asp-for="Gpa" type="number" step="0.01" min="0" max="4" class="form-control" placeholder="e.g. 3.75" />
+									<span asp-validation-for="Gpa"></span>
+								</div>
+								<div class="col-sm-6">
+									<label class="form-label" asp-for="GradYear">Graduation Year</label>
+									<select asp-for="GradYear" class="form-select">
+										<option value="">-- Select Year --</option>
+										@for (int year = 2000; year <= DateTime.Now.Year; year++)
+										{
+											<option value="@year">@year</option>
+										}
+									</select>
+									<span asp-validation-for="GradYear"></span>
+								</div>
+								<div class="col-12 d-flex justify-content-between">
+									<button class="btn btn-label-secondary btn-prev">
 										<i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
 										<span class="align-middle d-sm-inline-block d-none">Previous</span>
 									</button>
@@ -391,13 +485,6 @@
 									<input type="number" asp-for="StreetNo" class="form-control" placeholder="Doe" />
 									<span asp-validation-for="StreetNo"></span>
 								</div>
-								<div class="col-sm-6">
-									<label class="form-label" asp-for="Faculty">Faculty</label>
-									<input type="text" asp-for="Faculty" class="form-control" placeholder="Doe" />
-									<span asp-validation-for="Faculty"></span>
-								</div>
-
-
 								@* <div class="col-12 d-flex justify-content-between"> *@
 								@* 	<button class="btn btn-label-secondary btn-prev"> *@
 								@* 		<i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i> *@
@@ -479,8 +566,13 @@
 					Bd: $('input[name="Bd"]').val(),
 					ZipCode: $('select[name="ZipCode"]').val(),
 					StreetNo: $('input[name="StreetNo"]').val(),
-					Faculty: $('input[name="Faculty"]').val()
-				};
+					Faculty: $('select[name="Faculty"]').val(),
+					GradYear: $('select[name="GradYear"]').val(),
+					Gpa: $('input[name="Gpa"]').val(),
+					SelectedDepartmentId: $('select[name="SelectedDepartmentId"]').val(),
+					SelectedBranchId: $('select[name="SelectedBranchId"]').val()
+
+				  };
 
 				$.ajax({
 					type: 'POST',
@@ -500,94 +592,6 @@
 					}
 				});
 			});
-
-			/** 888888888888888888888888888888888888888888888888888888888888888888888888888888888  */
-
-
-
-		// 			var table = $('#studentTable').DataTable({
-		// 		processing: true,
-		// 		serverSide: true,
-		// 		ajax: {
-		// 			url: '/Students/GetAllStudent',
-		// 			type: 'POST',
-		// 			data: function (d) {
-		// 				d.branchId = $('#branchFilter').val();
-		// 				d.DeptId = $('#departmentFilter').val();
-		// 				d.statusFilter = $('#statusFilter').val();
-		// 			},
-		// 			dataSrc: function (json) {
-		// 				if (!json.data || json.data.length === 0) {
-		// 					console.log("No data returned from server.");
-		// 				} else {
-		// 					console.log("Returned data:", json.data);
-		// 				}
-		// 				return json.data;
-		// 			}
-		// 			},
-		// 		columns: [
-		// 			{
-		// 				data: null,
-		// 				render: function(data) {
-		// 					return `
-		// 						<ul class="list-unstyled m-0 avatar-group d-flex align-items-center">
-		// 							<li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top"
-		// 								class="avatar avatar-xs pull-up" title="${data.fullName}">
-		// 								<img src="${data.imageURL}" alt="Avatar" class="rounded-circle">
-		// 								<span>${data.fullName}</span>
-		// 							</li>
-		// 						</ul>`;
-		// 				}
-		// 			},
-		// 			{ data: 'ssn' },
-		// 			{ data: 'salary' },
-		// 			{
-		// 				data: null,
-		// 				render: function(data) {
-		// 					if(data.isActive == true)
-		// 					  return '<span class="badge bg-label-primary me-1">Active</span>';
-		// 					else
-		// 						  return '<span class="badge bg-label-danger me-1">Inactive</span>'
-		// 				}
-		// 			},
-		// 			{
-		// 				data: null,
-		// 				render: function(data) {
-		// 					return `
-		// 						<div class="dropdown">
-		// 							<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-		// 								<i class="ti ti-dots-vertical"></i>
-		// 							</button>
-		// 							<div class="dropdown-menu">
-		// 								<a class="dropdown-item" href="/Students/Edit/${data.Ssn}">
-		// 									<i class="ti ti-pencil me-1"></i> Edit
-		// 								</a>
-		// 								<a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('${data.Ssn}')">
-		// 									<i class="ti ti-trash me-1"></i> Delete
-		// 								</a>
-		// 							</div>
-		// 						</div>`;
-		// 				}
-		// 			}
-		// 		],
-		// 		language: {
-		// 			paginate: {
-		// 				previous: '<span aria-hidden="true">⟨</span>',
-		// 				next: '<span aria-hidden="true">⟩</span>'
-		// 			}
-		// 		}
-		// 	});
-
-		// 	$('#searchTerm').on('input', function () {
-		// 		table.search($(this).val()).draw();
-		// 	});
-
-		// 		$('#branchFilter, #departmentFilter, #statusFilter').change(function () {
-		// 		table.draw();
-		// 	});
-		// });
-
-
 					var table = $('#studentTable').DataTable({
 				processing: true,
 				serverSide: true,
@@ -611,20 +615,17 @@
 				},
 				columns: [
 					{
-						data: null,
-						render: function (data) {
+						data: 'imageUrl',
+						render: function (data, type, row) {
 							return `
-								<ul class="list-unstyled m-0 avatar-group d-flex align-items-center">
-									<li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top"
-										class="avatar avatar-xs pull-up" title="${data.fullName}">
-										<img src="${data.imageUrl}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px;">
-										<span class="ms-2">${data.fullName}</span>
-									</li>
-								</ul>`;
+								<img src="${data}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px;">
+							`;
 						}
 					},
+					{ data: 'fullName' },
 					{ data: 'email' },
 					{ data: 'gender' },
+					{ data: 'faculty' },
 					{
 						data: 'isActive',
 						render: function (isActive) {
@@ -633,7 +634,6 @@
 								: '<span class="badge bg-label-danger me-1">Inactive</span>';
 						}
 					},
-					{ data: 'faculty' },
 					{
 						data: null,
 						render: function (data) {
@@ -643,17 +643,15 @@
 										<i class="ti ti-dots-vertical"></i>
 									</button>
 									<div class="dropdown-menu">
-										<a class="dropdown-item" href="/Students/Edit/${data.ssn}">
-											<i class="ti ti-pencil me-1"></i> Edit
-										</a>
-										<a class="dropdown-item" href="javascript:void(0);" onclick="confirmDelete('${data.ssn}')">
-											<i class="ti ti-trash me-1"></i> Delete
+										<a class="dropdown-item" href="/Students/Details/${data.ssn}">
+											<i class="ti ti-pencil me-1"></i> Details
 										</a>
 									</div>
 								</div>`;
 						}
 					}
-				],
+				]
+				,
 				language: {
 					paginate: {
 						previous: '<span aria-hidden="true">⟨</span>',
@@ -718,5 +716,43 @@
 				}
 			});
 		}
+
+
+		$('#SelectedBranchId').on('change', function () {
+		const branchId = $(this).val();
+		const $departmentDropdown = $('#SelectedDepartmentId');
+
+		$departmentDropdown.empty().append('<option value="">-- Select Department --</option>');
+
+		if (!branchId) {
+			$departmentDropdown.prop('disabled', true);
+			return;
+		}
+
+		$.ajax({
+			url: '/Students/GetDepartmentsByBranch',
+			type: 'GET',
+			data: { branchId: branchId },
+			success: function (departments) {
+				departments.forEach(function (dept) {
+					$departmentDropdown.append(
+						$('<option>', {
+							value: dept.id,
+							text: dept.name
+						})
+					);
+				});
+				$departmentDropdown.prop('disabled', false);
+				},
+				error: function () {
+					alert('Failed to load departments.');
+					$departmentDropdown.prop('disabled', true);
+				}
+		  });
+	  });
+
+
+
+
 	</script>
 }

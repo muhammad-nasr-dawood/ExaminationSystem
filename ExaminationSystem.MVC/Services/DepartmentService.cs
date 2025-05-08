@@ -97,7 +97,20 @@ namespace ExaminationSystem.MVC.Services
 
 
 
+	public async Task<List<DepartmentViewModel>> GetDepartmentsByBranchIdAsync(int branchId)
+	{
+	  var branch = _unitOfWork.BranchesRepo.GetById(branchId);
+	  if (branch == null)
+	  {
+		return new List<DepartmentViewModel>();
+	  }
+		Expression<Func<Department, bool>> fillters = dept => dept.BranchDepts.Any(bd => bd.BranchId == branchId);
+		var branchDepts = await _unitOfWork.DepartmentRepo.FindAllAsync(criteria: fillters);
 
+	  var departments = _mapper.Map<List<DepartmentViewModel>>(branchDepts);
+	  return departments;
+
+	}
   }
 
 

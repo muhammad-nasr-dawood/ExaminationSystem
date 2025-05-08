@@ -8,7 +8,7 @@ namespace ExaminationSystem.MVC.ViewModels.StudentViewModels
   public class StudentAddVM
   {
 	[Required(ErrorMessage = "SSN is required")]
-	[Remote("IsSSNExist", controller: "Staff", ErrorMessage = "This SSN is already in use", AdditionalFields = "Email")]
+	[Remote("IsSSNExist", controller: "Students", ErrorMessage = "This SSN is already in use", AdditionalFields = "Email")]
 	public long Ssn { get; set; }
 
 	[Required(ErrorMessage = "First name is required")]
@@ -22,7 +22,7 @@ namespace ExaminationSystem.MVC.ViewModels.StudentViewModels
 	[Required(ErrorMessage = "Email is required")]
 	[StringLength(100, ErrorMessage = "Email must not exceed 100 characters")]
 	[Unicode(false)]
-	[Remote("IsEmailExist", "Staff", ErrorMessage = "This email is already in use", AdditionalFields = "Ssn")]
+	[Remote("IsEmailExist", "Students", ErrorMessage = "This email is already in use", AdditionalFields = "Ssn")]
 	public string Email { get; set; }
 
 	[Required(ErrorMessage = "Zip code is required")]
@@ -46,11 +46,29 @@ namespace ExaminationSystem.MVC.ViewModels.StudentViewModels
 	[Required(ErrorMessage = "Phone number is required")]
 	[StringLength(11, ErrorMessage = "Phone number must not exceed 11 digits")]
 	[Unicode(false)]
+	[Remote("isPhoneNumberExist", "Students", ErrorMessage = "This Phone Number is already in use", AdditionalFields = "Ssn")]
 	public string PhoneNumber { get; set; }
 	[Required(ErrorMessage = "Faculty is required")]
-	[StringLength(50, ErrorMessage = "Phone number must not exceed 11 digits")]
-
 	public string Faculty { get; set; }
+
+	[Required(ErrorMessage = "GPA is required")]
+	[Range(0.0, 4.0, ErrorMessage = "GPA must be between 0.0 and 4.0")]
+	public double Gpa { get; set; }
+
+	[Required(ErrorMessage = "Graduation year is required")]
+	[Range(2000, 2025, ErrorMessage = "Graduation year must be between 2000 and 2025")]
+	public int GradYear { get; set; }
+
+
+	[Required(ErrorMessage = "Please select a branch.")]
+	public int? SelectedBranchId { get; set; }
+
+	[Required(ErrorMessage = "Please select a department.")]
+	public int? SelectedDepartmentId { get; set; }
+
+	//public List<Branch>? Branches{ get; set; }
+	//public List<Department>? Departments { get; set; }
+
 
   }
 

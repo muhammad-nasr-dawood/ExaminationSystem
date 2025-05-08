@@ -30,6 +30,8 @@ public class AccountEditViewModel
   [Unicode(false)]
   public string ZipCode { get; set; }
 
+  public bool IsActive { get; set; }
+
   [Display(Name = "Street Number")]
   [Required]
   [StringLength(5)]
@@ -68,4 +70,8 @@ public class AccountEditViewModel
 
   [Display(Name = "Image URL")]
   public string? ImageURL { get; set; }
+
+  public string? UserRole { get; set; }
+
+  public string? City { get; set; }
 }
