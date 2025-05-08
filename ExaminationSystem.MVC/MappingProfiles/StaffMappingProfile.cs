@@ -40,7 +40,8 @@ public class StaffMappingProfile: Profile
 	  {
 		des.Fname = src.SsnNavigation.Fname;
 		des.Lname = src.SsnNavigation.Lname;
-		des.Location = src.SsnNavigation.ZipCodeNavigation.Governate;
+		if(src.SsnNavigation.ZipCodeNavigation is not null)
+		  des.Location = src.SsnNavigation.ZipCodeNavigation.Governate;
 		des.StreetNo = src.SsnNavigation.StreetNo;
 		des.Email = src.SsnNavigation.Email;
 		des.PhoneNumber = src.SsnNavigation.PhoneNumber;
