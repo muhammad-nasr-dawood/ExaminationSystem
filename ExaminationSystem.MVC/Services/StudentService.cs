@@ -157,10 +157,26 @@ namespace ExaminationSystem.MVC.Services
 	  }
 	  var studentEntity = _mapper.Map<Student>(studentAddVM);
 
+
 	  UnitOfWork.UserRepo.Add(userEntity);
 	  UnitOfWork.StudentRepo.Add(studentEntity);
-
 	  var numOfRowsAffected = UnitOfWork.Complete();
+
+	  var latestIntake = (UnitOfWork.IntakeRepo.GetAll())
+				  .OrderByDescending(i => i.Id)
+				  .FirstOrDefault();
+
+	  var assignStdToDept = new StudentIntakeBranchDepartmentStudy()
+	  {
+		BranchId = studentAddVM.SelectedBranchId.Value,
+		DepartmentId = studentAddVM.SelectedDepartmentId.Value,
+		IntakeId = latestIntake.Id,
+		StudentSsn = studentAddVM.Ssn
+	  };
+
+	  UnitOfWork.StudentIntakeBranchDepartmentStudyRepo.Add(assignStdToDept);
+
+	  UnitOfWork.Complete();
 
 	  return numOfRowsAffected == 2;
 	}
@@ -244,19 +260,21 @@ namespace ExaminationSystem.MVC.Services
 
 	public bool UpdateStudent (StudentDetailsVM stdvm)
 	{
+	  var std = UnitOfWork.StudentRepo.GetById(stdvm.Ssn);
 
-	  //var student = UnitOfWork.StudentRepo.GetById(stdvm.Ssn);
+	  std.Faculty = stdvm.Faculty;
+	  std.SsnNavigation.Fname = stdvm.Fname;
+	  std.SsnNavigation.Lname = stdvm.Lname;
+	  std.SsnNavigation.Email = stdvm.Email;
+	  std.Gpa = (decimal)stdvm.Gpa;
+	  std.GradYear = stdvm.GradYear;
+	  std.SsnNavigation.Bd = stdvm.Bd;
+	  std.SsnNavigation.Gender = stdvm.Gender;
+	  std.SsnNavigation.StreetNo = stdvm.StreetNo;
+	  std.SsnNavigation.ZipCode = stdvm.ZipCode;
 
-	  //_mapper.Map(stdvm, user);
 
-	  //student.SsnNavigation.Ssn = stdvm.Ssn;
-	  //student.Faculty = stdvm.Faculty;
-	  //student.Gpa = (decimal)stdvm.Gpa;
-
-
-	  var student = _mapper.Map<Student>(stdvm);
-
-	  UnitOfWork.StudentRepo.Update(student);
+	  UnitOfWork.StudentRepo.Update(std);
 
 	  UnitOfWork.Complete();
 

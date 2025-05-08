@@ -58,6 +58,18 @@ namespace ExaminationSystem.MVC.ViewModels.StudentViewModels
 	[Required(ErrorMessage = "Graduation year is required")]
 	[Range(2000, 2025, ErrorMessage = "Graduation year must be between 2000 and 2025")]
 	public int GradYear { get; set; }
+
+
+	[Required(ErrorMessage = "Please select a branch.")]
+	public int? SelectedBranchId { get; set; }
+
+	[Required(ErrorMessage = "Please select a department.")]
+	public int? SelectedDepartmentId { get; set; }
+
+	//public List<Branch>? Branches{ get; set; }
+	//public List<Department>? Departments { get; set; }
+
+
   }
 
 }

@@ -2,6 +2,7 @@ using ExaminationSystem.Core;
 using ExaminationSystem.Core.Consts;
 using ExaminationSystem.Core.Helpers;
 using ExaminationSystem.Core.Models;
+using ExaminationSystem.EF;
 using ExaminationSystem.MVC.Services;
 using ExaminationSystem.MVC.ViewModels.StudentViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -16,9 +17,14 @@ namespace ExaminationSystem.MVC.Controllers;
 public class StudentsController : Controller
 {
   IStudentService _studentService;
-  public StudentsController(IStudentService studentService)
+  private readonly IDepartmentService departmentService;
+
+  public StudentsController(
+	IStudentService studentService,
+	IDepartmentService departmentService)
   {
 	_studentService = studentService; // controller layer will only deal with the service layer any dirty work will be within the service layer // in order to keep our controller simple and clean
+	this.departmentService = departmentService;
   }
 
   public IActionResult Index()
@@ -118,10 +124,6 @@ public class StudentsController : Controller
 	  return NotFound();
 	ViewBag.Locations = _studentService.UnitOfWork.LocationRepo.GetAll();
 
-	//ViewBag.Departments = _studentService.UnitOfWork.
-
-
-
 	StudentDetailsVM std = await _studentService.GetStdByIdAsync(id);
 
 	if (std == null)
@@ -211,6 +213,17 @@ public class StudentsController : Controller
 	  return Json("This Phone Number is already in use");
 	}
   }
+
+  [HttpGet]
+  public async Task<IActionResult> GetDepartmentsByBranch(int branchId)
+  {
+	var departments = await departmentService.GetDepartmentsByBranchIdAsync(branchId);
+
+	return Json(departments);
+  }
+
+
+
 
 
 }
