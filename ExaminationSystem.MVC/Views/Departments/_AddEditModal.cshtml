@@ -17,7 +17,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<form id="editDepartmentForm" method="post" asp-action="@((Model.Id == 0) ? "Add" : "Edit")" asp-route-id="@Model.Id">
+				<form id="editDepartmentForm" method="post" asp-action="@((Model.Id == 0) ? "Add" : "Edit")">
 					<input type="hidden" name="Id" value="@Model.Id" />
 
 					<div class="mb-3">
@@ -27,13 +27,10 @@
 					</div>
 
 					<div class="mb-3">
-						<label asp-for="Disc" class="form-label" ></label>
+						<label asp-for="Disc" class="form-label"></label>
 						<input asp-for="Disc" class="form-control" maxlength="" />
 						<span asp-validation-for="Disc" class="text-danger"></span>
-
 					</div>
-
-
 
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -41,98 +38,89 @@
 							@(Model.Id == 0 ? "Add Department" : "Save Changes")
 						</button>
 					</div>
-
 				</form>
 			</div>
 		</div>
 	</div>
 </div>
-
 <script>
+	$(document).ready(function () {
+		$('#editDepartmentForm').on('submit', function (e) {
+			e.preventDefault();
+			if (!$(this).valid()) return;
 
-		$(document).ready(function () {
-			$('#editDepartmentForm').on('submit', function (e) {
-				e.preventDefault();
-				   if (!$(this).valid()) {
-					   return;
-	               }
+			var formData = $(this).serialize();
 
-				var formData = $(this).serialize();
+			$.ajax({
+				type: 'POST',
+				url: $(this).attr('action'),
+				data: formData,
+				success: function (response) {
+					try {
+						if (typeof response === 'string' && $(response).filter('div.col-lg-4').length > 0) {
+							// Add 
+							$('#editDepartmentModal-0').modal('hide');
+							$('#department-list').prepend(response);
+							$('#department-list .col-lg-4').last().remove();
 
-				$.ajax({
-					type: 'POST',
-					url: $(this).attr('action'),
-					data: formData,
-					success: function (response) {
-						if (response.success) {
-							console.log(response);
-							$('#editDepartmentModal-' + (response.id ?? 0)).modal('hide');
-
-							if (response.id != 0) {
-								
-								$('#department-' + response.id + ' .fw-bold').text(response.department.name);
-								$('#department-' + response.id + ' .text-muted strong:first').text(response.department.disc);
-								$('#department-' + response.id + ' .text-muted strong:last').text(response.department.capacity);
-							} else {
-								
-								var newDeptHtml = `
-								<div class="col-lg-4 col-md-6" id="department-${response.department.id}">
-									<div class="card shadow-lg border-0 rounded-3 h-100 position-relative">
-										<div class="card-body p-4 d-flex flex-column justify-content-between">
-
-											<div class="dropdown position-absolute top-0 end-0 m-3">
-												<button class="btn btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-													<i class="ti ti-dots-vertical"></i>
-												</button>
-												<ul class="dropdown-menu">
-													<li>
-														<a class="dropdown-item text-warning edit-department-btn" href="javascript:void(0);" data-id="${response.department.id}">
-															<i class="ti ti-pencil me-2"></i>Edit
-														</a>
-													</li>
-													<li>
-														<a class="dropdown-item text-danger delete-department-btn" href="javascript:void(0);" data-id="${response.department.id}">
-															<i class="ti ti-trash me-2"></i>Delete
-														</a>
-													</li>
-												</ul>
-											</div>
-
-											<div>
-												<h5 class="fw-bold text-primary mb-2">${response.department.name}</h5>
-												<p class="text-muted mb-2">Description: <strong>${response.department.disc}</strong></p>
-												<p class="text-muted mb-2">Capacity: <strong>${response.department.capacity}</strong></p>
-											</div>
-
-											<div class="d-flex gap-2">
-												<a href="/Branches/ShowStudents?deptId=${response.department.id}&branchId=${response.branchId}" class="btn btn-primary btn-sm w-50">
-													Show Students
-												</a>
-												<a href="/Departments/ShowCourses?id=${response.department.id}" class="btn btn-secondary btn-sm w-50">
-													Show Courses
-												</a>
-											</div>
-
-											<div class="mt-3">
-												<span class="badge px-3 py-2 rounded-pill bg-success text-white">Active</span>
-											</div>
-
-										</div>
-									</div>
-								</div>`;
-								$('#department-list').append(newDeptHtml);
-							}
-
-						} else {
-							alert('Error: ' + response.message);
+							Swal.fire({
+								icon: 'success',
+								title: 'Success!',
+								text: 'Department added successfully.',
+								timer: 2000,
+								showConfirmButton: false
+							});
 						}
-					},
-					error: function () {
-						alert('An error occurred while saving the department.');
+						else if (typeof response === 'object' && response.success) {
+							// Edit 
+							$('#editDepartmentModal-' + response.id).modal('hide');
+							$('#department-' + response.id + ' .fw-bold').text(response.department.name);
+							$('#department-' + response.id + ' .text-muted strong:first').text(response.department.disc);
+							$('#department-' + response.id + ' .text-muted strong:last').text(response.department.capacity);
+
+							Swal.fire({
+								icon: 'success',
+								title: 'Success!',
+								text: 'Department updated successfully.',
+								timer: 2000,
+								showConfirmButton: false
+							});
+						} else {
+							Swal.fire({
+								icon: 'warning',
+								title: 'Validation Failed',
+								text: 'Please check the required fields and try again.'
+							});
+						}
+					} catch (e) {
+						Swal.fire({
+							icon: 'warning',
+							title: 'Unexpected Response',
+							text: 'Please try again.'
+						});
 					}
-				});
+				},
+				error: function (xhr) {
+					Swal.fire({
+						icon: 'error',
+						title: 'Error!',
+						text: xhr.responseText || 'An error occurred while processing your request.'
+					});
+				}
 			});
 		});
-</script>
 
+		$('#editDepartmentModal-@Model.Id').on('hide.bs.modal', function () {
+			const modal = this;
+			const focused = document.activeElement;
+			if (modal.contains(focused)) {
+				focused.blur();
+			}
+		});
+			$('#editDepartmentForm input').on('blur', function () {
+		$(this).valid(); 
+	});
+
+	});
+</script>
 

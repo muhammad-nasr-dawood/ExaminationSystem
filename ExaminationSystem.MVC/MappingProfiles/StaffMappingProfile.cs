@@ -72,7 +72,8 @@ public class StaffMappingProfile : Profile
 
 	CreateMap<Branch, BranchViewModel>().AfterMap((src, des) =>
 	{
-	  des.LocationName = src.ZipCodeNavigation.Governate;
+	  if(src.ZipCodeNavigation is not null) 
+	     des.LocationName = src.ZipCodeNavigation.Governate;
 	});
   }
 

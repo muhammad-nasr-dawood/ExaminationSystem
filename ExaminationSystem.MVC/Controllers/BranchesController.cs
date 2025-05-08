@@ -1,7 +1,9 @@
+using ExaminationSystem.Core.Helpers;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.Services;
 using ExaminationSystem.MVC.ViewModels.BranchViewModels;
 using ExaminationSystem.MVC.ViewModels.CourseViewModels;
+using ExaminationSystem.MVC.ViewModels.DepartmentViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -199,13 +201,24 @@ public class BranchesController : Controller
 
 
 
- 
+
   public IActionResult ShowDepartments(int branchId)
   {
-	var departments = _branchService.GetDepartmentsWithCapacitiesByBranch(branchId);
+	var list = _branchService.GetDepartmentsWithCapacitiesByBranch(branchId);
+	var paginated = new PaginatedResult<DepartmentViewModel>
+	{
+	  Items = list,
+	  CurrentPage = 1,
+	  PageSize = list.Count,
+	  TotalPages = 1,
+	  TotalFilteredItems = list.Count,
+	  TotalItemsInTable = list.Count
+	};
+
 	ViewBag.BranchId = branchId;
-	return View("~/Views/Departments/Index.cshtml", departments);
+	return View("~/Views/Departments/Index.cshtml", paginated);
   }
+
 
 
   public IActionResult ShowBranchStaff(int branchId)
@@ -230,7 +243,7 @@ public class BranchesController : Controller
   }
 
 
-  public IActionResult ShowCourses(int deptId,int branchId)
+  public IActionResult ShowCourses(int deptId,int? branchId)
   {
 	var department = _departmentService.GetDepartmentForEdit(deptId);
 	if (department == null)

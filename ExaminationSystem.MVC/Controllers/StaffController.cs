@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace ExaminationSystem.MVC.Controllers;
 
-[Authorize]
+//[Authorize]
 public class StaffController : Controller
 {
   private readonly IStaffService _staffService;

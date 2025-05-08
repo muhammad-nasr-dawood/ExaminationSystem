@@ -4,18 +4,18 @@
 @{
 	ViewData["Title"] = "Courses List - Pages";
 	var hasDeptId = ViewBag.DeptIdFilter != null;
-}
-
+	var hasBranchId = ViewBag.BranchIdFilter != null;
+}     
 @section VendorStyles {
-	<link rel="stylesheet" href="~/vendor/libs/datatables-bs5/datatables.bootstrap5.css">
-	<link rel="stylesheet" href="~/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
-	<link rel="stylesheet" href="~/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css">
-	<link rel="stylesheet" href="~/vendor/libs/select2/select2.css" />
-	<link rel="stylesheet" href="~/vendor/libs/&#64;form-validation/form-validation.css" />
-	<link rel="stylesheet" href="~/vendor/libs/bs-stepper/bs-stepper.css" />
-	<link rel="stylesheet" href="~/vendor/libs/bootstrap-select/bootstrap-select.css" />
-	<link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css">
-	<link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
+		<link rel="stylesheet" href="~/vendor/libs/datatables-bs5/datatables.bootstrap5.css">
+			<link rel="stylesheet" href="~/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css">
+				<link rel="stylesheet" href="~/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css">
+				<link rel="stylesheet" href="~/vendor/libs/select2/select2.css" />
+				<link rel="stylesheet" href="~/vendor/libs/&#64;form-validation/form-validation.css" />
+				<link rel="stylesheet" href="~/vendor/libs/bs-stepper/bs-stepper.css" />
+				<link rel="stylesheet" href="~/vendor/libs/bootstrap-select/bootstrap-select.css" />
+					<link rel="stylesheet" href="~/vendor/libs/animate-css/animate.css">
+					<link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.css" />
 }
 
 @section VendorScripts {
@@ -150,14 +150,25 @@
 					<option value="true">InActive</option>
 				</select>
 			</div>
-				<div class="col-md-3">
-					@if (hasDeptId)
+			<div class="col-md-3">
+				@if (hasDeptId)
+				{
+					@if (hasBranchId)
 					{
-						<a href="@Url.Action("ShowDepartments", "Branches", new { branchId = ViewBag.BranchId })" class="btn btn-primary w-100">
+						<a href="@Url.Action("ShowDepartments", "Branches", new { branchId = ViewBag.BranchIdFilter })" class="btn btn-primary w-100">
+							<i class="ti ti-arrow-left"></i> Back to Department List
+						</a>
+					}
+					else 
+					{
+						<a href="@Url.Action("Index", "Departments")" class="btn btn-primary w-100">
 							<i class="ti ti-arrow-left"></i> Back to Department List
 						</a>
 
 					}
+
+				}
+					
 					else
 					{
 						<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
@@ -239,8 +250,10 @@
 	<script>
 		$(document).ready(function () {
 
-
-
+				$('#courseForm input').on('blur', function () {
+				$(this).valid();
+			});
+			
 				$("form").validate();
 					$("form input").keyup(function() {
 						$(this).valid();

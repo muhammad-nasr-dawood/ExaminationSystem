@@ -11,11 +11,6 @@ namespace ExaminationSystem.MVC.Controllers
 	{
 	  _departmentService = departmentService;
 	}
-	public IActionResult Index()
-	{
-	  var depts = _departmentService.GetAll();
-	  return View(depts);
-	}
 	[HttpGet]
 	public IActionResult Add()
 	{
@@ -26,14 +21,21 @@ namespace ExaminationSystem.MVC.Controllers
 	[HttpPost]
 	public IActionResult Add(AddEditDeptViewModel model)
 	{
-	  if (ModelState.IsValid)
+	  if (!ModelState.IsValid)
 	  {
-		var dept = _departmentService.Add(model);
-		return Json(new { success = true, id = 0, department = dept });
+		var errors = ModelState.Values
+			.SelectMany(v => v.Errors.Select(e => e.ErrorMessage))
+			.ToList();
+
+		return BadRequest(string.Join(", ", errors));
 	  }
 
-	  return Json(new { success = false, message = "Invalid data." });
+	  var dept = _departmentService.Add(model);
+
+	  
+	  return PartialView("_DeptCardPartial", dept);
 	}
+
 
 	[HttpGet]
 	public IActionResult Edit(int id)
@@ -78,5 +80,22 @@ namespace ExaminationSystem.MVC.Controllers
 
 	  return Json(new { success = false, message = "Error occurred while deleting." });
 	}
+
+	[HttpGet]
+	public async Task<IActionResult> Index(string? search, int page = 1, int pageSize = 12, bool isPartial = false, int? branchId = null)
+	{
+	  ViewBag.BranchId = branchId;
+
+	  var paginated = await _departmentService.GetPagedDepartmentsAsync(search, page, pageSize, branchId);
+
+	  if (isPartial)
+	  {
+		return PartialView("_DeptCardListPartial", paginated);
+	  }
+
+	  return View(paginated);
+	}
+
+
   }
 }

@@ -162,6 +162,9 @@ $(document).ready(function () {
 			focused.blur();
 		}
 	});
+		$('#editBranchForm input').on('blur', function () {
+		$(this).valid(); 
+	});
 });
 
 

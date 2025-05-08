@@ -68,6 +68,7 @@
 	
 	$(document).ready(function () {
 
+		//Branch search
 	$('#branchSearch').on('input', function () {
 	  const val = $(this).val();
 	  $('#clearSearchBtn').toggleClass('d-none', val.length === 0);

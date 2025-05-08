@@ -19,7 +19,7 @@ namespace ExaminationSystem.MVC.Controllers
 	{
 	  ViewBag.Departments = _courseService.GetAllDepartments();
 	  ViewBag.DeptIdFilter = deptId;
-	  ViewBag.BranchId=branchId;
+	  ViewBag.BranchIdFilter = branchId;
 	  return View();
 	}
 

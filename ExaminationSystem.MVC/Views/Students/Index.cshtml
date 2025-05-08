@@ -129,14 +129,14 @@
 		@if (ViewBag.BranchId != 0)
 		{
 			<a href="@Url.Action("ShowDepartments", "Branches",new{branchId = ViewBag.BranchId})" class="btn btn-primary">
-		
-				<i class="bi bi-arrow-left-circle"></i> Go Back to Department List
+
+					<i class="ti ti-arrow-left"></i> Go Back to Department List
 			</a>
 		}
 		else
 		{
 		<a href="@Url.Action("Index", "Departments")" class="btn btn-primary">
-			<i class="bi bi-arrow-left-circle"></i> Go Back to Department List
+					<i class="ti ti-arrow-left"></i> Go Back to Department List
 		</a>
 		}
 		</div>

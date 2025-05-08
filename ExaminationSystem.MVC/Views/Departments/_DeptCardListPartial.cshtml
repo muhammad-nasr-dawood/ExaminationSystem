@@ -1,0 +1,30 @@
+@model PaginatedResult<DepartmentViewModel>
+<div class="d-flex flex-column min-vh-100">
+	<div id="department-list" class="row g-4">
+		@foreach (var dept in Model.Items)
+		{
+			@Html.Partial("~/Views/Departments/_DeptCardPartial.cshtml", dept)
+		}
+	</div>
+
+	<div class="mt-auto d-flex justify-content-center py-4" id="pagination-container">
+		<nav>
+			<ul class="pagination gap-2">
+				<li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+					<button class="page-link rounded" data-page="@(Model.CurrentPage - 1)">⟨</button>
+				</li>
+
+				@for (int i = 1; i <= Model.TotalPages; i++)
+				{
+					<li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+						<button class="page-link rounded" data-page="@i">@i</button>
+					</li>
+				}
+
+				<li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+					<button class="page-link rounded" data-page="@(Model.CurrentPage + 1)">⟩</button>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</div>

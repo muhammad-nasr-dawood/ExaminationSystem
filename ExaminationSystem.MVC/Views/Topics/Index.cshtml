@@ -238,6 +238,11 @@
 		<script>
 			$(document).ready(function () {
 
+				$('#topicForm input').on('blur', function () {
+				$(this).valid();
+
+			    });
+
 				$('#courseFilter').trigger('change');
 
 
