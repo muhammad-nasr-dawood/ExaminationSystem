@@ -18,31 +18,29 @@ namespace ExaminationSystem.EF.Repositories
         }
         public async Task<List<Location>> GetLocationsWithNoBranchAndIsDeletedAsync(int? id = null)
         {
-            IQueryable<Location> locationsQuery = _dBContext.Locations;
+            var locationsWithBranches = _dBContext.Branches
+                .Where(b => !b.IsDeleted)
+                .Select(b => b.ZipCode);
 
-           
+            IQueryable<Location> query = _dBContext.Locations;
+
             if (id.HasValue)
             {
-               
-                locationsQuery = locationsQuery
-                    .Where(l => l.ZipCode == _dBContext.Branches
-                        .Where(b => b.Id == id)
-                        .Select(b => b.ZipCode)
-                        .FirstOrDefault() || 
-                    !_dBContext.Branches
-                        .Any(b => b.ZipCode == l.ZipCode && b.IsDeleted == false)); 
+                var branchZip = await _dBContext.Branches
+                    .Where(b => b.Id == id)
+                    .Select(b => b.ZipCode)
+                    .FirstOrDefaultAsync();
+
+                query = query.Where(l => l.ZipCode == branchZip || !locationsWithBranches.Contains(l.ZipCode));
             }
             else
             {
-                locationsQuery = locationsQuery.Where(l => !_dBContext.Branches
-                    .Any(b => b.ZipCode == l.ZipCode && b.IsDeleted == false));
+                query = query.Where(l => !locationsWithBranches.Contains(l.ZipCode));
             }
 
-          
-            var locations = await locationsQuery.ToListAsync();
-
-            return locations;
+            return await query.AsNoTracking().ToListAsync();
         }
+
 
 
     }

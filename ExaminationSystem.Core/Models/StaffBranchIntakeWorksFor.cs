@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExaminationSystem.Core.Models;
 
-[PrimaryKey("StaffSsn", "BranchId", "DepartmentId", "IntakeId")]
-[Table("StaffBranchDepartmentWorksFor")]
-public partial class StaffBranchDepartmentWorksFor
+[PrimaryKey("StaffSsn", "BranchId", "IntakeId")]
+[Table("StaffBranchIntakeWorksFor")]
+public partial class StaffBranchIntakeWorksFor
 {
     [Key]
     [Column("StaffSSN")]
@@ -19,31 +19,20 @@ public partial class StaffBranchDepartmentWorksFor
     [Key]
     public int BranchId { get; set; }
 
-    [Key]
-    public int DepartmentId { get; set; }
-
     public DateOnly? HiringDate { get; set; }
 
     [Key]
     public int IntakeId { get; set; }
 
     [ForeignKey("BranchId")]
-    [InverseProperty("StaffBranchDepartmentWorksFors")]
+    [InverseProperty("StaffBranchIntakeWorksFors")]
     public virtual Branch Branch { get; set; }
 
-    [ForeignKey("BranchId, DepartmentId, IntakeId")]
-    [InverseProperty("StaffBranchDepartmentWorksFors")]
-    public virtual BranchDept BranchDept { get; set; }
-
-    [ForeignKey("DepartmentId")]
-    [InverseProperty("StaffBranchDepartmentWorksFors")]
-    public virtual Department Department { get; set; }
-
     [ForeignKey("IntakeId")]
-    [InverseProperty("StaffBranchDepartmentWorksFors")]
+    [InverseProperty("StaffBranchIntakeWorksFors")]
     public virtual Intake Intake { get; set; }
 
     [ForeignKey("StaffSsn")]
-    [InverseProperty("StaffBranchDepartmentWorksFors")]
+    [InverseProperty("StaffBranchIntakeWorksFors")]
     public virtual Staff StaffSsnNavigation { get; set; }
 }

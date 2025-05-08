@@ -37,9 +37,14 @@ namespace ExaminationSystem.EF
         public IBaseRepo<Course> CoursesRepo { get; }
 
         public IBaseRepo<Student> StudentRepo { get; }
-        public IBaseRepo<ProfileImage> ProfileImageRepo { get; }  
+        public IBaseRepo<ProfileImage> ProfileImageRepo { get; }
 
-        public UnitOfWork(ExaminationDBContext dbContext, IBaseRepo<Student> studentRepo, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo,ILocationRepo locationRepo, IBranchRepo branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo, IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> teachRepo, IBaseRepo<Course> coursesRepo, IBaseRepo<ProfileImage> profileImageRepo,IStaffBranchManageRepo staffBranchManageRepo, IBaseRepo<Course> courseRepo,IBaseRepo<Topic> topicRepo)
+        public IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo 
+        { get; }
+
+        public IBaseRepo<Intake> IntakeRepo  {get;}
+
+        public UnitOfWork(ExaminationDBContext dbContext, IBaseRepo<Student> studentRepo, IAuthRepo authRepo, IBaseRepo<Staff> staffRepo,ILocationRepo locationRepo, IBranchRepo branchRepo, IBaseRepo<Department> departmentRepo, IBaseRepo<User> userRepo, IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> teachRepo, IBaseRepo<Course> coursesRepo, IBaseRepo<ProfileImage> profileImageRepo,IStaffBranchManageRepo staffBranchManageRepo, IBaseRepo<Course> courseRepo,IBaseRepo<Topic> topicRepo,IBaseRepo<StaffBranchIntakeWorksFor> worksFor ,IBaseRepo<Intake> intake )
        
         {
             _dbContext = dbContext;
@@ -60,6 +65,10 @@ namespace ExaminationSystem.EF
             TeachingRepo = teachRepo;
             CoursesRepo = coursesRepo;
             ProfileImageRepo = profileImageRepo;
+            WorksForRepo = worksFor;
+            IntakeRepo = intake;
+      
+
         }
 
 
@@ -84,6 +93,18 @@ namespace ExaminationSystem.EF
         public void Dispose()
         {
             _dbContext.Dispose();
+        }
+
+        public async Task<int> CompleteAsync()
+        {
+            try
+            {
+                return await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while saving changes: {ex.Message}", ex);
+            }
         }
     }
 }
