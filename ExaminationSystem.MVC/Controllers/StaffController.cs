@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace ExaminationSystem.MVC.Controllers;
 
-[Authorize]
+//[Authorize]
 public class StaffController : Controller
 {
   private readonly IStaffService _staffService;
@@ -44,6 +44,7 @@ public class StaffController : Controller
 
   public IActionResult Index()
   {
+
 	ViewBag.Branches = _mapper.Map<List<BranchDisplayViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll()) ;
 	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
 

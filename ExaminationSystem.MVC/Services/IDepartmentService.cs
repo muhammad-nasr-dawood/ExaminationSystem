@@ -6,5 +6,7 @@ namespace ExaminationSystem.MVC.Services
   public interface IDepartmentService
   {
 	public List<DepartmentViewModel> GetAll();
+
+	public Task<List<DepartmentViewModel>> GetDepartmentsByBranchIdAsync(int branchId);
   }
 }

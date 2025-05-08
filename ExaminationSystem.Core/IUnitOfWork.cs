@@ -16,7 +16,7 @@ namespace ExaminationSystem.Core
         IBaseRepo<Staff> StaffRepo { get; }
         IBaseRepo<Student> StudentRepo { get; }
         IBaseRepo<User> UserRepo { get; }
-
+        IBaseRepo<StudentIntakeBranchDepartmentStudy> StudentIntakeBranchDepartmentStudyRepo { get; }
         IBaseRepo<Location> LocationRepo { get; }
         IBaseRepo<Department> DepartmentRepo { get; }
        

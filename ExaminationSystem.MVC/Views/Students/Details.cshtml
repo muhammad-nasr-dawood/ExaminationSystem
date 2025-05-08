@@ -87,6 +87,7 @@
 					<div class="col-md-4 user_plan"></div>
 					<div class="col-md-4 user_status"></div>
 					<div class="col-md-3">
+
 @* 						<select id="branchFilter" class="form-select">
 							<option value="">Filter by Branch</option>
 							@foreach (var branch in ViewBag.Branches)
@@ -274,8 +275,7 @@
 								</div>
 								<div class="col-sm-6">
 									<label class="form-label" asp-for="Ssn">SSN</label>
-									<input type="number" asp-for="Ssn" class="form-control" placeholder="john.doe&#64;email.com" aria-label="john.doe" />
-									<span asp-validation-for="Ssn"></span>
+									<input type="number" disabled asp-for="Ssn" class="form-control" placeholder="john.doe&#64;email.com" aria-label="john.doe" />
 								</div>
 								<div class="col-12 d-flex justify-content-between">
 									<button class="btn btn-label-secondary btn-prev" disabled>
@@ -555,6 +555,7 @@
 					Faculty: $('select[name="Faculty"]').val(),
 					GradYear: $('select[name="GradYear"]').val(),
 					Gpa: $('input[name="Gpa"]').val()
+					// Gpa: $('input[name="Location"]').val()
 					// add more fields if needed
 				};
 
