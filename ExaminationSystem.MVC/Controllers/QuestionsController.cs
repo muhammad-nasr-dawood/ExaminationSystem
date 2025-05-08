@@ -118,7 +118,7 @@ namespace ExaminationSystem.MVC.Controllers
 	        
 	        if (result == -1)
 	            return BadRequest("Failed to add question. Please try again.");
-	
+		  
 	        return Ok("Question added successfully! 😊");
 	    }
 	    catch (Exception ex)

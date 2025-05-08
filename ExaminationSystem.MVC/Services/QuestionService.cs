@@ -69,16 +69,17 @@ namespace ExaminationSystem.MVC.Services
 
 
 
-	private DataTable ConvertImagesToDataTable(List<VM.Image> images)
+	private DataTable ConvertImagesToDataTable(List<VM.Image>? images)
 	{
 	  var table = new DataTable();
 	  table.Columns.Add("Id", typeof(int));
 	  table.Columns.Add("Url", typeof(string));
 
-	  foreach (var img in images)
-	  {
-		table.Rows.Add(img.Id, img.Url);
-	  }
+	  if(images!=null)
+		foreach (var img in images)
+		{
+		  table.Rows.Add(img.Id, img.Url);
+		}
 
 	  return table;
 	}
@@ -86,7 +87,7 @@ namespace ExaminationSystem.MVC.Services
 	private DataTable ConvertAnswersToDataTable(List<string> Answers)
 	{
 	  var table = new DataTable();
-	  table.Columns.Add("Value", typeof(int));
+	  table.Columns.Add("Value", typeof(string));
 
 	  foreach (var ans in Answers)
 	  {
@@ -130,14 +131,8 @@ namespace ExaminationSystem.MVC.Services
 
 		}
 
-		DataTable? dataTable = null;
-
-		if (imagesInfo != null)
-		{
-		  dataTable = ConvertImagesToDataTable(imagesInfo);
-		}
-
-
+		DataTable? dataTable = dataTable = ConvertImagesToDataTable(imagesInfo);
+		
 		int result = await UnitOfWork.QuestionRepo.AddTFQuestion(question.StaffId, question.Level, question.Content,
 					 question.TopicId, question.IsTrue, dataTable);
 
@@ -184,11 +179,8 @@ namespace ExaminationSystem.MVC.Services
 
 		}
 
-		DataTable? iamgesDataTable = null;
-		if (imagesInfo != null)
-		{
-		  iamgesDataTable = ConvertImagesToDataTable(imagesInfo);
-		}
+		DataTable iamgesDataTable = ConvertImagesToDataTable(imagesInfo);
+		 
 
 		DataTable answersDataTable = ConvertAnswersToDataTable(question.Answers);
 
