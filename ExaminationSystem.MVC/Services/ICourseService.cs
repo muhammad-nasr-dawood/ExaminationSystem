@@ -25,5 +25,6 @@ namespace ExaminationSystem.MVC.Services
 	public object AddCourse(CourseAddEditViewModel model);
 	public object EditCourse(CourseAddEditViewModel model);
 	public List<CourseDisplayViewModel> GetAll();
+	public List<Topic> GetTopicsByCourse(int courseId);
   }
 }
