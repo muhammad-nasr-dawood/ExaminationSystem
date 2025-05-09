@@ -179,7 +179,7 @@ namespace ExaminationSystem.MVC.Services
 	private DataTable CreateDataTableFromArray<T>(T [] array)
 	{
 	  DataTable dataTable = new DataTable();
-	  dataTable.Columns.Add("Value", typeof(int));
+	  dataTable.Columns.Add("Value", typeof(long));
 
 	  foreach (T item in array)
 	  {

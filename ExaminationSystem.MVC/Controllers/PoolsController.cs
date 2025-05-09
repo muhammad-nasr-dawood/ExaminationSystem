@@ -133,7 +133,7 @@ namespace ExaminationSystem.MVC.Controllers
 		if (result == null)
 		  return BadRequest("No Pool Created");
 
-		return View(result);
+		return Ok("Success");
 	  }
 	  catch (Exception ex)
 	  {
@@ -227,29 +227,30 @@ namespace ExaminationSystem.MVC.Controllers
 	}
 
 
-
-
 	[HttpGet]
 	public async Task<IActionResult> SetConfigurations(long staffId, int poolId)
 	{
 	  try
 	  {
 		ActivePoolResult _activePool = await _poolService.ActivePool(staffId, poolId);
+		if (_activePool == null)
+			return BadRequest("Pool not found");
 
-		var _students = await _studentService.GetStudentsByDepartmentBranchAndActiveIntakeAsync(_activePool.PDeptId,_activePool.PBranchId);
-
-		ViewBag.ActivePool = _activePool;
-		ViewBag.Configurations = new Configuration();
-		ViewBag.Students = _students;
-
-		return View();	
-
+		var _students = await _studentService.GetStudentsByDepartmentBranchAndActiveIntakeAsync(_activePool.PDeptId, _activePool.PBranchId);
+		
+		var model = new SetConfigurationsVM
+		{
+			Pool = _activePool,
+			Students = _students ?? new List<StudentBasicInfoVM>(),
+			Configuration = new Configuration()
+		};
+	
+		return View(model);
 	  }
 	  catch (Exception ex)
 	  {
 		return BadRequest(ex.Message);
 	  }
-
 	}
 
 

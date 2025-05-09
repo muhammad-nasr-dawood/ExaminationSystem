@@ -28,6 +28,7 @@
 				<li class='menu-item@(currentPage == "/Pools/Bank" ? " active" : "")'>
 					<a asp-controller="Pools" asp-action="Bank"
 					   asp-route-CourseId="@TempData.Peek("CurrentCourseId")"
+					   asp-route-PoolId="@TempData.Peek("CurrentPoolId")"
 					   class="menu-link">
 						<i class="menu-icon tf-icons ti ti-moneybag"></i>
 						Questions Bank
@@ -36,6 +37,7 @@
 				<li class='menu-item@(currentPage == "/Archived" ? " active" : "")'>
 					<a asp-controller="Pools" asp-action="Archived"
 					   asp-route-CourseId="@TempData.Peek("CurrentCourseId")"
+					   asp-route-PoolId="@TempData.Peek("CurrentPoolId")"
 					   asp-route-page="1"
 					   asp-route-limit="10"
 					   asp-route-order="1"
@@ -60,6 +62,7 @@
 							<a asp-controller="Questions" 
 							   asp-action="AddMCQQuestion" 
 							   asp-route-courseId="@TempData.Peek("CurrentCourseId")"
+							   asp-route-poolId="@TempData.Peek("CurrentPoolId")"
 							   class="menu-link">
 							    <i class="menu-icon tf-icons ti ti-grid-dots"></i>
 							    <div data-i18n="Multiple Choice">Multiple Choice</div>
@@ -69,6 +72,7 @@
 							<a asp-controller="Questions" 
 							   asp-action="AddTFQuestion" 
 							   asp-route-courseId="@TempData.Peek("CurrentCourseId")"
+							   asp-route-poolId="@TempData.Peek("CurrentPoolId")"
 							   class="menu-link">
 							    <i class="menu-icon tf-icons ti ti-checkbox"></i>
 							    <div data-i18n="True / False">True / False</div>
@@ -78,8 +82,11 @@
 				</li>
 			</ul>
 		</div>
-		<a asp-controller="Pools" asp-action="SetConfigurations" class="btn btn-primary m-3">
-			<span class="ti-xs ti ti-toggle-left me-2"></span>Criteria
+		<a asp-controller="Pools" asp-action="SetConfigurations" 
+		   asp-route-staffId="40404040404040"
+		   asp-route-poolId="@TempData.Peek("CurrentPoolId")"
+		   class="btn btn-primary m-3">
+		    <span class="ti-xs ti ti-toggle-left me-2"></span>Criteria
 		</a>
 		<button type="button" class="btn btn-danger m-3">
 			<span class="ti-xs ti ti-logout-2 me-2"></span>Exit

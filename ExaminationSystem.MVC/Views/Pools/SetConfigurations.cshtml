@@ -1,4 +1,316 @@
+@model SetConfigurationsVM
 @{
-	ViewData["Title"] = "Pool Questions";
+	ViewData["Title"] = "Set Configurations";
 	Layout = "_HorizontalLayout";
 }
+
+@section VendorStyles {
+	<link rel="stylesheet" href="~/vendor/libs/bs-stepper/bs-stepper.css" />
+	<link rel="stylesheet" href="~/vendor/libs/bootstrap-select/bootstrap-select.css" />
+	<link rel="stylesheet" href="~/vendor/libs/select2/select2.css" />
+	<link rel="stylesheet" href="~/vendor/libs/toastr/toastr.css" />
+}
+
+@section VendorScripts {
+	<script src="~/vendor/libs/bs-stepper/bs-stepper.js"></script>
+	<script src="~/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+	<script src="~/vendor/libs/select2/select2.js"></script>
+	<script src="~/vendor/libs/toastr/toastr.js"></script>
+}
+
+@section PageScripts {
+	<script src="~/js/form-wizard-icons.js"></script>
+	<script>
+		$(document).ready(function() {
+			// Configure toastr
+			toastr.options = {
+				closeButton: true,
+				progressBar: true,
+				positionClass: "toast-top-right",
+				timeOut: 3000
+			};
+
+			// Set minimum date to tomorrow
+			const tomorrow = new Date();
+			tomorrow.setDate(tomorrow.getDate() + 1);
+			$('#examDate').attr('min', tomorrow.toISOString().split('T')[0]);
+
+			// Question count validation
+			function validateQuestionCounts() {
+				const easyCount = parseInt($('#noEasy').val()) || 0;
+				const intermediateCount = parseInt($('#noIntermediate').val()) || 0;
+				const hardCount = parseInt($('#noHard').val()) || 0;
+
+				if (easyCount > @Model.Pool.PNoOfEasy) {
+					$('#noEasy').val(@Model.Pool.PNoOfEasy);
+					toastr.warning('Easy questions cannot exceed ' + @Model.Pool.PNoOfEasy);
+				}
+				if (intermediateCount > @Model.Pool.PNoOfMedium) {
+					$('#noIntermediate').val(@Model.Pool.PNoOfMedium);
+					toastr.warning('Intermediate questions cannot exceed ' + @Model.Pool.PNoOfMedium);
+				}
+				if (hardCount > @Model.Pool.PNoOfDifficult) {
+					$('#noHard').val(@Model.Pool.PNoOfDifficult);
+					toastr.warning('Hard questions cannot exceed ' + @Model.Pool.PNoOfDifficult);
+				}
+			}
+
+			$('#noEasy, #noIntermediate, #noHard').on('change', validateQuestionCounts);
+
+			// Time validation
+			function validateTimes() {
+				const startTime = $('#startTime').val();
+				const endTime = $('#endTime').val();
+				const duration = parseInt($('#duration').val());
+
+				if(startTime && endTime) {
+					const start = new Date(`2000/01/01 ${startTime}`);
+					const end = new Date(`2000/01/01 ${endTime}`);
+					const diffHours = (end - start) / (1000 * 60 * 60);
+					
+					if(duration > diffHours) {
+						$('#duration').val(Math.floor(diffHours));
+						toastr.warning('Duration cannot exceed time window');
+					}
+				}
+			}
+
+			$('#startTime, #endTime, #duration').on('change', validateTimes);
+
+			// Form submission
+			$('.btn-submit').on('click', function(e) {
+				e.preventDefault();
+				
+				const excludedStudents = [];
+				$('input[name="excludeStudent"]:checked').each(function() {
+					excludedStudents.push($(this).val());
+				});
+
+				// Update the config object in the AJAX call
+				const config = {
+					PoolId: @Model.Pool.PId,
+					NoOfDifficult: parseInt($('#noHard').val()) || 0,
+					NoOfMedium: parseInt($('#noIntermediate').val()) || 0,
+					NoOfEasy: parseInt($('#noEasy').val()) || 0,
+					GradeForDifficult: parseFloat($('#gradeHard').val()) || 0,
+					GradeForMedium: parseFloat($('#gradeIntermediate').val()) || 0,
+					GradeForEasy: parseFloat($('#gradeEasy').val()) || 0,
+					Date: $('#examDate').val(),
+					StartingTime: $('#startTime').val(),
+					EndingTime: $('#endTime').val(),
+					Duration: parseInt($('#duration').val()) || 0,
+					NoOfModels: parseInt($('#noModels').val()) || 1,
+					CanModify: true
+				};
+
+				$.ajax({
+					url: '@Url.Action("SetConfigurations", "Pools")',
+					type: 'POST',
+					data: {
+						staffId: 40404040404040,
+						config: config,
+						excludedStdIds: $('input[name="excludeStudent"]:checked').map(function() {
+							return parseInt($(this).val());
+						}).get()
+					},
+					success: function(response) {
+						toastr.success('Configuration saved successfully');
+						setTimeout(() => {
+							window.location.href = '@Url.Action("Active", "Pools")';
+						}, 1000);
+					},
+					error: function(xhr) {
+						toastr.error(xhr.responseText || 'Failed to save configuration');
+					},
+					complete: function() {
+						$('.sk-swing').hide();
+					}
+				});
+			});
+		});
+	</script>
+}
+
+<div class="col-12 mb-6">
+	<div class="bs-stepper vertical wizard-vertical-icons-example mt-2">
+		<div class="bs-stepper-header">
+			<div class="step" data-target="#account-details-vertical">
+				<button type="button" class="step-trigger">
+					<span class="bs-stepper-circle">
+						<i class="ti ti-question-mark"></i>
+					</span>
+					<span class="bs-stepper-label">
+						<span class="bs-stepper-title">Questions Criteria</span>
+						<span class="bs-stepper-subtitle">Number & grades of questions</span>
+					</span>
+				</button>
+			</div>
+			<div class="line"></div>
+			<div class="step" data-target="#personal-info-vertical">
+				<button type="button" class="step-trigger">
+					<span class="bs-stepper-circle">
+						<i class="ti ti-user-check"></i>
+					</span>
+					<span class="bs-stepper-label">
+						<span class="bs-stepper-title">Students List</span>
+						<span class="bs-stepper-subtitle">Students to attend the exam</span>
+					</span>
+				</button>
+			</div>
+			<div class="line"></div>
+			<div class="step" data-target="#social-links-vertical">
+				<button type="button" class="step-trigger">
+					<span class="bs-stepper-circle">
+						<i class="ti ti-calendar-clock"></i>
+					</span>
+					<span class="bs-stepper-label">
+						<span class="bs-stepper-title">Exam Session</span>
+						<span class="bs-stepper-subtitle">Date and time of the exam</span>
+					</span>
+				</button>
+			</div>
+		</div>
+		<div class="bs-stepper-content">
+			<form onSubmit="return false">
+				<!-- Question Criteria -->
+				<div id="account-details-vertical" class="content">
+					<div class="content-header mb-4">
+						<h6 class="mb-0">Questions Criteria</h6>
+					</div>
+					<div class="row g-6">
+						<div class="col-sm-6">
+							<label class="form-label" for="noEasy">No <span class="badge bg-success">Easy</span> Questions (Max: @Model.Pool.PNoOfEasy)</label>
+							<input type="number" id="noEasy" class="form-control" min="0" required />
+						</div>
+						<div class="col-sm-6">
+							<label class="form-label" for="gradeEasy">Grade Of Easy</label>
+							<input type="number" id="gradeEasy" class="form-control" min="0" step="0.5" required />
+						</div>
+						<div class="col-sm-6">
+							<label class="form-label" for="noIntermediate">No <span class="badge bg-warning">Intermediate</span> Questions (Max: @Model.Pool.PNoOfMedium)</label>
+							<input type="number" id="noIntermediate" class="form-control" min="0" required />
+						</div>
+						<div class="col-sm-6">
+							<label class="form-label" for="gradeIntermediate">Grade Of Intermediate</label>
+							<input type="number" id="gradeIntermediate" class="form-control" min="0" step="0.5" required />
+						</div>
+						<div class="col-sm-6">
+							<label class="form-label" for="noHard">No <span class="badge bg-danger">Hard</span> Questions (Max: @Model.Pool.PNoOfDifficult)</label>
+							<input type="number" id="noHard" class="form-control" min="0" required />
+						</div>
+						<div class="col-sm-6">
+							<label class="form-label" for="gradeHard">Grade Of Hard</label>
+							<input type="number" id="gradeHard" class="form-control" min="0" step="0.5" required />
+						</div>
+						<div class="col-sm-6">
+							<label class="form-label" for="noModels">Number of Models</label>
+							<input type="number" id="noModels" class="form-control" min="1" value="1" required />
+						</div>
+						<div class="col-12 d-flex justify-content-between">
+							<button class="btn btn-label-secondary btn-prev" disabled>
+								<i class="ti ti-arrow-left ti-xs me-sm-2"></i>
+								<span class="align-middle d-sm-inline-block d-none">Previous</span>
+							</button>
+							<button class="btn btn-primary btn-next">
+								<span class="align-middle d-sm-inline-block d-none me-sm-2">Next</span>
+								<i class="ti ti-arrow-right ti-xs"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Students List -->
+				<div id="personal-info-vertical" class="content">
+					<div class="content-header mb-4">
+						<h6 class="mb-0">Students List</h6>
+						<small>Select students to exclude from the exam</small>
+					</div>
+					<div class="row g-6">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Student ID</th>
+									<th>Name</th>
+									<th>Exclude</th>
+								</tr>
+							</thead>
+							<tbody class="table-border-bottom-0">
+								@if (Model?.Students != null)
+								{
+									@foreach (var student in Model.Students)
+									{
+										<tr>
+											<td>@student.Ssn</td>
+											<td>@student.Name</td>
+											<td>
+												<div class="form-check">
+													<input type="checkbox" class="form-check-input" name="excludeStudent" 
+															value="@student.Ssn" id="exclude_@student.Ssn">
+													<label class="form-check-label" for="exclude_@student.Ssn">Exclude</label>
+												</div>
+											</td>
+										</tr>
+									}
+								}
+								else
+								{
+									<tr>
+										<td colspan="3" class="text-center">No students available</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+						<div class="col-12 d-flex justify-content-between">
+							<button class="btn btn-label-secondary btn-prev">
+								<i class="ti ti-arrow-left ti-xs me-sm-2"></i>
+								<span class="align-middle d-sm-inline-block d-none">Previous</span>
+							</button>
+							<button class="btn btn-primary btn-next">
+								<span class="align-middle d-sm-inline-block d-none me-sm-2">Next</span>
+								<i class="ti ti-arrow-right ti-xs"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Exam Session -->
+				<div id="social-links-vertical" class="content">
+					<div class="content-header mb-4">
+						<h6 class="mb-0">Exam Session</h6>
+						<small>Select start time and duration</small>
+					</div>
+					<div class="row g-6">
+						<div class="col-sm-6">
+							<label for="examDate" class="form-label">Date</label>
+							<input class="form-control" type="date" id="examDate" required />
+						</div>
+						<div class="col-sm-6">
+							<label for="duration" class="form-label">Duration (hours)</label>
+							<input class="form-control" type="number" id="duration" min="1" required />
+						</div>
+						<div class="col-sm-6">
+							<label for="startTime" class="form-label">Start Time</label>
+							<input class="form-control" type="time" id="startTime" required />
+						</div>
+						<div class="col-sm-6">
+							<label for="endTime" class="form-label">End Time</label>
+							<input class="form-control" type="time" id="endTime" required />
+						</div>
+						<div class="sk-swing sk-primary" style="display: none;">
+							<div class="sk-swing-dot"></div>
+							<div class="sk-swing-dot"></div>
+						</div>
+						<div class="col-12 d-flex justify-content-between">
+							<button class="btn btn-label-secondary btn-prev">
+								<i class="ti ti-arrow-left ti-xs me-sm-2"></i>
+								<span class="align-middle d-sm-inline-block d-none">Previous</span>
+							</button>
+							<button class="btn btn-success btn-submit">Submit</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- /Vertical Icons Wizard
