@@ -41,7 +41,7 @@
 					   asp-route-order="1"
 					   class="menu-link">
 						<i class="menu-icon tf-icons ti ti-squares"></i>
-						<div data-i18n="Arcived Pool">Archived Pool</div>
+						<div data-i18n="Archived Pool">Archived Pool</div>
 					</a>
 				</li>
 				@* <li class='menu-item@(currentPage == "/Page2" ? " active" : "")'>
@@ -74,37 +74,16 @@
 							    <div data-i18n="True / False">True / False</div>
 							</a>
 						</li>
-						<li class='menu-item@(currentPage == "/Ecommerce/Dashboard" ? " active" : "")'>
-							<a asp-controller="Ecommerce" asp-action="Dashboard" class="menu-link">
-								<i class='menu-icon tf-icons ti ti-shopping-cart'></i>
-								<div data-i18n="eCommerce">eCommerce</div>
-							</a>
-						</li>
-						<li class='menu-item@(currentPage == "/Logistics/Dashboard" ? " active" : "")'>
-							<a asp-controller="Logistics" asp-action="Dashboard" class="menu-link">
-								<i class='menu-icon tf-icons ti ti-truck'></i>
-								<div data-i18n="Logistics">Logistics</div>
-							</a>
-						</li>
-						<li class='menu-item@(currentPage == "/Academy/Dashboard" ? " active" : "")'>
-							<a asp-controller="Academy" asp-action="Dashboard" class="menu-link">
-								<i class='menu-icon tf-icons ti ti-book'></i>
-								<div data-i18n="Academy">Academy</div>
-							</a>
-						</li>
 					</ul>
 				</li>
 			</ul>
 		</div>
-		<button type="button" class="btn btn-primary m-3">
+		<a asp-controller="Pools" asp-action="SetConfigurations" class="btn btn-primary m-3">
 			<span class="ti-xs ti ti-toggle-left me-2"></span>Criteria
-		</button>
+		</a>
 		<button type="button" class="btn btn-danger m-3">
 			<span class="ti-xs ti ti-logout-2 me-2"></span>Exit
 		</button>
-		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exLargeModal">
-            Extra Large
-          </button>
 	}
 
 
