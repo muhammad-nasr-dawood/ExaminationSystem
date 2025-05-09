@@ -92,7 +92,7 @@
 							<option value="">Filter by Branch</option>
 							@foreach (var branch in ViewBag.Branches)
 							{
-								<option value="@branch.Id">@branch.Location</option>
+								<option value="@branch.Id">@branch.LocationName</option>
 							}
 						</select>
 					</div>
@@ -318,7 +318,7 @@
 										<option value="">No branch assigned</option> 
 										@foreach (var branch in ViewBag.Branches)
 										{
-											<option value="@branch.Id">@branch.Location</option>
+											<option value="@branch.Id">@branch.LocationName</option>
 										}
 									</select>
 									<span asp-validation-for="BranchId"></span>

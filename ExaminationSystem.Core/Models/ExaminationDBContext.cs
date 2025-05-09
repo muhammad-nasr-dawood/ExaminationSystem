@@ -90,6 +90,10 @@ public partial class ExaminationDBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_Branch_Id");
 
+            entity.HasIndex(e => e.ZipCode, "IX_Branches_ZipCode_Unique_When_Not_Deleted")
+                .IsUnique()
+                .HasFilter("([IsDeleted]=(0))");
+
             entity.HasOne(d => d.ZipCodeNavigation).WithOne(p => p.Branch)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Branches_Locations");
@@ -398,8 +402,6 @@ public partial class ExaminationDBContext : DbContext
 
         modelBuilder.Entity<StaffBranchIntakeWorksFor>(entity =>
         {
-            entity.HasKey(e => new { e.StaffSsn, e.BranchId, e.IntakeId }).HasName("PK_StaffBranchDepartmentWorksFor");
-
             entity.Property(e => e.HiringDate).HasDefaultValueSql("(getdate())");
 
             entity.HasOne(d => d.Branch).WithMany(p => p.StaffBranchIntakeWorksFors)

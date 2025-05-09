@@ -37,7 +37,7 @@
 							<h4 class="mb-2 mt-lg-6">@Model.Fname @Model.Lname</h4>
 							<ul class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-4 my-2">
 								<li class="list-inline-item d-flex gap-2 align-items-center">
-									<i class="ti ti-briefcase ti-lg"></i><span class="fw-medium">@Model.UserRole</span>
+									<i class="ti ti-briefcase ti-lg"></i><span class="fw-medium text-capitalize">@Model.UserRole</span>
 								</li>
 								<li class="list-inline-item d-flex gap-2 align-items-center">
 									<i class='ti ti-map-pin ti-lg'></i><span class="fw-medium">@Model.City</span>
@@ -88,7 +88,7 @@
 							<span>Inactive</span>
 						}
 					</li>
-					<li class="d-flex align-items-center mb-4"><i class="ti ti-crown ti-lg"></i><span class="fw-medium mx-2">Role:</span> <span class="text-upper">@Model.UserRole</span></li>
+					<li class="d-flex align-items-center mb-4"><i class="ti ti-crown ti-lg"></i><span class="fw-medium mx-2">Role:</span> <span class="text-capitalize">@Model.UserRole</span></li>
 					<li class="d-flex align-items-center mb-4"><i class="ti ti-flag ti-lg"></i><span class="fw-medium mx-2">City:</span> <span>@Model.City</span></li>
 					@* <li class="d-flex align-items-center mb-2"><i class="ti ti-language ti-lg"></i><span class="fw-medium mx-2">Languages:</span> <span>English</span></li> *@
 				</ul>
@@ -143,7 +143,7 @@
 							<option value="">Filter by Branch</option>
 							@foreach (var branch in ViewBag.Branches)
 							{
-								<option value="@branch.Id">@branch.Location</option>
+								<option value="@branch.Id">@branch.LocationName</option>
 							}
 						</select>
 					</div>

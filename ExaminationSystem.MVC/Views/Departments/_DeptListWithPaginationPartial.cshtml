@@ -1,0 +1,26 @@
+@model PaginatedResult<ExaminationSystem.MVC.ViewModels.DepartmentViewModels.DepartmentViewModel>
+
+@{
+	var isBranchView = ViewBag.BranchId != null;
+}
+
+<div id="department-list" class="row g-4">
+	@foreach (var dept in Model.Items)
+	{
+		@Html.Partial("_DepartmentCardPartial", dept)
+	}
+</div>
+
+<div id="pagination-meta"
+	 data-current-page="@Model.CurrentPage"
+	 data-total-pages="@Model.TotalPages"
+	 data-total-items="@Model.TotalFilteredItems"
+	 data-page-size="@Model.PageSize"
+	 style="display:none;"></div>
+
+<div id="departmentPagination" class="d-flex justify-content-end mt-4">
+	@for (int i = 1; i <= Model.TotalPages; i++)
+	{
+		<button class="btn btn-sm @(i == Model.CurrentPage ? "btn-primary" : "btn-outline-primary") mx-1" data-page="@i">@i</button>
+	}
+</div>

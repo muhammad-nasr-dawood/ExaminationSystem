@@ -9,8 +9,9 @@ namespace ExaminationSystem.Core.IRepositories
 {
     public interface IBranchRepo:IBaseRepo<Branch>
     {
-        Task<IEnumerable<Staff>> GetUnassignedStaffAsync(int branchId);
-         
+        IQueryable<Staff> GetUnassignedStaffQueryable(int branchId);
+
+
 
     }
 }

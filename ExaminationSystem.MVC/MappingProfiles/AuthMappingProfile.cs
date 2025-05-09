@@ -10,8 +10,15 @@ public class AuthMappingProfile: Profile
 	{
 	  CreateMap<User, UserLoginViewModel>().AfterMap((src, des) =>
 	  {
-		des.ImageURL = src.Image?.ImageUrl;
-		des.Location = src.ZipCodeNavigation.Governate;
+		if(src.Image is not null)
+		{
+		  des.ImageURL = src.Image?.ImageUrl;
+		}
+		else
+		{
+		  des.ImageURL = "/img/defaultImages/defaultImage.png";
+		}
+		  des.Location = src.ZipCodeNavigation.Governate;
 		if(src.Staff is null)
 		{
 		  des.StudentFaculty = src.Student.Faculty;

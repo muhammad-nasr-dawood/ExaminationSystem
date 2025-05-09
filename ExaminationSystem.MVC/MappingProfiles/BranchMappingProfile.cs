@@ -11,7 +11,7 @@ namespace ExaminationSystem.MVC.MappingProfiles
 	{
 	  CreateMap<Branch, BranchViewModel>()
 		  .ForMember(dest => dest.LocationName,
-			  opt => opt.MapFrom(src => src.ZipCodeNavigation.Governate + " Branch"))
+			  opt => opt.MapFrom(src => src.ZipCodeNavigation.Governate ))
 		  .ForMember(dest => dest.BranchManagerName,
 			  opt => opt.MapFrom(src =>
 				  src.StaffBranchManage != null &&
