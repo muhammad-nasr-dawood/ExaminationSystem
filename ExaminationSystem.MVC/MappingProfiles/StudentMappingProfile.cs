@@ -52,8 +52,11 @@ namespace ExaminationSystem.MVC.MappingProfiles
 	  });
 
 
-	  CreateMap<StudentAddVM, Student>().ReverseMap(); 
+	  CreateMap<StudentAddVM, Student>().ReverseMap();
 
+	  CreateMap<Student, StudentBasicInfoVM>()
+		.ForMember(std => std.Ssn, opt => opt.MapFrom(src => src.SsnNavigation.Ssn))
+		.ForMember(std => std.Name, opt => opt.MapFrom(src => $"{src.SsnNavigation.Fname} {src.SsnNavigation.Lname}"));
 
 
 	}

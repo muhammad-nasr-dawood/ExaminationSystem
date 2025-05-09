@@ -314,7 +314,7 @@
 
 								<div class="col-sm-6">
 									<label class="form-label" asp-for="SelectedBranchId">Branch</label>
-									<select id="SelectedBranchId" name="SelectedBranchId" class="form-select" required>
+									<select id="SelectedBranchId" name="SelectedBranchId" class="select2 form-select" required>
 										<option value="">-- Select Branch --</option>
 										@foreach (var branch in ViewBag.Branches)
 										{

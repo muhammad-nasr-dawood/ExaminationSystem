@@ -281,10 +281,26 @@ namespace ExaminationSystem.MVC.Services
 	  return true;
 	}
 
+	public async Task<List<StudentBasicInfoVM>> GetStudentsByDepartmentBranchAndActiveIntake(int deptId, int branchId)
+	{
+	  var branch = await UnitOfWork.BranchesRepo.GetByIdAsync(branchId);
+	  if (branch == null)
+		throw new Exception("No Branch with that Id");
 
+	  var dept = await UnitOfWork.DepartmentRepo.GetByIdAsync(deptId);
+	  if (dept == null)
+		throw new Exception("No Department With that Id");
 
+	  Expression<Func<Student, bool>> filter = std =>
+		  std.StudentIntakeBranchDepartmentStudies.Any(rel =>
+			  rel.BranchId == branchId &&
+			  rel.DepartmentId == deptId &&
+			  rel.Intake.IsRunning == 1);
 
+	  var students = await UnitOfWork.StudentRepo.FindAllAsync(filter);
 
+	  return _mapper.Map<List<StudentBasicInfoVM>>(students);
+	}
   }
 
 }
