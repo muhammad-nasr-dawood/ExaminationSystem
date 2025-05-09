@@ -1,4 +1,5 @@
 using ExaminationSystem.MVC.IService;
+using ExaminationSystem.MVC.Services;
 using ExaminationSystem.MVC.ViewModels.Questions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -39,7 +40,7 @@ namespace ExaminationSystem.MVC.Controllers
 	{
 	  try
 	  {
-		var topics = await _topicService.GetTopicsByCourse(courseId, null, null);
+		var topics = await _topicService.GetTopicsByCourse(courseId);
 		ViewBag.Topics = topics;
 		ViewBag.CourseId = courseId;
 
@@ -76,8 +77,6 @@ namespace ExaminationSystem.MVC.Controllers
 
 
 	[HttpGet]
-
-	[HttpGet]
 	public async Task<IActionResult> AddMCQQuestion(int courseId)
 	{
 	    try
@@ -87,7 +86,7 @@ namespace ExaminationSystem.MVC.Controllers
 	            return BadRequest("Invalid Course ID. It must be a positive integer.");
 	        }
 	
-	        var topics = await _topicService.GetTopicsByCourse(courseId, null, null);
+	        var topics = await _topicService.GetTopicsByCourse(courseId);
 	        ViewBag.Topics = topics;
 	        ViewBag.CourseId = courseId;
 	        

@@ -41,6 +41,7 @@ namespace ExaminationSystem.MVC.IService
 
 	public Task<int> UpdateConfigurationStudentList(int poolId, long staffId, int[] excludedStds);
 
+	public Task<ActivePoolResult> ActivePool(long? staffId, int? poolId);
 
 
   }

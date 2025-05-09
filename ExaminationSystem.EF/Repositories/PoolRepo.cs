@@ -88,7 +88,10 @@ namespace ExaminationSystem.EF.Repositories
             return await _dbContext.Procedures.UpdateConfigurationStudentListAsync(poolId, staffId, excludedStds, returnValue);
         }
 
-
+        public async  Task<List<ActivePoolResult>> ActivePool(long? staffId, int? poolId, OutputParameter<int> returnValue)
+        {
+            return await _dbContext.Procedures.ActivePoolAsync(staffId, poolId, returnValue);
+        }
     }
 }
 

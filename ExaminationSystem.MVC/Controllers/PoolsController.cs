@@ -1,5 +1,6 @@
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.IService;
+using ExaminationSystem.MVC.Services;
 using ExaminationSystem.MVC.ViewModels.PoolViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language.CodeGeneration;
@@ -223,11 +224,50 @@ namespace ExaminationSystem.MVC.Controllers
 
 	}
 
+
+
+
 	[HttpPost]
-	public async Task<IActionResult> SetConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMid, int gradeForEasy, int noOfModels, int[] excludedStdIds)
+	public async Task<IActionResult> SetConfigurations(long staffId, int poolId)
 	{
 	  try
 	  {
+		ActivePoolResult _activePool = await _poolService.ActivePool(staffId, poolId);
+
+
+		ViewBag.ActivePool = _activePool;
+		ViewBag.Configurations = new Configuration();
+
+		return View();	
+
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+
+	}
+
+
+
+	[HttpPost]
+	public async Task<IActionResult> SetConfigurations(long staffId,Configuration config, int[]? excludedStdIds)
+	{
+	  try
+	  {
+
+		int poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMid, gradeForEasy, noOfModels;
+
+		poolId = config.PoolId;
+		noOfDiff = config.NoOfDifficult;
+		noOfMed = config.NoOfMedium;
+		noOfEasy= config.NoOfEasy;
+		gradeForDiff = config.GradeForDifficult;
+		gradeForMid = config.GradeForDifficult;
+		gradeForEasy = config.GradeForEasy;
+		noOfModels = config.NoOfModels;
+
+
 		//if (excludedStdIds == null || excludedStdIds.Length == 0)
 		//  return BadRequest("No Questions Found");
 		if (noOfDiff < 0 || noOfMed < 0 || noOfEasy < 0 || gradeForDiff < 0 || gradeForMid < 0 || gradeForEasy < 0 || noOfModels < 0)
@@ -284,6 +324,7 @@ namespace ExaminationSystem.MVC.Controllers
 
 
 	[HttpPost]
+	//can modify = 1 
 	public async Task<IActionResult> UpdateConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMed, int gradeForEasy, int noOfModels)
 	{
 	  try
@@ -354,7 +395,7 @@ namespace ExaminationSystem.MVC.Controllers
 	    TempData["CurrentCourseId"] = courseId;
 	
 	    // Get topics for the course
-	    var topics = await TopicService.GetTopicsByCourse((int)courseId, null, null);
+	    var topics = await TopicService.GetTopicsByCourse((int)courseId);
 	
 	    ViewBag.PoolId = poolId;
 	    ViewBag.CourseId = courseId;

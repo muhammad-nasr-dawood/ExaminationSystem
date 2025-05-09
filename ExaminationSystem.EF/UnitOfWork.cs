@@ -17,7 +17,6 @@ namespace ExaminationSystem.EF
         public IAuthRepo AuthRepo {  get; }
         public IBaseRepo<Staff> StaffRepo { get; }
         public IBaseRepo<User> UserRepo { get; }
-        public IBaseRepo<Location> LocationRepo { get; }
         public IBaseRepo<Department> DepartmentRepo { get; }
         public IBranchRepo BranchesRepo { get; }
         public IStaffBranchManageRepo StaffBranchManageRepo { get; }
@@ -28,13 +27,9 @@ namespace ExaminationSystem.EF
 
 
 
-
-        
-
-
-
-
-
+  
+        public IBaseRepo<Course> CourseRepo { get; }
+        public IBaseRepo<Topic> TopicRepo { get; }
 
 
 
@@ -55,12 +50,15 @@ namespace ExaminationSystem.EF
         public IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo { get; }
         public IBaseRepo<Intake> IntakeRepo { get; }
 
+        public IBaseRepo<StudentIntakeBranchDepartmentStudy> StudentIntakeBranchDepartmentStudyRepo { get; }
+
+       public ILocationRepo LocationRepo { get;}
 
         public UnitOfWork(ExaminationDBContext dbContext, 
             IBaseRepo<Student> studentRepo, 
             IAuthRepo authRepo, 
             IBaseRepo<Staff> staffRepo, 
-            IBaseRepo<Location> locationRepo, 
+            ILocationRepo locationRepo, 
             IBranchRepo branchRepo,
             IBaseRepo<Department> departmentRepo, 
             IBaseRepo<User> userRepo,
@@ -72,8 +70,10 @@ namespace ExaminationSystem.EF
             IQuestionRepo _questionRepo,
             IBaseRepo<StaffBranchIntakeWorksFor> worksFor,
             IBaseRepo<Intake> intakeRepo,
-            IExamRepo examRepo,
-            ITopics topicsRepo
+            IBaseRepo<Topic> topicRepo,
+            IBaseRepo<StudentIntakeBranchDepartmentStudy> studentIntakeBranchDepartmentStudyRepo,
+            IExamRepo examRepo
+            
             )
 
         {
@@ -85,8 +85,12 @@ namespace ExaminationSystem.EF
             LocationRepo = locationRepo;
             StaffBranchManageRepo = staffBranchManageRepo;
 
+            StudentIntakeBranchDepartmentStudyRepo = studentIntakeBranchDepartmentStudyRepo;
+           
+            TopicRepo = topicRepo;
+           
 
-            LocationRepo = locationRepo;
+            
             BranchesRepo = branchRepo;
             DepartmentRepo = departmentRepo;
             UserRepo = userRepo;
@@ -98,12 +102,9 @@ namespace ExaminationSystem.EF
 
             PoolRepo = _poolRepo; // Added PoolRepo to UnitOfWork
             QuestionRepo =  _questionRepo;
-            ExamRepo= examRepo;
-            TopicsRepo = topicsRepo;
 
 
-            WorksForRepo = worksFor;
-            IntakeRepo = intakeRepo;
+
         }
 
          
@@ -129,5 +130,7 @@ namespace ExaminationSystem.EF
         {
             _dbContext.Dispose();
         }
+
+      
     }
 }

@@ -13,6 +13,7 @@ namespace ExaminationSystem.Core.Models
 {
     public partial interface IExaminationDBContextProcedures
     {
+        Task<List<ActivePoolResult>> ActivePoolAsync(long? staffId, int? poolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<ActivePoolsResult>> ActivePoolsAsync(long? staffId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> AddBranchAsync(string zipCode, string streetNo, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> AddCourseAsync(string crsName, int? crsDuration, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -48,6 +49,7 @@ namespace ExaminationSystem.Core.Models
         Task<List<GetPoolsResult>> GetPoolsAsync(int? courseId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetQuestionsResult>> GetQuestionsAsync(int? topicId, int? order, byte? qType, byte? qLevel, int? page, int? limit, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetStaffBranchManageByBranchIdResult>> GetStaffBranchManageByBranchIdAsync(int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<getStudentResult>> getStudentAsync(int? branchId, int? deptId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetTopicByIdResult>> GetTopicByIdAsync(int? topicId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GetTopicsByCourseResult>> GetTopicsByCourseAsync(int? courseId, int? pageSize, int? pageNumber, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> InitExamStudentAsync(DataTable stdIds, int? noOfModels, int? poolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

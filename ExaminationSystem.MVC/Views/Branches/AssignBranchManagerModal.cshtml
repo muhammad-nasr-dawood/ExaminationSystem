@@ -1,11 +1,6 @@
 @model BranchManagerViewModel
 
-<style>
-	.select2-search__field {
-		background-color: white !important;
-		color: black !important;
-	}
-</style>
+
 
 <div class="modal fade" id="assignManagerModal" tabindex="-1" aria-labelledby="assignManagerModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -15,18 +10,22 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="assignManagerForm">
+				<form id="assignManagerForm" >
+
+					<input type="hidden" name="id" value="@ViewBag.BranchId" />
+
                     <div class="mb-3">
                         <label for="staffSelect" class="form-label">Select Staff</label>
-                        <select id="staffSelect" class="form-select select2" required>
-                            <option value="" disabled selected>Select a staff member</option>
-                            @foreach (var staff in Model.UnassignedStaff)
-                            {
-								<option value="@staff.Ssn" selected="@(staff.Ssn == Model.AssignedStaffSsn)">
-                                    @staff.FullName
-                                </option>
-                            }
-                        </select> 
+						<select id="staffSelect" class="form-select select2" required>
+							<option value="" disabled selected>Select a staff member</option>
+							@foreach (var staff in Model.UnassignedStaff)
+							{
+								<option value="@staff.Value" selected="@(staff.Value == Model.AssignedStaffSsn?.ToString())">
+									@staff.Text
+								</option>
+							}
+						</select>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -38,42 +37,65 @@
     </div>
 </div>
 <script>
-		$(document).ready(function () {
+			$(document).ready(function () {
+
 		
+		$('#assignManagerModal').on('hide.bs.modal', function () {
+			const focused = document.activeElement;
+			if (this.contains(focused)) focused.blur();
+		});
+
+	
+		$('#assignManagerModal').on('shown.bs.modal', function () {
+			const $select = $('#staffSelect');
+			if (!$select.hasClass('select2-initialized')) {
+				$select.select2().addClass('select2-initialized');
+			}
+		});
+
 		$('#assignManagerForm').on('submit', function (e) {
 			e.preventDefault();
 
-			var staffSsn = $('#staffSelect').val(); 
-			
+			var staffSsn = $('#staffSelect').val();
+			var branchId = $('#assignManagerForm input[name="id"]').val();
 
-			
 			$.ajax({
 				type: 'POST',
-				url: '@Url.Action("AssignManager", "Branches")',  
-				data: { staffSsn: staffSsn },  
+				url: '@Url.Action("AssignManager", "Branches")',
+				data: { id: branchId, staffSsn: staffSsn },
 				success: function (response) {
-					console.log(response); 
-
 					if (response.success) {
-
-					
 						$('#assignManagerModal').modal('hide');
+
 						$('#branch-' + response.id + ' .branch-manager').html('Manager: <strong>' + response.managerName + '</strong>');
-						$('#branch-' + response.id).find('.delete-manager-btn').removeClass('hide-delete-button');
-						$('#branch-' + response.id).find('.delete-manager-btn').addClass('show-delete-button');
+						$('#branch-' + response.id).find('.delete-manager-btn')
+							.removeClass('hide-delete-button')
+							.addClass('show-delete-button');
+						$('#branch-' + response.id).find('.assign-branch-btn')
+	                    .html('<i class="bi bi-pencil-fill"></i> Change Manager');
 
 
-
-
-						 $('#branch-' + response.id).find('.assign-branch-btn').text('Change Manager');
-
-
+						Swal.fire({
+							icon: 'success',
+							title: 'Success!',
+							text: response.message,
+							timer: 2000,
+							showConfirmButton: false
+						});
 					} else {
-						alert('Error: ' + response.message);
+						Swal.fire({
+							icon: 'error',
+							title: 'Error!',
+							text: response.message || 'Could not assign manager.'
+						});
 					}
 				},
 				error: function () {
-					alert("An error occurred while assigning the manager.");
+					Swal.fire({
+						icon: 'error',
+						title: 'Error!',
+						text: 'An error occurred while assigning the manager.'
+					});
 				}
 			});
 		});

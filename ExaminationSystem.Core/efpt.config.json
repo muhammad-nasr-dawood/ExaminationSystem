@@ -151,6 +151,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[ActivePool]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[ActivePools]",
          "ObjectType": 1
       },
@@ -288,6 +292,10 @@
       },
       {
          "Name": "[dbo].[GetStaffBranchManageByBranchId]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[getStudent]",
          "ObjectType": 1
       },
       {

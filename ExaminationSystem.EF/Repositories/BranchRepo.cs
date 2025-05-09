@@ -23,31 +23,15 @@ namespace ExaminationSystem.EF.Repositories
         }
 
 
-        public async Task<IEnumerable<Staff>> GetUnassignedStaffAsync(int branchId)
+        public IQueryable<Staff> GetUnassignedStaffQueryable(int branchId)
         {
-            
-            var unassignedStaff = await _dBContext.Staff
-                .Where(s => !_dBContext.StaffBranchManages
-                            .Any(sbm => sbm.StaffSsn == s.Ssn)) 
-                .ToListAsync();
-
-          
-            var assignedStaff = await _dBContext.Staff
-                .Where(s => _dBContext.StaffBranchManages
-                            .Any(sbm => sbm.StaffSsn == s.Ssn && sbm.BranchId == branchId)) 
-                .ToListAsync();
-
-           
-            if (!assignedStaff.Any())
-            {
-                return unassignedStaff; 
-            }
-
-            
-            var allStaff = unassignedStaff.Concat(assignedStaff).Distinct().ToList(); 
-
-            return allStaff;
+            return _dBContext.Staff
+                .Where(s =>
+                    !_dBContext.StaffBranchManages.Any(m => m.StaffSsn == s.Ssn) ||
+                    _dBContext.StaffBranchManages.Any(m => m.StaffSsn == s.Ssn && m.BranchId == branchId)
+                );
         }
+
 
 
 

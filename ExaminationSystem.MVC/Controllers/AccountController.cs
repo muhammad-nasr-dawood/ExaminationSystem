@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace ExaminationSystem.MVC.Controllers;
 
-//[Authorize]
+[Authorize]
 public class AccountController : Controller
 {
     private readonly IAccountService _accountService;
@@ -26,7 +26,7 @@ public class AccountController : Controller
 
 	public IActionResult Index()
 	{
-	  ViewBag.Branches = _mapper.Map<List<BranchDisplayViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
+	  ViewBag.Branches = _mapper.Map<List<BranchViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
 	  ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
 
 	  ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();

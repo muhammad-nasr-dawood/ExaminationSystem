@@ -24,6 +24,13 @@
 	
 	$(document).ready(function () {
 
+			$('#deleteManagerModal').on('hide.bs.modal', function () {
+		const focused = document.activeElement;
+		if (this.contains(focused)) {
+			focused.blur();
+		}
+	});
+
 		 $("#confirmDeleteBtn").on('click', function () {
 		var branchId = $(this).data("id");  
 

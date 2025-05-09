@@ -1,7 +1,12 @@
 using ExaminationSystem.Core;
 using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.ViewModels.AccountViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.DiaSymReader;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using System.Security.Policy;
 
 namespace ExaminationSystem.MVC.Services;
 
@@ -12,12 +17,14 @@ public class AccountService: IAccountService
   private readonly IMapper _mapper;
   private readonly IImageService _imageService;
   private readonly IPasswordService _passwordService;
-  public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IImageService imageService, IPasswordService passwordService	)
+  private readonly IUserClaimService _userClaimService;
+  public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IImageService imageService, IPasswordService passwordService, IUserClaimService userClaimService	)
   {
 	UnitOfWork = unitOfWork;
 	_mapper = mapper;
 	_imageService = imageService;
 	_passwordService = passwordService;
+	_userClaimService = userClaimService;
   }
 
   public AccountEditViewModel GetAccount(long id)
@@ -52,7 +59,8 @@ public class AccountService: IAccountService
 	  UnitOfWork.ProfileImageRepo.Add(currentImage);
 	  user.ImageId = id;
 
-	  UnitOfWork.Complete();
+	UnitOfWork.Complete();
+	await _userClaimService.RefreshUserClaim("ImageURL", currentImage.ImageUrl);
 	return currentImage.ImageUrl;
   }
 
@@ -68,6 +76,7 @@ public class AccountService: IAccountService
 	  await _imageService.DeleteImageAsync(tempImageId);
 	  UnitOfWork.Complete();
 	}
+	await _userClaimService.RefreshUserClaim("ImageURL", "/img/defaultImages/defaultImage.png");
 	return "/img/defaultImages/defaultImage.png";
   }
 
@@ -83,7 +92,7 @@ public class AccountService: IAccountService
 	}
 
 	UnitOfWork.Complete();
-
+	await _userClaimService.RefreshUserClaim(ClaimTypes.Name, $"{model.Fname} {model.Lname}" );
 	return true;
 
   }
@@ -136,4 +145,22 @@ public class AccountService: IAccountService
 	if (user is null) return true;
 	return false;
   }
+
+
+  public async Task RefreshUserClaim(HttpContext httpContext, string claimType, string newValue)
+  {
+	var identity = (ClaimsIdentity)httpContext.User.Identity;
+	var existingClaim = identity.FindFirst(claimType);
+	if (existingClaim != null)
+	{
+	  identity.RemoveClaim(existingClaim);
+	}
+	identity.AddClaim(new Claim(claimType, newValue));
+
+	var principal = new ClaimsPrincipal(identity);
+
+	await httpContext.SignOutAsync();
+	await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+  }
+
 }

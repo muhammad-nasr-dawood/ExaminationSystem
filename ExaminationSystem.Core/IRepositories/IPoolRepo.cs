@@ -47,6 +47,10 @@ namespace ExaminationSystem.Core.IRepositories
         public Task<int> UpdateConfigurationStudentList(int poolId, long staffId, DataTable excludedStds, OutputParameter<int> returnValue);
 
 
+        public Task<List<ActivePoolResult>> ActivePool(long? staffId, int? poolId, OutputParameter<int> returnValue);
+
+
+
 
     }
 

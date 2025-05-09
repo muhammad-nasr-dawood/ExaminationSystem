@@ -8,19 +8,11 @@ using System.Threading.Tasks;
 
 namespace ExaminationSystem.EF.Repositories
 {
-    public class TopicRepo : ITopics
+    public class TopicRepo : BaseRepo<Topic>, IBaseRepo<Topic>
     {
-        private readonly ExaminationDBContext _dbContext;
-        public TopicRepo(ExaminationDBContext dbContext)
+        public TopicRepo(ExaminationDBContext dBContext) : base(dBContext)
         {
-            _dbContext = dbContext;
-        }
-        public async Task<List<GetTopicsByCourseResult>> GetTopicsByCourse(int courseId, int? pageSize, int? pageNumber)
-        {
-            return await _dbContext.Procedures.GetTopicsByCourseAsync(courseId, pageSize, pageNumber);
-        }
 
-
+        }
     }
-        
 }

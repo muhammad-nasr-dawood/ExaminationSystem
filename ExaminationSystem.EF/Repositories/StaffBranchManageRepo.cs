@@ -16,42 +16,44 @@ namespace ExaminationSystem.EF.Repositories
         {
             _dBContext = dBContext;
         }
-        public async Task<StaffBranchManage> AddBranchManager(int branchId, long staffSsn)
+        public async Task<StaffBranchManage?> AddBranchManager(int branchId, long staffSsn)
         {
-            var branch = await _dBContext.Branches.FindAsync(branchId);
-            var staff = await _dBContext.Staff.FindAsync(staffSsn);
+          
+            var branchExists = await _dBContext.Branches.AnyAsync(b => b.Id == branchId);
+            var staffExists = await _dBContext.Staff.AnyAsync(s => s.Ssn == staffSsn);
 
-            if (branch == null || staff == null)
-            {
-                return null;
-            }
-
-            var activeIntake = await _dBContext.Intakes
-                .FirstOrDefaultAsync(intake => intake.IsRunning == 1);
-
-            if (activeIntake == null)
+            if (!branchExists || !staffExists)
                 return null;
 
-            
+            var activeIntakeId = await _dBContext.Intakes
+                .Where(i => i.IsRunning == 1)
+                .Select(i => i.Id)
+                .FirstOrDefaultAsync();
+
+            if (activeIntakeId == 0)
+                return null;
+
+         
             var existingAssignment = await _dBContext.StaffBranchManages
-                .FirstOrDefaultAsync(sbm => sbm.BranchId == branchId);
+                .Where(sbm => sbm.BranchId == branchId)
+                .FirstOrDefaultAsync();
 
             if (existingAssignment != null)
                 _dBContext.StaffBranchManages.Remove(existingAssignment);
-              
 
+           
             var staffBranchManage = new StaffBranchManage
             {
                 StaffSsn = staffSsn,
                 BranchId = branchId,
                 HiringDate = DateOnly.FromDateTime(DateTime.Now),
-                IntakeId = activeIntake.Id
+                IntakeId = activeIntakeId
             };
 
             _dBContext.StaffBranchManages.Add(staffBranchManage);
-
             return staffBranchManage;
         }
+
         public async Task<StaffBranchManage?> GetByBranchId(int branchId)
         {
             return await _dBContext.StaffBranchManages

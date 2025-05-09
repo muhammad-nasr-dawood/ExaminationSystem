@@ -307,9 +307,28 @@ namespace ExaminationSystem.MVC.Services
 	  }
 	}
 
+	public async Task<ActivePoolResult> ActivePool(long? staffId, int? poolId)
+	{
+	  try
+	  {
+		if (staffId == null || poolId == null)
+		  throw new Exception("invalid params");
+
+		OutputParameter<int> returnValue = new();
+
+		List<ActivePoolResult> res =await UnitOfWork.PoolRepo.ActivePool(staffId, poolId,returnValue);
+
+		if (res == null || res.Count() == 0)
+		  throw new Exception("No data found");
 
 
+		return res[0];
 
-
-	}//end of service calss
+	  }
+	  catch (Exception ex)
+	  {
+		throw new Exception(ex.Message);
+	  }
+	}
+  }//end of service calss
 }

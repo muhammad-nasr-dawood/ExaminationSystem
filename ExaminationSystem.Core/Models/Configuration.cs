@@ -35,7 +35,7 @@ public partial class Configuration
 
     public byte NoOfModels { get; set; }
 
-    public bool CanModify { get; set; }
+    public bool? CanModify { get; set; }
 
     [ForeignKey("PoolId")]
     [InverseProperty("Configuration")]
