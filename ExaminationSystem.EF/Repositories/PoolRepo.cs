@@ -68,9 +68,11 @@ namespace ExaminationSystem.EF.Repositories
             return await _dbContext.Procedures.AddQuestionsToPoolAsync(staffId, poolId, questionsIds, returnValue);
         }
 
-        public async Task<int> SetConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMid, int gradeForEasy, int noOfModels, DataTable excludedStdIds, OutputParameter<int> returnValue)
+        public async Task<int> SetConfigurations(long staffId, Configuration config, DataTable excludedStdIds, OutputParameter<int> returnValue)
         {
-            return await _dbContext.Procedures.SetConfigurationsAsync(staffId, poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMid, gradeForEasy, noOfModels, excludedStdIds, returnValue);
+            return await _dbContext.Procedures.SetConfigurationsAsync(staffId, config.PoolId, config.NoOfDifficult, config.NoOfMedium, config.NoOfEasy,
+                config.GradeForDifficult, config.GradeForMedium , config.GradeForEasy, config.NoOfModels,config.Date,config.StartingTime,config.EndingTime,
+                config.Duration, excludedStdIds, returnValue);
         }
 
         public async Task<int> UpdateConfigurationGrades(long staffId, int poolId, int gradeForDiff, int gradeForMed, int gradeForEasy, OutputParameter<int> returnValue)

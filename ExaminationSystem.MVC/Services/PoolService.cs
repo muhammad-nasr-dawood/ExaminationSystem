@@ -236,22 +236,15 @@ namespace ExaminationSystem.MVC.Services
 	}
 
 
-	public async Task<int> SetConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMid, int gradeForEasy, int noOfModels, int[] excludedStdIds)
+	public async Task<int> SetConfigurations(long staffId, Configuration config , long[] excludedStdIds)
 	{
 	  try
 	  {
 		OutputParameter<int> returnValue = new OutputParameter<int>();
 
-		//if (excludedStdIds == null || excludedStdIds.Length == 0)
-		//  throw new Exception("No Questions Found");
-
-		//if (noOfDiff < 0 || noOfMed < 0 || noOfEasy < 0 || gradeForDiff < 0 || gradeForMid < 0 || gradeForEasy < 0 || noOfModels < 0)
-		//  throw new Exception("invalid params");
-
-
 		DataTable dataTable= CreateDataTableFromArray(excludedStdIds);
 
-		var res = await UnitOfWork.PoolRepo.SetConfigurations(staffId, poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMid, gradeForEasy, noOfModels, dataTable, returnValue);
+		var res = await UnitOfWork.PoolRepo.SetConfigurations(staffId, config, dataTable, returnValue);
 
 		return returnValue.Value;
 	  }

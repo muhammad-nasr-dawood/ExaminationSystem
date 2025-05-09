@@ -2132,7 +2132,7 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<int> SetConfigurationsAsync(long? staffId, int? poolId, int? noOfDiff, int? noOfMed, int? noOfEasy, int? gradeForDiff, int? gradeForMid, int? gradeForEasy, int? noOfModels, DataTable excludedStdIds, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> SetConfigurationsAsync(long? staffId, int? poolId, int? noOfDiff, int? noOfMed, int? noOfEasy, int? gradeForDiff, int? gradeForMid, int? gradeForEasy, int? noOfModels, DateOnly? date, TimeOnly? startingTime, TimeOnly? endingTime, int? duration, DataTable excludedStdIds, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -2199,6 +2199,32 @@ namespace ExaminationSystem.Core.Models
                 },
                 new SqlParameter
                 {
+                    ParameterName = "Date",
+                    Value = date ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Date,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "StartingTime",
+                    Scale = 7,
+                    Value = startingTime ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Time,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "EndingTime",
+                    Scale = 7,
+                    Value = endingTime ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Time,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "Duration",
+                    Value = duration ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
                     ParameterName = "ExcludedStdIds",
                     Value = excludedStdIds ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.Structured,
@@ -2206,7 +2232,7 @@ namespace ExaminationSystem.Core.Models
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[SetConfigurations] @StaffId = @StaffId, @PoolId = @PoolId, @NoOfDiff = @NoOfDiff, @NoOfMed = @NoOfMed, @NoOfEasy = @NoOfEasy, @GradeForDiff = @GradeForDiff, @GradeForMid = @GradeForMid, @GradeForEasy = @GradeForEasy, @NoOfModels = @NoOfModels, @ExcludedStdIds = @ExcludedStdIds", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[SetConfigurations] @StaffId = @StaffId, @PoolId = @PoolId, @NoOfDiff = @NoOfDiff, @NoOfMed = @NoOfMed, @NoOfEasy = @NoOfEasy, @GradeForDiff = @GradeForDiff, @GradeForMid = @GradeForMid, @GradeForEasy = @GradeForEasy, @NoOfModels = @NoOfModels, @Date = @Date, @StartingTime = @StartingTime, @EndingTime = @EndingTime, @Duration = @Duration, @ExcludedStdIds = @ExcludedStdIds", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

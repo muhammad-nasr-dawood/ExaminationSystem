@@ -31,7 +31,7 @@ namespace ExaminationSystem.MVC.IService
 
 	public Task<int> AddQuestionsToPool(long staffId, int poolId, int[] _);
 
-	public Task<int> SetConfigurations(long staffId, int poolId, int noOfDiff, int noOfMed, int noOfEasy, int gradeForDiff, int gradeForMid, int gradeForEasy, int noOfModels, int [] excludedStdIds);
+	public Task<int> SetConfigurations(long staffId, Configuration config  , long [] excludedStdIds);
 
 
    public Task<int> UpdateConfigurationGrades(long staffId, int poolId, int gradeForDiff, int gradeForMed, int gradeForEasy);

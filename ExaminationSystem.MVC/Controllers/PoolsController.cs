@@ -2,6 +2,7 @@ using ExaminationSystem.Core.Models;
 using ExaminationSystem.MVC.IService;
 using ExaminationSystem.MVC.Services;
 using ExaminationSystem.MVC.ViewModels.PoolViewModels;
+using ExaminationSystem.MVC.ViewModels.StudentViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language.CodeGeneration;
 using Microsoft.CSharp.RuntimeBinder;
@@ -14,11 +15,12 @@ namespace ExaminationSystem.MVC.Controllers
 
 	IPoolService _poolService;
 	ITopicService TopicService;
-
-	public PoolsController(IPoolService poolService, ITopicService topicService)
+	IStudentService _studentService;
+	public PoolsController(IPoolService poolService, ITopicService topicService, IStudentService studentService)
 	{
 	  _poolService = poolService;
 	  TopicService = topicService;
+	  _studentService = studentService;
 	}
 
 	[HttpGet]
@@ -227,16 +229,18 @@ namespace ExaminationSystem.MVC.Controllers
 
 
 
-	[HttpPost]
+	[HttpGet]
 	public async Task<IActionResult> SetConfigurations(long staffId, int poolId)
 	{
 	  try
 	  {
 		ActivePoolResult _activePool = await _poolService.ActivePool(staffId, poolId);
 
+		var _students = await _studentService.GetStudentsByDepartmentBranchAndActiveIntakeAsync(_activePool.PDeptId,_activePool.PBranchId);
 
 		ViewBag.ActivePool = _activePool;
 		ViewBag.Configurations = new Configuration();
+		ViewBag.Students = _students;
 
 		return View();	
 
@@ -251,29 +255,16 @@ namespace ExaminationSystem.MVC.Controllers
 
 
 	[HttpPost]
-	public async Task<IActionResult> SetConfigurations(long staffId,Configuration config, int[]? excludedStdIds)
+	public async Task<IActionResult> SetConfigurations(long staffId,Configuration config, long[] excludedStdIds)
 	{
 	  try
-	  {
+	  { 
 
-		int poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMid, gradeForEasy, noOfModels;
-
-		poolId = config.PoolId;
-		noOfDiff = config.NoOfDifficult;
-		noOfMed = config.NoOfMedium;
-		noOfEasy= config.NoOfEasy;
-		gradeForDiff = config.GradeForDifficult;
-		gradeForMid = config.GradeForDifficult;
-		gradeForEasy = config.GradeForEasy;
-		noOfModels = config.NoOfModels;
-
-
-		//if (excludedStdIds == null || excludedStdIds.Length == 0)
-		//  return BadRequest("No Questions Found");
-		if (noOfDiff < 0 || noOfMed < 0 || noOfEasy < 0 || gradeForDiff < 0 || gradeForMid < 0 || gradeForEasy < 0 || noOfModels < 0)
+		if (config == null || config.NoOfDifficult < 0 || config.NoOfMedium < 0 || config.NoOfEasy < 0  || config.GradeForDifficult<0 || config.GradeForMedium<0 ||config.GradeForEasy<0 ||config.NoOfModels<0)
 		  return BadRequest("invalid params");
 
-		int result = await _poolService.SetConfigurations(staffId, poolId, noOfDiff, noOfMed, noOfEasy, gradeForDiff, gradeForMid, gradeForEasy, noOfModels, excludedStdIds);
+
+		int result = await _poolService.SetConfigurations(staffId,config,excludedStdIds);
 
 		if (result == 0)
 		  return View(result);
