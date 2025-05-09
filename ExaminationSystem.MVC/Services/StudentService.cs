@@ -281,13 +281,13 @@ namespace ExaminationSystem.MVC.Services
 	  return true;
 	}
 
-	public async Task<List<StudentBasicInfoVM>> GetStudentsByDepartmentBranchAndActiveIntake(int deptId, int branchId)
+	public async Task<List<StudentBasicInfoVM>> GetStudentsByDepartmentBranchAndActiveIntakeAsync(int deptId, int branchId)
 	{
-	  var branch = await UnitOfWork.BranchesRepo.GetByIdAsync(branchId);
+	  var branch = UnitOfWork.BranchesRepo.GetById(branchId);
 	  if (branch == null)
 		throw new Exception("No Branch with that Id");
 
-	  var dept = await UnitOfWork.DepartmentRepo.GetByIdAsync(deptId);
+	  var dept = UnitOfWork.DepartmentRepo.GetById(deptId);
 	  if (dept == null)
 		throw new Exception("No Department With that Id");
 
