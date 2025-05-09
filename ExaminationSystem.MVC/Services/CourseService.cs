@@ -196,6 +196,15 @@ namespace ExaminationSystem.MVC.Services
 	  var courses = _unitOfWork.CoursesRepo.FindAll(c => !c.IsDeleted).ToList();
 	  return _mapper.Map<List<CourseDisplayViewModel>>(courses);
 	}
+	public List<Topic> GetTopicsByCourse(int courseId)
+	{
+	  return _unitOfWork.TopicRepo
+		  .FindAll(t => t.Crs.Any(c => c.Id == courseId) && !t.IsDeleted)
+		  .Select(t => new Topic { Id = t.Id, Name = t.Name })
+		  .ToList();
+	}
+
+
 
 
   }
