@@ -179,7 +179,7 @@ namespace ExaminationSystem.MVC.Services
 	private DataTable CreateDataTableFromArray<T>(T [] array)
 	{
 	  DataTable dataTable = new DataTable();
-	  dataTable.Columns.Add("Value", typeof(long));
+	  dataTable.Columns.Add("Value",typeof(T));
 
 	  foreach (T item in array)
 	  {
@@ -242,7 +242,7 @@ namespace ExaminationSystem.MVC.Services
 	  {
 		OutputParameter<int> returnValue = new OutputParameter<int>();
 
-		DataTable dataTable= CreateDataTableFromArray(excludedStdIds);
+		DataTable dataTable= CreateDataTableFromArray<long>(excludedStdIds);
 
 		var res = await UnitOfWork.PoolRepo.SetConfigurations(staffId, config, dataTable, returnValue);
 
