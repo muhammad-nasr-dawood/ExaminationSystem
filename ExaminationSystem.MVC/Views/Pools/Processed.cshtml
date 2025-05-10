@@ -1,5 +1,98 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@using ExaminationSystem.MVC.ViewModels.PoolViewModels;
+
+@model GenaricPoolState<ProcessedPoolsResult>
 @{
+    ViewData["Title"] = "Processed Pools";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/spinkit/spinkit.css">
+    <link rel="stylesheet" href="~/vendor/libs/toastr/toastr.css" />
+}
+
+@section VendorScripts {
+    <script src="~/vendor/libs/toastr/toastr.js"></script>
+}
+
+<div class="card">
+    <h5 class="card-header">Processed Pools</h5>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Department</th>
+                    <th>Course</th>
+                    <th>Time Until Exam</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @foreach (var branch in Model.Branches)
+                {
+                    foreach (var dept in branch.Value.Departments)
+                    {
+                        foreach (var course in dept.Value.Courses)
+                        {
+                            foreach (var pool in course.Value.Objects)
+                            {
+                                <tr>
+                                    <td><span class="fw-medium">@pool.PTitle</span></td>
+                                    <td>@pool.DName</td>
+                                    <td>@pool.CName</td>
+                                    <td>
+										<span id="time" class="badge bg-label-primary d-flex align-items-center" style="max-width: 150px">
+										<span class="icon-xs icon-base ti ti-alarm me-2"></span>
+                                        <span class="countdown" 
+                                              data-date="@pool.CDate?.ToString("yyyy-MM-dd")"
+                                              data-time="@pool.CStartingTime?.ToString("HH:mm:ss")">
+                                            Calculating...
+                                        </span>
+										</span>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section PageScripts {
+    <script>
+        function updateCountdown() {
+            $('.countdown').each(function() {
+                const $this = $(this);
+                const examDate = $this.data('date');
+                const examTime = $this.data('time');
+                
+                if (!examDate || !examTime) {
+                    $this.text('Date not set');
+                    return;
+                }
+
+                const examDateTime = new Date(examDate + 'T' + examTime);
+                const now = new Date();
+                const diff = examDateTime - now;
+
+                if (diff <= 0) {
+                    $this.text('Exam Started');
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                $this.text(`${days}d:${hours}h:${minutes}m:${seconds}s`);
+            });
+        }
+
+        // Update every second
+        setInterval(updateCountdown, 1000);
+        // Initial update
+        updateCountdown();
+    </script>
 }

@@ -268,7 +268,7 @@ namespace ExaminationSystem.MVC.Controllers
 		int result = await _poolService.SetConfigurations(staffId,config,excludedStdIds);
 
 		if (result == 0)
-		  return View(result);
+		  return RedirectToAction("Processed","Pools");
 		if (result == -1)
 		  return BadRequest("System/unknown error occurred");
 		else if (result == 1)
