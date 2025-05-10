@@ -53,7 +53,7 @@ namespace ExaminationSystem.MVC.Controllers
 	public async Task<IActionResult> Processed()
 	{
 	  //claim 
-	  List<GenaricPoolState<ProcessedPoolsResult>>? GProcessedList = await _poolService.ProcessedPools(40404040404040);
+	   GenaricPoolState<ProcessedPoolsResult>? GProcessedList = await _poolService.ProcessedPools(40404040404040);
 
 	  if (GProcessedList == null)
 		return BadRequest("No Active Pools Found");

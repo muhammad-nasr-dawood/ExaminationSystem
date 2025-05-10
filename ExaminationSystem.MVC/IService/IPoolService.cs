@@ -16,7 +16,7 @@ namespace ExaminationSystem.MVC.IService
 
 	public Task<GenaricPoolState<ActivePoolsResult>?> ActivePools(long staffId);
 
-	public Task<List<GenaricPoolState<ProcessedPoolsResult>>?> ProcessedPools(long staffId);
+	public Task<GenaricPoolState<ProcessedPoolsResult>?> ProcessedPools(long staffId);
 
 	public Task<PaginatedArchivedPoolsVM> ArchivedPools(int c, int p, int l, int o);
 

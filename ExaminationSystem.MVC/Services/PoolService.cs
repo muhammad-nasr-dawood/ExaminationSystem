@@ -41,14 +41,14 @@ namespace ExaminationSystem.MVC.Services
 	  return Map.Map<GenaricPoolState<ActivePoolsResult>>(activePools);
 	}
 
-	public async Task<List<GenaricPoolState<ProcessedPoolsResult>>?> ProcessedPools(long staffId)
+	public async Task<GenaricPoolState<ProcessedPoolsResult>?> ProcessedPools(long staffId)
 	{
 	  List<ProcessedPoolsResult> processedPoolsList = await UnitOfWork.PoolRepo.ProcessedPools(staffId);
 
 	  if (processedPoolsList == null)
 		return null;
 
-	  return Map.Map<List<GenaricPoolState<ProcessedPoolsResult>>>(processedPoolsList);
+	  return Map.Map<GenaricPoolState<ProcessedPoolsResult>>(processedPoolsList);
 	}
 
 
