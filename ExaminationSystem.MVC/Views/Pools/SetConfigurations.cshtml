@@ -66,10 +66,10 @@
 				if(startTime && endTime) {
 					const start = new Date(`2000/01/01 ${startTime}`);
 					const end = new Date(`2000/01/01 ${endTime}`);
-					const diffHours = (end - start) / (1000 * 60 * 60);
+					const diffMins = (end - start) / (1000 * 60);
 					
-					if(duration > diffHours) {
-						$('#duration').val(Math.floor(diffHours));
+					if(duration > diffMins) {
+						$('#duration').val(Math.floor(diffMins));
 						toastr.warning('Duration cannot exceed time window');
 					}
 				}
@@ -285,8 +285,8 @@
 							<input class="form-control" type="date" id="examDate" required />
 						</div>
 						<div class="col-sm-6">
-							<label for="duration" class="form-label">Duration (hours)</label>
-							<input class="form-control" type="number" id="duration" min="1" required />
+							<label for="duration" class="form-label">Duration (Minutes)</label>
+							<input class="form-control" type="number" id="duration" min="10" max="240" required />
 						</div>
 						<div class="col-sm-6">
 							<label for="startTime" class="form-label">Start Time</label>
