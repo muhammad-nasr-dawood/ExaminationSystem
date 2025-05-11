@@ -295,7 +295,8 @@ namespace ExaminationSystem.MVC.Services
 		  std.StudentIntakeBranchDepartmentStudies.Any(rel =>
 			  rel.BranchId == branchId &&
 			  rel.DepartmentId == deptId &&
-			  rel.Intake.IsRunning == 1);
+			  rel.Intake.IsRunning == 1 &&
+			  rel.StudentSsnNavigation.SsnNavigation.IsActive == true);
 
 	  var students = await UnitOfWork.StudentRepo.FindAllAsync(filter);
 
