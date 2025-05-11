@@ -6,10 +6,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ExaminationSystem.Core.Models
 {
-    public partial class getStudentResult
+    public partial class includedAndExcludedStudentsResult
     {
-        public long SSN { get; set; }
-        [StringLength(101)]
-        public string fullName { get; set; }
+        public long? SSN { get; set; }
+        [StringLength(50)]
+        public string Name { get; set; }
+        public bool? IsExcluded { get; set; }
     }
 }

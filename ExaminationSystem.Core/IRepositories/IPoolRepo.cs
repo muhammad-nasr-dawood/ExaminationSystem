@@ -50,6 +50,7 @@ namespace ExaminationSystem.Core.IRepositories
         public Task<List<ActivePoolResult>> ActivePool(long? staffId, int? poolId, OutputParameter<int> returnValue);
 
 
+        public Task<List<includedAndExcludedStudentsResult>> includedAndExcludedStudents(long staffId,int poolId, OutputParameter<int> returnValue );
 
 
     }

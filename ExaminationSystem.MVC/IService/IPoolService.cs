@@ -43,6 +43,8 @@ namespace ExaminationSystem.MVC.IService
 
 	public Task<ActivePoolResult> ActivePool(long? staffId, int? poolId);
 
+	public Task<List<includedAndExcludedStudentsResult>> includedAndExcludedStudents(long staffId, int poolId,OutputParameter<int>_);
+
 
   }
 }

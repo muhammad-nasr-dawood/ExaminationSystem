@@ -1365,38 +1365,6 @@ namespace ExaminationSystem.Core.Models
             return _;
         }
 
-        public virtual async Task<List<getStudentResult>> getStudentAsync(int? branchId, int? deptId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "BranchId",
-                    Value = branchId ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                new SqlParameter
-                {
-                    ParameterName = "DeptId",
-                    Value = deptId ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<getStudentResult>("EXEC @returnValue = [dbo].[getStudent] @BranchId = @BranchId, @DeptId = @DeptId", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
         public virtual async Task<List<GetTopicByIdResult>> GetTopicByIdAsync(int? topicId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
@@ -1455,6 +1423,38 @@ namespace ExaminationSystem.Core.Models
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<GetTopicsByCourseResult>("EXEC @returnValue = [dbo].[GetTopicsByCourse] @CourseId = @CourseId, @PageSize = @PageSize, @PageNumber = @PageNumber", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<includedAndExcludedStudentsResult>> includedAndExcludedStudentsAsync(long? staffId, int? poolId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "StaffId",
+                    Value = staffId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.BigInt,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "PoolId",
+                    Value = poolId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<includedAndExcludedStudentsResult>("EXEC @returnValue = [dbo].[includedAndExcludedStudents] @StaffId = @StaffId, @PoolId = @PoolId", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

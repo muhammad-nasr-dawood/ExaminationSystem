@@ -94,6 +94,13 @@ namespace ExaminationSystem.EF.Repositories
         {
             return await _dbContext.Procedures.ActivePoolAsync(staffId, poolId, returnValue);
         }
+
+        public async Task<List<includedAndExcludedStudentsResult>> includedAndExcludedStudents(long staffId,int poolId, OutputParameter<int> returnValue)
+        {
+            return await _dbContext.Procedures.includedAndExcludedStudentsAsync(staffId, poolId,returnValue);
+        }
+
+
     }
 }
 

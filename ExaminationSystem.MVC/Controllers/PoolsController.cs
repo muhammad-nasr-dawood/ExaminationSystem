@@ -288,6 +288,24 @@ namespace ExaminationSystem.MVC.Controllers
 	}
 
 
+	[HttpGet]
+	public async Task<IActionResult> UpdateConfigurationStudentList(long staffId, int poolId)
+	{
+	  try
+	  {
+		OutputParameter<int> result = new();
+
+		ViewBag.studentLis= await _poolService.includedAndExcludedStudents(staffId, poolId, result);
+
+		
+		return View();
+	  }
+	  catch (Exception ex)
+	  {
+		return BadRequest(ex.Message);
+	  }
+	}
+
 	[HttpPost]
 	public async Task<IActionResult> UpdateConfigurationGrades(long staffId, int poolId, int gradeForDiff, int gradeForMed, int gradeForEasy)
 	{

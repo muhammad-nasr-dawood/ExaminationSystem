@@ -323,5 +323,10 @@ namespace ExaminationSystem.MVC.Services
 		throw new Exception(ex.Message);
 	  }
 	}
+
+	public async Task<List<includedAndExcludedStudentsResult>> includedAndExcludedStudents(long staffId, int poolId,OutputParameter<int>returnValue)
+	{
+	  return await UnitOfWork.PoolRepo.includedAndExcludedStudents(staffId, poolId, returnValue);
+	}
   }//end of service calss
 }
