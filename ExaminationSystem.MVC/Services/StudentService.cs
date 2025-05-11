@@ -302,6 +302,18 @@ namespace ExaminationSystem.MVC.Services
 
 	  return _mapper.Map<List<StudentBasicInfoVM>>(students);
 	}
-  }
 
+	public List<StudentExamVM> GetStudentExams(long studentSSN, bool isPending)
+	{
+	  DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+	  Expression<Func<StudentExamModel, bool>> filters;
+	  if (isPending)
+		filters = std => std.StudentId == studentSSN && std.ExamModel.Pool.Configuration.Date >= today;
+	  else
+		filters = std => std.StudentId == studentSSN && std.ExamModel.Pool.Configuration.Date < today;
+	  var exams = UnitOfWork.StudentExamModelRepo.FindAll(criteria: filters);
+	  return _mapper.Map<List<StudentExamVM>>(exams);
+	}
+
+  }
 }

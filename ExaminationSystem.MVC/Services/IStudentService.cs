@@ -37,6 +37,6 @@ namespace ExaminationSystem.MVC.Services
 	public bool UpdateStudent(StudentDetailsVM stdvm);
 
 	public Task<List<StudentBasicInfoVM>> GetStudentsByDepartmentBranchAndActiveIntakeAsync(int deptId, int branchId);
-
+	public List<StudentExamVM> GetStudentExams(long studentSSN, bool isPending);
   }
 }

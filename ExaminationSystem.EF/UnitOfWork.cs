@@ -51,6 +51,8 @@ namespace ExaminationSystem.EF
 
        public ILocationRepo LocationRepo { get;}
 
+        public IBaseRepo<StudentExamModel> StudentExamModelRepo { get; }
+
         public UnitOfWork(ExaminationDBContext dbContext,
               IBaseRepo<Student> studentRepo,
               IAuthRepo authRepo,
@@ -68,7 +70,8 @@ namespace ExaminationSystem.EF
               IBaseRepo<StaffBranchIntakeWorksFor> worksFor,
               IBaseRepo<Intake> intakeRepo,
               IBaseRepo<Topic> topicRepo, 
-              IBaseRepo<StudentIntakeBranchDepartmentStudy> studentIntakeBranchDepartmentStudyRepo
+              IBaseRepo<StudentIntakeBranchDepartmentStudy> studentIntakeBranchDepartmentStudyRepo,
+              IBaseRepo<StudentExamModel> studentExamModelRepo
               )
 
         {
@@ -99,8 +102,8 @@ namespace ExaminationSystem.EF
             QuestionRepo =  _questionRepo;
             IntakeRepo = intakeRepo;
             WorksForRepo = worksFor;
-          
-      
+
+            StudentExamModelRepo = studentExamModelRepo;
 
         }
 

@@ -35,7 +35,7 @@ namespace ExaminationSystem.Core
 
         IQuestionRepo QuestionRepo { get; } // Added QuestionRepo to UnitOfWork
 
-
+        IBaseRepo<StudentExamModel> StudentExamModelRepo { get; }
 
 
 

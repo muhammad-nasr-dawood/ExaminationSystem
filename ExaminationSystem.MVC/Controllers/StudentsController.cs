@@ -34,9 +34,6 @@ public class StudentsController : Controller
 
   public IActionResult Index()
   {
-
-
-
 	// Get branches and departments for filters
 	ViewBag.Departments = departmentService.GetAll();
 	ViewBag.Branches = branchService.GetAll();
@@ -128,6 +125,9 @@ public class StudentsController : Controller
 
   public async Task<IActionResult> Details(long id)
   {
+
+	var exam = _studentService.GetStudentExams(id, true);
+
 	if (id == 0)
 	  return NotFound();
 	ViewBag.Locations = _studentService.UnitOfWork.LocationRepo.GetAll();
