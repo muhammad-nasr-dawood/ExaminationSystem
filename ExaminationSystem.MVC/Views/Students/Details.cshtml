@@ -81,102 +81,41 @@
 		<!-- /Project table -->
 		<div class="card">
 			<div class="card-header border-bottom">
-				<h5 class="card-title mb-0">Filters</h5>
-				<div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
-					<div class="col-md-4 user_role"></div>
-					<div class="col-md-4 user_plan"></div>
-					<div class="col-md-4 user_status"></div>
-					<div class="col-md-3">
-
-@* 						<select id="branchFilter" class="form-select">
-							<option value="">Filter by Branch</option>
-							@foreach (var branch in ViewBag.Branches)
-							{
-								<option value="@branch.Id">@branch.Location</option>
-							}
-						</select> *@
-
-					</div>
-@* 						<select id="branchFilter" class="form-select">
-							<option value="">Filter by Branch</option>
-							@foreach (var branch in ViewBag.Branches)
-							{
-								<option value="@branch.Id">@branch.Location</option>
-							}
-						</select>
-					</div>
-					<div class="col-md-3">
-						<select id="departmentFilter" class="form-select">
-							<option value="">Filter by Department</option>
-							@foreach (var dept in ViewBag.Departments)
-							{
-								<option value="@dept.Id">@dept.Name</option>
-							}
-						</select>
-					</div>
-					<div class="col-md-3">
-						<select id="courseFilter" class="form-select">
-							<option value="">Filter by Course</option>
-							@foreach (var crs in ViewBag.Courses)
-							{
-								<option value="@crs.Id">@crs.Name</option>
-							}
-						</select>
-					</div>
-					<div class="col-md-3">
-						<select id="statusFilter" class="form-select">
-							<option value="">Filter by Status</option>
-							<option value="true">Finished</option>
-							<option value="false">Not Finished</option>
-						</select>
-					</div>
- *@					@* <div class="col-md-3">  *@
-					@* <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">  *@
-					@* 		Add Staff *@
-					@* 	</button> *@
-					@* </div> *@
-				</div>
+				<h3 class="card-title mb-0 ">Course Schedule</h3>
+				
 				<div class="table-responsive text-nowrap">
-					@* 					<table id="teachingCourseTable" class="table table-hover">
+					<table id="examTable" class="table table-hover">
 						<thead>
 							<tr>
-								<th>course</th>
-								<th>Internal/Exteranl</th>
-								<th>Start Date</th>
-								<th>End Date</th>
+							  <th>Course Name</th>
+							  <th>Staff Name</th>
+							  <th>Start Date</th>
+							  <th>End Date</th>
 							</tr>
 						</thead>
 						<tbody class="table-border-bottom-0">
-						</tbody> *@
-
-					@* @foreach (var item in Model) *@
-					@* { *@
-					@* 	<tr> *@
-					@* 		<td> *@
-					@* 			<ul class="list-unstyled m-0 avatar-group d-flex align-items-center"> *@
-					@* 				<li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" class="avatar avatar-xs pull-up" title="Christina Parker"> *@
-					@* 					<img src="@item.ImageURL" alt="Avatar" class="rounded-circle"> *@
-					@* 					<span>@item.FullName</span> *@
-					@* 				</li> *@
-					@* 			</ul> *@
-					@* 		</td> *@
-					@* 		<td>@item.Ssn</td> *@
-					@* 		<td> *@
-					@* 			@item.Salary *@
-					@* 		</td> *@
-					@* 		<td><span class="badge bg-label-primary me-1">Active</span></td> *@
-					@* 		<td> *@
-					@* 			<div class="dropdown"> *@
-					@* 				<button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i></button> *@
-					@* 				<div class="dropdown-menu"> *@
-					@* 					<a class="dropdown-item" href="javascript:void(0);"><i class="ti ti-pencil me-1"></i> Edit</a> *@
-					@* 					<a class="dropdown-item" href="javascript:void(0);"><i class="ti ti-trash me-1"></i> Delete</a> *@
-					@* 				</div> *@
-					@* 			</div> *@
-					@* 		</td> *@
-					@* 	</tr> *@
-					@* } *@
-					@* </table> *@
+							@if (ViewBag.StudentCourseSchedule != null)
+							{
+								foreach (var item in (List<StudentCourseScheduleVM>)ViewBag.StudentCourseSchedule)
+								{
+									<tr>
+										<td>@item.CourseName</td>
+										<td>@item.StaffName</td>
+										<td>@item.StartingDate.ToString("yyyy-MM-dd")</td>
+										<td>
+											@(item.EndingDate.HasValue ? item.EndingDate.Value.ToString("yyyy-MM-dd") : "N/A")
+										</td>
+									</tr>
+								}
+							}
+							else
+							{
+								<tr>
+									<td colspan="4" class="text-center">No data found.</td>
+								</tr>
+							}
+						</tbody>
+					</table>
 				</div>
 			</div>
 			<!-- Offcanvas to add new user -->
@@ -685,8 +624,163 @@
 					});
 				});
 
+			// 			$('#examFilter').change(function() {
+			// const selectedValue = $(this).val();
+			// if (selectedValue) {
+			// 	examTable.ajax.reload();
+			// }
+			// });
+
+			// var examTable = $('#examTable').DataTable({
+			// 	processing: true,
+			// 	serverSide: true,
+			// 	ajax: {
+			// 		url: '/Students/GetExams',
+			// 		type: 'POST',
+			// 		data: function(d) {
+			// 			d.filterType = $('#examFilter').val();
+			// 			d.studentSsn = @Model.Ssn;
+			// 		},
+			// 		dataSrc: function(json) {
+			// 			if (!json.data || json.data.length === 0) {
+			// 				console.log("No exam data returned from server.");
+			// 			} else {
+			// 				console.log("Returned exam data:", json.data);
+			// 			}
+			// 			return json.data;
+			// 		}
+			// 	},
+			// 	columns: [
+			// 		{ data: 'name', title: 'Exam Name' },
+			// 		{ data: 'courseName', title: 'Course' },
+			// 		{
+			// 			data: 'date',
+			// 			title: 'Date',
+			// 			render: function(data) {
+			// 				return new Date(data).toLocaleDateString();
+			// 			}
+			// 		},
+			// 		{
+			// 			data: null,
+			// 			title: 'Time',
+			// 			render: function(data) {
+			// 				return `${data.startTime} - ${data.endTime}`;
+			// 			}
+			// 		},
+			// 		{
+			// 			data: 'status',
+			// 			title: 'Status',
+			// 			render: function(data) {
+			// 				if (data.toLowerCase() === 'pending') {
+			// 					return '<span class="badge bg-label-warning me-1">Pending</span>';
+			// 				} else if (data.toLowerCase() === 'completed') {
+			// 					return '<span class="badge bg-label-success me-1">Completed</span>';
+			// 				} else {
+			// 					return '<span class="badge bg-label-secondary me-1">'+data+'</span>';
+			// 				}
+			// 			}
+			// 		},
+			// 		{
+			// 			data: null,
+			// 			title: 'Actions',
+			// 			render: function(data) {
+			// 				if (data.status.toLowerCase() === 'pending') {
+			// 					return '<button class="btn btn-sm btn-outline-primary register-btn" data-exam-id="'+data.id+'">Register</button>';
+			// 				} else if (data.status.toLowerCase() === 'completed') {
+			// 					return '<button class="btn btn-sm btn-outline-secondary results-btn" data-exam-id="'+data.id+'">Results</button>';
+			// 				}
+			// 				return '';
+			// 			}
+			// 		}
+			// 	],
+			// 	language: {
+			// 		paginate: {
+			// 			previous: '<span aria-hidden="true">⟨</span>',
+			// 			next: '<span aria-hidden="true">⟩</span>'
+			// 		}
+			// 	}
+			// });
+
+			// Handle register button clicks
+			// $('#examTable').on('click', '.register-btn', function() {
+			// 	const examId = $(this).data('exam-id');
+			// 	registerForExam(examId);
+			// });
+
+			// Handle results button clicks
+			// $('#examTable').on('click', '.results-btn', function() {
+			// 	const examId = $(this).data('exam-id');
+			// 	viewExamResults(examId);
+			// });
+
+			// function registerForExam(examId) {
+			// 	Swal.fire({
+			// 		title: 'Register for Exam?',
+			// 		text: 'Are you sure you want to register for this exam?',
+			// 		icon: 'question',
+			// 		showCancelButton: true,
+			// 		confirmButtonText: 'Register',
+			// 		cancelButtonText: 'Cancel'
+			// 	}).then((result) => {
+			// 		if (result.isConfirmed) {
+			// 			$.post('/Students/RegisterForExam', { examId: examId }, function(response) {
+			// 				if (response.success) {
+			// 					Swal.fire('Success', 'Registered for exam successfully!', 'success');
+			// 					examTable.ajax.reload();
+			// 				} else {
+			// 					Swal.fire('Error', response.message || 'Registration failed', 'error');
+			// 				}
+			// 			});
+			// 		}
+			// 	});
+			// }
+
+			// function viewExamResults(examId) {
+			// 	window.location.href = '/Students/ExamResults/' + examId;
+			// }
+
+
+
 
 		});
+
+
+		// $(document).ready(function() {
+		//   // Event listener for exam filter dropdown
+		//   $('#examFilter').change(function() {
+		// 	  const selectedValue = $(this).val();
+
+		// 	  if (selectedValue) {
+		// 		  fetchExamData(selectedValue);
+		// 	  }
+		//   });
+
+		//   function fetchExamData(filterType) {
+		// 	  $.ajax({
+		// 		  url: '/Students/GetExams', // Replace with your actual endpoint
+		// 		  type: 'GET',
+		// 		  data: {
+		// 			  filterType: filterType,
+		// 			  studentId: @Model.Ssn
+		// 		  },
+		// 		  dataType: 'json',
+		// 		  success: function(data) {
+		// 			  console.log('Received exam data:', data);
+		// 			  // Here you can process the JSON data and update the UI
+		// 			  // For example, populate a table or display the exams
+
+		// 			  // Example of displaying the data in console
+		// 			  displayExamData(data);
+		// 		  },
+		// 		  error: function(xhr, status, error) {
+		// 			  console.error('Error fetching exam data:', error);
+		// 			  Swal.fire('Error', 'Failed to load exam data', 'error');
+		// 		  }
+		// 	  });
+		//   }
+		// });
+
+
 
 	</script>
 }

@@ -9,6 +9,9 @@ namespace ExaminationSystem.MVC.ViewModels.StudentViewModels
 
 	public TimeOnly? EndingTime { get; set; }
 	public int? Duration { get; set; }
+	public string CourseName { get; set; }
+	public int ExamId { get; set; }
+
 
   }
 }

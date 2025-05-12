@@ -38,5 +38,7 @@ namespace ExaminationSystem.MVC.Services
 
 	public Task<List<StudentBasicInfoVM>> GetStudentsByDepartmentBranchAndActiveIntakeAsync(int deptId, int branchId);
 	public List<StudentExamVM> GetStudentExams(long studentSSN, bool isPending);
+	public List<StudentCourseScheduleVM> GetStudentCourseSchedule(long studentSSN);
+
   }
 }

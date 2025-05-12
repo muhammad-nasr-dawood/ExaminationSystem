@@ -308,12 +308,37 @@ namespace ExaminationSystem.MVC.Services
 	  DateOnly today = DateOnly.FromDateTime(DateTime.Now);
 	  Expression<Func<StudentExamModel, bool>> filters;
 	  if (isPending)
-		filters = std => std.StudentId == studentSSN && std.ExamModel.Pool.Configuration.Date >= today;
+		filters = std => std.StudentId == studentSSN && (std.ExamModel.Pool.Configuration.Date >= today || std.ExamModel.Pool.Configuration.Date == null);
 	  else
 		filters = std => std.StudentId == studentSSN && std.ExamModel.Pool.Configuration.Date < today;
 	  var exams = UnitOfWork.StudentExamModelRepo.FindAll(criteria: filters);
 	  return _mapper.Map<List<StudentExamVM>>(exams);
 	}
+
+	public List<StudentCourseScheduleVM> GetStudentCourseSchedule (long studentSSN)
+	{
+	  // Get all student enrollments
+	  var enrollments = UnitOfWork.StudentIntakeBranchDepartmentStudyRepo
+		  .FindAll(std => std.StudentSsn == studentSSN)
+		  .ToList(); // Force materialization
+
+	  if (!enrollments.Any())
+		return new List<StudentCourseScheduleVM>();
+
+	  // Materialize teachings and filter in memory
+	  var teachings = UnitOfWork.TeachingRepo
+		  .FindAll().Items
+		  .ToList() // Force materialization
+		  .Where(teaching => enrollments.Any(std =>
+			  std.BranchId == teaching.BranchId &&
+			  std.DepartmentId == teaching.DepartmentId &&
+			  std.IntakeId == teaching.IntakeId))
+		  .ToList();
+
+	  return _mapper.Map<List<StudentCourseScheduleVM>>(teachings);
+
+	}
+
 
   }
 }

@@ -125,9 +125,7 @@ public class StudentsController : Controller
 
   public async Task<IActionResult> Details(long id)
   {
-
-	var exam = _studentService.GetStudentExams(id, true);
-
+	ViewBag.StudentCourseSchedule = _studentService.GetStudentCourseSchedule(id);
 	if (id == 0)
 	  return NotFound();
 	ViewBag.Locations = _studentService.UnitOfWork.LocationRepo.GetAll();
@@ -231,7 +229,33 @@ public class StudentsController : Controller
   }
 
 
+  [HttpGet]
+  public IActionResult GetExams(string filterType, long studentId)
+  {
+	try
+	{
+	  List<StudentExamVM> exams;
 
+	  if (filterType == "1") // Pending Exams
+	  {
+		exams = _studentService.GetStudentExams(studentId, true);
+	  }
+	  else if (filterType == "2") // Old Exams
+	  {
+		exams = _studentService.GetStudentExams(studentId,false);
+	  }
+	  else
+	  {
+		return BadRequest("Invalid filter type");
+	  }
+
+	  return Ok(exams);
+	}
+	catch (Exception ex)
+	{
+	  return StatusCode(500, "Error retrieving exam data");
+	}
+  }
 
 
 }

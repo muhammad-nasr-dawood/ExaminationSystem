@@ -62,7 +62,15 @@ namespace ExaminationSystem.MVC.MappingProfiles
 		.ForMember(exam => exam.StartingTime, opt => opt.MapFrom(examModle => examModle.ExamModel.Pool.Configuration.StartingTime))
 		.ForMember(exam => exam.EndingTime, opt => opt.MapFrom(examModle => examModle.ExamModel.Pool.Configuration.EndingTime))
 		.ForMember(exam => exam.Date, opt => opt.MapFrom(examModle => examModle.ExamModel.Pool.Configuration.Date))
-		.ForMember(exam => exam.Duration, opt => opt.MapFrom(examModle => examModle.ExamModel.Pool.Configuration.Duration));
+		.ForMember(exam => exam.Duration, opt => opt.MapFrom(examModle => examModle.ExamModel.Pool.Configuration.Duration))
+		.ForMember(exam => exam.CourseName, opt => opt.MapFrom(examModle => examModle.ExamModel.Pool.Course.Name))
+		.ForMember(exam => exam.ExamId, opt => opt.MapFrom(examModle => examModle.ExamModelId));
+
+
+	  CreateMap<StaffBranchIntakeDepartmentCourseTeach, StudentCourseScheduleVM>()
+		.ForMember(exam => exam.CourseName, opt => opt.MapFrom(examModle => examModle.Course.Name))
+		.ForMember(exam => exam.StaffName, opt => opt.MapFrom(examModle => $"{examModle.StaffSsnNavigation.SsnNavigation.Fname} {examModle.StaffSsnNavigation.SsnNavigation.Lname}"));
+
 
 	}
 
