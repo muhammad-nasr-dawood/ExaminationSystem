@@ -6,6 +6,7 @@ using ExaminationSystem.Core.Models;
 using ExaminationSystem.EF;
 using ExaminationSystem.MVC.ViewModels.StudentViewModels;
 using LinqKit;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -315,6 +316,8 @@ namespace ExaminationSystem.MVC.Services
 	  return _mapper.Map<List<StudentExamVM>>(exams);
 	}
 
+
+
 	public List<StudentCourseScheduleVM> GetStudentCourseSchedule (long studentSSN)
 	{
 	  // Get all student enrollments
@@ -336,7 +339,6 @@ namespace ExaminationSystem.MVC.Services
 		  .ToList();
 
 	  return _mapper.Map<List<StudentCourseScheduleVM>>(teachings);
-
 	}
 
 

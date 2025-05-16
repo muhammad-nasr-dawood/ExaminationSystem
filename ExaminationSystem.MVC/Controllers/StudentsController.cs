@@ -8,8 +8,11 @@ using ExaminationSystem.MVC.ViewModels.StudentViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Data.Entity.Validation;
 using System.Data.SqlTypes;
+using System.Runtime.Intrinsics.X86;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ExaminationSystem.MVC.Controllers;
@@ -20,16 +23,19 @@ public class StudentsController : Controller
   IStudentService _studentService;
   private readonly IDepartmentService departmentService;
   private readonly IBranchService branchService;
+  private readonly IAccountService accountService;
 
   public StudentsController(
 	IStudentService studentService,
 	IDepartmentService departmentService,
-	IBranchService branchService
+	IBranchService branchService,
+	IAccountService _accountService
 	)
   {
 	_studentService = studentService; // controller layer will only deal with the service layer any dirty work will be within the service layer // in order to keep our controller simple and clean
 	this.departmentService = departmentService;
 	this.branchService = branchService;
+	accountService = _accountService;
   }
 
   public IActionResult Index()
@@ -125,9 +131,9 @@ public class StudentsController : Controller
 
   public async Task<IActionResult> Details(long id)
   {
-	ViewBag.StudentCourseSchedule = _studentService.GetStudentCourseSchedule(id);
 	if (id == 0)
 	  return NotFound();
+	ViewBag.StudentCourseSchedule = _studentService.GetStudentCourseSchedule(id);
 	ViewBag.Locations = _studentService.UnitOfWork.LocationRepo.GetAll();
 
 	StudentDetailsVM std = await _studentService.GetStdByIdAsync(id);
@@ -187,37 +193,23 @@ public class StudentsController : Controller
   }
 
 
-  public async Task<IActionResult> IsEmailExist(string email, long? Ssn)
+  public async Task<IActionResult> IsEmailExist(string email, long Ssn)
   {
-	var model = await _studentService.GetByEmailAsync(email, Ssn);
-	if (model == null)
-	  return Json(true);
-	return Json("This email is already in use");
+
+	var isSuccess = await accountService.VerifyEmail(Ssn, email);
+	return Json(isSuccess);
+
   }
 
   public async Task<IActionResult> IsSSNExist(long ssn)
   {
-	var model = await _studentService.GetStdByIdAsync(ssn);
-	if (model == null)
-	{
-	  return Json(true); 
-	}
-	else
-	{
-	  return Json("This SSN is already in use"); 
-	}
+	var isSuccess = await accountService.VerifySSN(ssn);
+	return Json(isSuccess);
   }
-  public async Task<IActionResult> isPhoneNumberExist(string PhoneNumber, long? Ssn)
-	{
-	var model = await _studentService.GetByPhoneNumberAsync(PhoneNumber, Ssn);
-	if (model == null)
-	{
-	  return Json(true);
-	}
-	else
-	{
-	  return Json("This Phone Number is already in use");
-	}
+  public async Task<IActionResult> isPhoneNumberExist(string PhoneNumber, long Ssn)
+  {
+	var isSuccess = await accountService.VerifyPhone(Ssn, PhoneNumber);
+	return Json(isSuccess);
   }
 
   [HttpGet]
@@ -229,33 +221,41 @@ public class StudentsController : Controller
   }
 
 
-  [HttpGet]
-  public IActionResult GetExams(string filterType, long studentId)
+  [HttpPost]
+  public IActionResult GetExams(string filter)
   {
 	try
 	{
-	  List<StudentExamVM> exams;
+	  long studentId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-	  if (filterType == "1") // Pending Exams
-	  {
-		exams = _studentService.GetStudentExams(studentId, true);
-	  }
-	  else if (filterType == "2") // Old Exams
-	  {
-		exams = _studentService.GetStudentExams(studentId,false);
-	  }
-	  else
-	  {
-		return BadRequest("Invalid filter type");
-	  }
+	  // You said your filtering (pending/old) is handled here:
+	  List<StudentExamVM> exams = _studentService.GetStudentExams(studentId, filter != "old");
 
-	  return Ok(exams);
+	  // Format the result for DataTables
+	  var result = exams.Select(e => new
+	  {
+		courseName = e.CourseName,
+		examId = e.ExamId,
+		date = e.Date?.ToString("yyyy-MM-dd"),
+		startingTime = e.StartingTime?.ToString("HH:mm"),
+		endingTime = e.EndingTime?.ToString("HH:mm")
+	  }).ToList();
+
+	  return Json(new
+	  {
+		draw = Request.Form["draw"],
+		recordsTotal = result.Count,
+		recordsFiltered = result.Count,
+		data = result
+	  });
 	}
 	catch (Exception ex)
 	{
+	  // Log the exception if needed
 	  return StatusCode(500, "Error retrieving exam data");
 	}
   }
+
 
 
 }

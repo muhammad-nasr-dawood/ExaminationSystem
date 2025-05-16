@@ -94,7 +94,7 @@
 							</tr>
 						</thead>
 						<tbody class="table-border-bottom-0">
-							@if (ViewBag.StudentCourseSchedule != null)
+							@if (((List<StudentCourseScheduleVM>)ViewBag.StudentCourseSchedule).Count != 0)
 							{
 								foreach (var item in (List<StudentCourseScheduleVM>)ViewBag.StudentCourseSchedule)
 								{
