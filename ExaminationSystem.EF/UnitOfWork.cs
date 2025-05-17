@@ -16,6 +16,7 @@ namespace ExaminationSystem.EF
         //public IStudentRepo Students {  get; }
         public IAuthRepo AuthRepo {  get; }
         public IBaseRepo<Staff> StaffRepo { get; }
+        public IBaseRepo<Role> RoleRepo { get; }
         public IBaseRepo<User> UserRepo { get; }
         public IBaseRepo<Department> DepartmentRepo { get; }
         public IBranchRepo BranchesRepo { get; }
@@ -45,17 +46,22 @@ namespace ExaminationSystem.EF
 
 
         public IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo { get; }
-        public IBaseRepo<Intake> IntakeRepo { get; }
+        
 
         public IBaseRepo<StudentIntakeBranchDepartmentStudy> StudentIntakeBranchDepartmentStudyRepo { get; }
 
        public ILocationRepo LocationRepo { get;}
+        public IIntakeRepo IntakeRepo { get; }
+        public IBaseRepo<BranchDept> BranchDeptRepo { get; }
+
+        
 
         public UnitOfWork(ExaminationDBContext dbContext,
               IBaseRepo<Student> studentRepo,
               IAuthRepo authRepo,
               IBaseRepo<Staff> staffRepo,
               ILocationRepo locationRepo,
+              IIntakeRepo intakeRepo,
               IBranchRepo branchRepo,
               IBaseRepo<Department> departmentRepo,
               IBaseRepo<User> userRepo,
@@ -66,9 +72,11 @@ namespace ExaminationSystem.EF
               IPoolRepo _poolRepo,
               IQuestionRepo _questionRepo,
               IBaseRepo<StaffBranchIntakeWorksFor> worksFor,
-              IBaseRepo<Intake> intakeRepo,
               IBaseRepo<Topic> topicRepo, 
+              IBaseRepo<BranchDept> branchDeptRepo,
               IBaseRepo<StudentIntakeBranchDepartmentStudy> studentIntakeBranchDepartmentStudyRepo
+,
+              IBaseRepo<Role> roleRepo
               )
 
         {
@@ -81,30 +89,30 @@ namespace ExaminationSystem.EF
             StaffBranchManageRepo = staffBranchManageRepo;
 
             StudentIntakeBranchDepartmentStudyRepo = studentIntakeBranchDepartmentStudyRepo;
-           
-            TopicRepo = topicRepo;
-           
 
-            
+            TopicRepo = topicRepo;
+
+
+
             BranchesRepo = branchRepo;
             DepartmentRepo = departmentRepo;
             UserRepo = userRepo;
             TeachingRepo = teachRepo;
             CoursesRepo = coursesRepo;
             ProfileImageRepo = profileImageRepo;
+            BranchDeptRepo = branchDeptRepo;
 
             /*nasser*/
 
             PoolRepo = _poolRepo; // Added PoolRepo to UnitOfWork
-            QuestionRepo =  _questionRepo;
+            QuestionRepo = _questionRepo;
             IntakeRepo = intakeRepo;
             WorksForRepo = worksFor;
-          
-      
+            RoleRepo = roleRepo;
 
         }
 
-         
+
         public int Complete()
         {
             return _dbContext.SaveChanges(); // will return number of rows affected

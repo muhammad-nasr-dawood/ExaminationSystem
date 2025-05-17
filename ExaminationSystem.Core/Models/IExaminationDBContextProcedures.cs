@@ -70,7 +70,7 @@ namespace ExaminationSystem.Core.Models
         Task<List<RoleGetAllResult>> RoleGetAllAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<RoleGetByIdResult>> RoleGetByIdAsync(int? id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> RoleUpdateAsync(int? id, string name, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<int> SetConfigurationsAsync(long? staffId, int? poolId, int? noOfDiff, int? noOfMed, int? noOfEasy, int? gradeForDiff, int? gradeForMid, int? gradeForEasy, int? noOfModels, DataTable excludedStdIds, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<int> SetConfigurationsAsync(long? staffId, int? poolId, int? noOfDiff, int? noOfMed, int? noOfEasy, int? gradeForDiff, int? gradeForMid, int? gradeForEasy, int? noOfModels, DateOnly? date, TimeOnly? startingTime, TimeOnly? endingTime, int? duration, DataTable excludedStdIds, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> SetExamSessionAsync(long? staffId, int? poolId, DateOnly? date, TimeOnly? startingTime, TimeOnly? endingTime, int? duration, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> StaffBranchDeptManageCreateAsync(long? staffSSN, int? branchId, int? deptID, DateOnly? hiringDate, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> StaffBranchDeptManageDeleteAsync(int? branchId, int? deptID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

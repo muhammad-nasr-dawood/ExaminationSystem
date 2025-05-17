@@ -7,14 +7,14 @@ namespace ExaminationSystem.MVC.Services
 {
   public interface ITopicService
   {
-	public PaginatedResult<TopicDisplayViewModel> FindAll(
-	int? pageNumber,
-	int? pageSize,
-	int? courseIdFilter,
-	bool? isDeletedFilter,
-	string columnOrderBy = null,
-	string orderByDirection = OrderBy.Ascending,
-	string searchTerm = null);
+	Task<PaginatedResult<TopicDisplayViewModel>> FindAll(
+		int? pageNumber,
+		int? pageSize,
+		int? courseIdFilter,
+		bool? isDeletedFilter,
+		string columnOrderBy = null,
+		string orderByDirection = OrderBy.Ascending,
+		string searchTerm = null);
 	public List<CourseDisplayViewModel> GetAllCourses();
 	public bool RestoreTopic(int id);
 	public Topic Delete(int id);
@@ -22,6 +22,7 @@ namespace ExaminationSystem.MVC.Services
 	public List<CourseDisplayViewModel> GetAvailableCourses();
 	public object AddTopic(TopicAddEditViewModel model);
 	public object EditTopic(TopicAddEditViewModel model);
+	Task<string?> CheckTopicNameStatusAsync(string name, int? id);
 
   }
 }

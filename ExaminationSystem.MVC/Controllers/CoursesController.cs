@@ -24,7 +24,7 @@ namespace ExaminationSystem.MVC.Controllers
 	}
 
 	[HttpPost]
-	public IActionResult GetAllCourses()
+	public async Task< IActionResult> GetAllCourses()
 	{
 	  try
 	  {
@@ -46,7 +46,7 @@ namespace ExaminationSystem.MVC.Controllers
 		int pageNumber = (start / length) + 1;
 		int pageSize = length;
 
-		var courseResult = _courseService.FindAll(
+		var courseResult =await  _courseService.FindAll(
 			pageNumber: pageNumber,
 			pageSize: pageSize,
 			departmentIdFilter: deptId,
@@ -126,9 +126,10 @@ namespace ExaminationSystem.MVC.Controllers
 	  if (!ModelState.IsValid)
 		return Json(new { success = false, message = "Invalid data." });
 
-	  var success = _courseService.AddCourse(model);
-	  return Json(success);
+	  var result = _courseService.AddCourse(model);
+	  return Json(result);
 	}
+
 
 	[HttpPost]
 	public IActionResult EditCourse(CourseAddEditViewModel model)
@@ -145,6 +146,15 @@ namespace ExaminationSystem.MVC.Controllers
 	{
 	  return RedirectToAction("Index", "Topics", new { courseId = id });
 	}
+	[HttpGet]
+	public async Task<IActionResult> IsCourseNameUnique(string name, int? id)
+	{
+	  var result = await _courseService.CheckCourseNameUniquenessAsync(name, id);
+	  return Json(result.IsValid ? true : result.Message);
+	}
+
+
+
 
 
 

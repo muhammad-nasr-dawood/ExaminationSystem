@@ -26,7 +26,7 @@ public class BranchesController : Controller
 
   public async Task<IActionResult> Edit(int id)
   {
-	var branch = _branchService.GetBranchForEdit(id);
+	var branch = await _branchService.GetBranchForEditAsync(id);
 	if (branch == null)
 	{
 	  return NotFound();
@@ -42,49 +42,34 @@ public class BranchesController : Controller
 
   [HttpPost]
   [ValidateAntiForgeryToken]
-  public IActionResult Edit(BranchEditViewModel viewModel)
+  public async Task<IActionResult> Edit(BranchEditViewModel viewModel)
   {
 	if (ModelState.IsValid)
 	{
-
-	  _branchService.Update(viewModel);
-
-
-	  var updatedBranch = _branchService.GetBranchForEdit(viewModel.Id);
-
-
-	  return Json(new { success = true, id = updatedBranch.Id, branch = updatedBranch });
+	  try
+	  {
+		_branchService.Update(viewModel);
+		var updatedBranch = await _branchService.GetBranchForEditAsync(viewModel.Id);
+		return Json(new { success = true, id = updatedBranch.Id, branch = updatedBranch });
+	  }
+	  catch (Exception)
+	  {
+		return Json(new { success = false, message = "An unexpected error occurred. Please try again later." });
+	  }
 	}
 
-
-	var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
-	return Json(new { success = false, message = string.Join(", ", errors) });
+	return Json(new { success = false, message = "Validation failed. Please check your inputs." });
   }
 
-
-
-  [HttpGet]
-  public IActionResult Delete(int id)
-  {
-	var branch = _branchService.GetBranchForEdit(id);
-
-
-	if (branch == null)
-	{
-	  return Json(new { success = false, message = "Branch not found." });
-	}
-
-	return PartialView("DeleteBranchModel", branch);
-  }
 
 
   [HttpPost]
-  public IActionResult DeleteConfirmed(int id)
+  public async Task< IActionResult> DeleteConfirmed(int id)
   {
 	try
 	{
 
-	  var branch = _branchService.GetBranchForEdit(id);
+	  var branch = await _branchService.GetBranchForEditAsync(id);
 
 	  if (branch == null)
 	  {
@@ -179,25 +164,45 @@ public class BranchesController : Controller
 
   public async Task<IActionResult> Add()
   {
-	var viewModel = new BranchEditViewModel();
-	ViewBag.Locations = await _branchService.GetLocations();
-	return PartialView("_EditBranchModal", viewModel);
+	try
+	{
+	  var viewModel = new BranchEditViewModel
+	  {
+		AvailableDepartments = _departmentService.GetAll()
+	  };
+	  ViewBag.Locations = await _branchService.GetLocations();
+	  return PartialView("_EditBranchModal", viewModel);
+	}
+	catch (Exception ex)
+	{
+	  return Content($"Error: {ex.Message}");
+	}
   }
 
+
+
   [HttpPost]
+  [ValidateAntiForgeryToken]
   public IActionResult Add(BranchEditViewModel viewModel)
   {
 	if (ModelState.IsValid)
 	{
-	  var branch = _branchService.Add(viewModel);
-
-	  
-	  return PartialView("_BranchCardPartial", branch); 
+	  try
+	  {
+		var branch = _branchService.Add(viewModel);
+		return PartialView("_BranchCardPartial", branch); 
+	  }
+	  catch (Exception)
+	  {
+		
+		return StatusCode(500, "An unexpected error occurred.");
+	  }
 	}
 
-	var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
-	return BadRequest(string.Join(", ", errors));
+	return BadRequest("Please check your inputs and try again.");
   }
+
+
 
 
 
@@ -235,7 +240,7 @@ public class BranchesController : Controller
   {
 	ViewBag.BranchId = branchId;
 	ViewBag.DeptId = deptId;
-	ViewBag.Branches = _mapper.Map<List<BranchViewModel>>(_staffService.UnitOfWork.BranchesRepo.GetAll());
+	ViewBag.Branches = _branchService.GetAll();
 	ViewBag.Departments = _staffService.UnitOfWork.DepartmentRepo.GetAll();
 	ViewBag.Locations = _staffService.UnitOfWork.LocationRepo.GetAll();
 
@@ -243,9 +248,9 @@ public class BranchesController : Controller
   }
 
 
-  public IActionResult ShowCourses(int deptId,int? branchId)
+  public async Task<IActionResult> ShowCourses(int deptId,int? branchId)
   {
-	var department = _departmentService.GetDepartmentForEdit(deptId);
+	var department = await _departmentService.GetDepartmentForEditAsync(deptId);
 	if (department == null)
 	  return NotFound();
 

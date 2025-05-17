@@ -139,40 +139,83 @@
 
 
 		// Add new department
-		$("#addNewDepartmentBtn").on('click', function () {
-			$.ajax({
-				type: "GET",
-				url: '@Url.Action("Add", "Departments")',
-				success: function (data) {
-					$('#modalContainer').html(data);
-					$.validator.unobtrusive.parse('#editDepartmentForm');
-					var modal = new bootstrap.Modal(document.getElementById('editDepartmentModal-0'));
-					modal.show();
-				},
-				error: function () {
-					alert("An error occurred while loading Add Department modal.");
-				}
-			});
-		});
+	$(document).on('click', '#addNewDepartmentBtn', function (e) {
+		e.preventDefault();
 
-		// Edit department
-		$(document).on('click', '.edit-department-btn', function () {
-			var deptId = $(this).data("id");
+		$.ajax({
+			type: "GET",
+			url: '@Url.Action("Add", "Departments")',
+			success: function (data) {
+				$('#modalContainer').html(data);
 
-			$.ajax({
-				type: "GET",
-				url: '@Url.Action("Edit", "Departments")/' + deptId,
-				success: function (data) {
-					$('#modalContainer').html(data);
-					$.validator.unobtrusive.parse('#editDepartmentForm');
-					var modal = new bootstrap.Modal(document.getElementById('editDepartmentModal-' + deptId));
-					modal.show();
-				},
-				error: function () {
-					alert("An error occurred while loading Edit Department modal.");
-				}
-			});
+				const modalElement = document.getElementById('editDepartmentModal-0');
+				const modal = new bootstrap.Modal(modalElement);
+				modal.show();
+
+				$(document).on('shown.bs.modal', '#editDepartmentModal-0', function () {
+					const $form = $('#editDepartmentForm');
+					$.validator.unobtrusive.parse($form);
+
+					$('#SelectedBranchIds').select2({
+						placeholder: "Assign To Branches (Optional)",
+						allowClear: true,
+						dropdownParent: $('#editDepartmentModal-0')
+					}).on('select2:close', function () {
+						$form.validate().element(this);
+					}).trigger('change');
+
+					$form.find('input, select').on('blur change', function () {
+						$(this).valid();
+					});
+				});
+			},
+			error: function () {
+				alert("An error occurred while loading the add department modal.");
+			}
 		});
+	});
+
+
+	// Edit department
+	$(document).on('click', '.edit-department-btn', function (e) {
+		e.preventDefault();
+		var deptId = $(this).data("id");
+
+		$.ajax({
+			type: "GET",
+			url: '@Url.Action("Edit", "Departments")/' + deptId,
+			success: function (data) {
+				$('#modalContainer').html(data);
+
+				const modalElement = document.getElementById('editDepartmentModal-' + deptId);
+				const modal = new bootstrap.Modal(modalElement);
+				modal.show();
+
+				$(document).on('shown.bs.modal', '#editDepartmentModal-' + deptId, function () {
+					const $form = $('#editDepartmentForm');
+					$.validator.unobtrusive.parse($form);
+
+					$('#SelectedBranchIds').select2({
+						placeholder: "Assign To Branches (Optional)",
+						allowClear: true,
+						dropdownParent: $('#editDepartmentModal-' + deptId)
+					}).on('select2:close', function () {
+						$form.validate().element(this);
+					}).trigger('change');
+
+					$form.find('input, select').on('blur change', function () {
+						$(this).valid();
+					});
+				});
+			},
+			error: function () {
+				alert("An error occurred while loading the edit department modal.");
+			}
+		});
+	});
+
+
+
 
 		// Delete department
 	$(document).on('click', '.delete-department-btn', function (e) {

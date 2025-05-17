@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace ExaminationSystem.Core.IRepositories
 {
-    public interface IStaffBranchManageRepo:IBaseRepo<StaffBranchManage>
+    public interface IIntakeRepo:IBaseRepo<Intake>
     {
-        Task<StaffBranchManage> GetByBranchId(int branchId);
+        Task<int> GetActiveIntakeIdAsync();
+
     }
 }

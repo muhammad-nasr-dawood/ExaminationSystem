@@ -19,8 +19,9 @@
 
 				<div class="d-flex justify-content-start mb-1 mt-2">
 					<p class="text-muted mb-0 flex-grow-1">
-						Departments: <strong>@Model.NumberOfDepartments</strong>
+						Departments: <strong class="number-of-departments">@Model.NumberOfDepartments</strong>
 					</p>
+
 					<div class="d-flex justify-content-end mb-2">
 						<button class="btn btn-sm btn-outline-danger delete-manager-btn @((string.IsNullOrEmpty(Model.BranchManagerName) || Model.BranchManagerName == "Not Assigned") ? "hide-delete-button" : "show-delete-button")" data-id="@Model.Id">
 							<i class="bi bi-trash"></i> Delete Manager

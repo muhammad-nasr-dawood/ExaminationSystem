@@ -19,6 +19,7 @@ namespace ExaminationSystem.Core
         IBaseRepo<StudentIntakeBranchDepartmentStudy> StudentIntakeBranchDepartmentStudyRepo { get; }
        
         IBaseRepo<Topic> TopicRepo { get; }
+        IBaseRepo<Role> RoleRepo { get; }
 
         ILocationRepo LocationRepo { get; }
         IBaseRepo<Department> DepartmentRepo { get; }
@@ -41,7 +42,8 @@ namespace ExaminationSystem.Core
 
 
         IBaseRepo<StaffBranchIntakeWorksFor> WorksForRepo { get; }
-        IBaseRepo<Intake> IntakeRepo { get; }
+        IBaseRepo<BranchDept> BranchDeptRepo { get; }
+        IIntakeRepo IntakeRepo { get; }
 
   
 

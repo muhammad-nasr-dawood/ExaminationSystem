@@ -1,4 +1,5 @@
 using ExaminationSystem.MVC.ViewModels.TopicViewModels;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace ExaminationSystem.MVC.ViewModels.CourseViewModels
@@ -9,6 +10,8 @@ namespace ExaminationSystem.MVC.ViewModels.CourseViewModels
 
 	[Required]
 	[StringLength(30, ErrorMessage = "Name cannot exceed 30 characters.")]
+	[Remote("IsCourseNameUnique", "Courses", AdditionalFields = "Id")]
+
 	public string Name { get; set; }
 
 	[Required(ErrorMessage = "Duration is required.")]

@@ -164,9 +164,10 @@
 				}
 				else
 				{
-					<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
+					<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#topicModal">
 						<i class="ti ti-plus"></i> Add Topic
 					</button>
+
 				}
 			</div>
 
@@ -349,8 +350,23 @@
 					});
 				$('#TopicCourses').val(null).trigger('change');
 				});
+		    	$('#topicForm').find('.text-danger').text('');
+			    $('#topicForm').find('.input-validation-error').removeClass('input-validation-error');
 				$('#topicModal').modal('show');
 
+
+			});
+
+			$(document).on('shown.bs.modal', '#topicModal', function () {
+
+
+				const $select = $('#TopicCourses');
+
+				$select.select2({
+					placeholder: "Select Courses (Optional)",
+					allowClear: true,
+					dropdownParent: $('#topicModal')
+				});
 			});
 
 					function openEditTopic(id) {

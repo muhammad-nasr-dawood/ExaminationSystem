@@ -24,7 +24,7 @@ namespace ExaminationSystem.MVC.Controllers
 
 
 	[HttpPost]
-	public IActionResult GetAllTopics()
+	public async Task<IActionResult> GetAllTopics()
 	{
 	  try
 	  {
@@ -46,7 +46,7 @@ namespace ExaminationSystem.MVC.Controllers
 		int pageNumber = (start / length) + 1;
 		int pageSize = length;
 
-		var topicResult = _topicService.FindAll(
+		var topicResult = await _topicService.FindAll(
 			pageNumber: pageNumber,
 			pageSize: pageSize,
 			courseIdFilter: courseId,
@@ -136,5 +136,14 @@ namespace ExaminationSystem.MVC.Controllers
 	  var success = _topicService.EditTopic(model);
 	  return Json(success);
 	}
+	[HttpGet]
+	public async Task<IActionResult> IsTopicNameUnique(string name, int? id)
+	{
+	  var result = await _topicService.CheckTopicNameStatusAsync(name, id);
+
+	  return result == null ? Json(true) : Json(result);
+	}
+
+
   }
 }

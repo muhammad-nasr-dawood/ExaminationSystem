@@ -197,60 +197,93 @@
 			});
 		});
 
-		// Edit branch
-		$(document).on('click', '.edit-branch-btn', function (e) {
-			e.preventDefault();
-			var branchId = $(this).data("id");
+		
+	// Edit branch
+	$(document).on('click', '.edit-branch-btn', function (e) {
+		e.preventDefault();
+		var branchId = $(this).data("id");
 
-			$.ajax({
-				type: "GET",
-				url: '@Url.Action("Edit", "Branches")/' + branchId,
-				success: function (data) {
-					$('#modalContainer').html(data);
-					$.validator.unobtrusive.parse('#editBranchForm');
-					var modal = new bootstrap.Modal(document.getElementById('editBranchModal-' + branchId));
-					modal.show();
+		$.ajax({
+			type: "GET",
+			url: '@Url.Action("Edit", "Branches")/' + branchId,
+			success: function (data) {
+				$('#modalContainer').html(data);
+				$.validator.unobtrusive.parse('#editBranchForm');
+				$("form").validate();
+				$("form input").on('keyup blur', function () {
+					$(this).valid();
+				});
 
-					$(document).on('shown.bs.modal', '#editBranchModal-' + branchId, function () {
-						$('#ZipCode').select2({
-							placeholder: "Select a location",
-							allowClear: true,
-							dropdownParent: $('#editBranchModal-' + branchId)
-						}).trigger('change');
-					});
-				},
-				error: function () {
-					alert("An error occurred while loading the edit branch modal.");
-				}
-			});
+				var modal = new bootstrap.Modal(document.getElementById('editBranchModal-' + branchId));
+				modal.show();
+
+				$(document).on('shown.bs.modal', '#editBranchModal-' + branchId, function () {
+					$('#ZipCode').select2({
+						placeholder: "Select a location",
+						allowClear: true,
+						dropdownParent: $('#editBranchModal-' + branchId)
+					}).on('select2:close', function () {
+						$('#editBranchForm').validate().element(this);
+					}).trigger('change');
+
+					$('#branchDepartments').select2({
+						placeholder: "Assign To Departments (Optional)",
+						allowClear: true,
+						dropdownParent: $('#editBranchModal-' + branchId)
+					}).on('select2:close', function () {
+						$('#editBranchForm').validate().element(this);
+					}).trigger('change');
+				});
+			},
+			error: function () {
+				alert("An error occurred while loading the edit branch modal.");
+			}
 		});
+	});
+
 
 		// Add new branch
 		$(document).on('click', '#addNewBranchBtn', function (e) {
-			e.preventDefault();
+		e.preventDefault();
 
-			$.ajax({
-				type: "GET",
-				url: '@Url.Action("Add", "Branches")',
-				success: function (data) {
-					$('#modalContainer').html(data);
+		$.ajax({
+			type: "GET",
+			url: '@Url.Action("Add", "Branches")',
+			success: function (data) {
+				$('#modalContainer').html(data);
+
+				const modalElement = document.getElementById('editBranchModal-0');
+				const modal = new bootstrap.Modal(modalElement);
+				modal.show();
+
+				$(modalElement).on('shown.bs.modal', function () {
 					$.validator.unobtrusive.parse('#editBranchForm');
-					var modal = new bootstrap.Modal(document.getElementById('editBranchModal-0'));
-					modal.show();
 
-					$(document).on('shown.bs.modal', '#editBranchModal-0', function () {
-						$('#ZipCode').select2({
-							placeholder: "Select a location",
-							allowClear: true,
-							dropdownParent: $('#editBranchModal-0')
-						}).trigger('change');
+					const $form = $('#editBranchForm');
+					$('#ZipCode').select2({
+						placeholder: "Select a location",
+						allowClear: true,
+						dropdownParent: $('#editBranchModal-0')
+					}).on('select2:close', function () {
+						$form.validate().element(this); 
 					});
-				},
-				error: function () {
-					alert("An error occurred while loading the add branch modal.");
-				}
-			});
+
+					$('#branchDepartments').select2({
+						placeholder: "Assign To Departments (Optional)",
+						allowClear: true,
+						dropdownParent: $('#editBranchModal-0')
+					}).on('select2:close', function () {
+						$form.validate().element(this); 
+					});
+
+					$form.find('input, select').on('blur change', function () {
+						$(this).valid();
+					});
+				});
+			}
 		});
+	});
+
 
 		// Delete branch
 	$(document).on('click', '.dropdown-item.text-danger', function (e) {

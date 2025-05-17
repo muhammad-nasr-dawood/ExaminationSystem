@@ -156,6 +156,14 @@ public partial class ExaminationDBContext : DbContext
         modelBuilder.Entity<Department>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_Dept_Id");
+
+            entity.HasIndex(e => e.Disc, "IX_Unique_Disc_Active")
+                .IsUnique()
+                .HasFilter("([IsDeleted]=(0))");
+
+            entity.HasIndex(e => e.Name, "IX_Unique_Name_Active")
+                .IsUnique()
+                .HasFilter("([IsDeleted]=(0))");
         });
 
         modelBuilder.Entity<ExamModel>(entity =>

@@ -13,7 +13,7 @@ namespace ExaminationSystem.MVC.Services
 	List<BranchViewModel> GetAll();
     Task<List<LocationViewModel>> GetLocations(int? id = null);
 	public BranchViewModel Add(BranchEditViewModel viewModel);
-	BranchEditViewModel GetBranchForEdit(int id);
+	Task<BranchEditViewModel> GetBranchForEditAsync(int id);
 	void Update(BranchEditViewModel viewModel);
 	void Delete(int id);
 	public Task<bool> DeleteManagerByBranchId(int id);

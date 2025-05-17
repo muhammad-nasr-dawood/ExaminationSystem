@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExaminationSystem.Core.Models;
 
+[Index("Name", Name = "UQ_Course_Name", IsUnique = true)]
 public partial class Course
 {
     [Key]

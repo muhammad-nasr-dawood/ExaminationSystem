@@ -7,68 +7,76 @@ namespace ExaminationSystem.MVC.Controllers
   public class DepartmentsController : Controller
   {
 	private readonly IDepartmentService _departmentService;
-	public DepartmentsController(IDepartmentService departmentService)
+	private readonly IBranchService _branchService;
+	public DepartmentsController(IDepartmentService departmentService, IBranchService branchService)
 	{
 	  _departmentService = departmentService;
+	  _branchService = branchService;
 	}
 	[HttpGet]
 	public IActionResult Add()
 	{
-	  var model = new AddEditDeptViewModel();
-	  return PartialView("_AddEditModal", model);
-	}
+	  var branches = _branchService.GetAll();
 
-	[HttpPost]
-	public IActionResult Add(AddEditDeptViewModel model)
-	{
-	  if (!ModelState.IsValid)
+	  var viewModel = new AddEditDeptViewModel
 	  {
-		var errors = ModelState.Values
-			.SelectMany(v => v.Errors.Select(e => e.ErrorMessage))
-			.ToList();
+		AvailableBranches = branches
+	  };
 
-		return BadRequest(string.Join(", ", errors));
-	  }
-
-	  var dept = _departmentService.Add(model);
-
-	  
-	  return PartialView("_DeptCardPartial", dept);
+	  return PartialView("_AddEditModal", viewModel);
 	}
 
 
-	[HttpGet]
-	public IActionResult Edit(int id)
-	{
-	  var model = _departmentService.GetDepartmentForEdit(id);
-	  if (model == null)
-		return NotFound();
-
-	  return PartialView("_AddEditModal", model);
-	}
 
 	[HttpPost]
-	public IActionResult Edit(AddEditDeptViewModel model)
+	[ValidateAntiForgeryToken]
+	public IActionResult Add(AddEditDeptViewModel model)
 	{
 	  if (ModelState.IsValid)
 	  {
-		_departmentService.Update(model);
-		var updatedDept = _departmentService.GetDepartmentForEdit(model.Id);
-		return Json(new { success = true, id = updatedDept.Id, department = updatedDept });
-
+		try
+		{
+		  var dept = _departmentService.Add(model);
+		  return PartialView("_DeptCardPartial", dept);
+		}
+		catch (InvalidOperationException ex)
+		{
+		  return StatusCode(500, ex.Message);
+		}
 	  }
-
-	  return Json(new { success = false, message = "Invalid data." });
+	  return BadRequest("Please check your inputs and try again.");
 	}
+
+
+
+
 	[HttpGet]
-	public IActionResult Delete(int id)
+	public async Task<IActionResult> Edit(int id)
 	{
-	  var model = _departmentService.GetDepartmentForEdit(id);
+	  var model = await _departmentService.GetDepartmentForEditAsync(id);
 	  if (model == null)
 		return NotFound();
 
-	  return PartialView("DeleteDepartmentModal", model);
+	  return PartialView("_AddEditModal", model);
 	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> Edit(AddEditDeptViewModel model)
+	{
+	  if (ModelState.IsValid)
+	  {
+	
+		  _departmentService.Update(model);
+		  var updatedDept = await _departmentService.GetDepartmentForEditAsync(model.Id);
+		  return Json(new { success = true, id = updatedDept.Id, department = updatedDept });
+		
+	  }
+
+	  return Json(new { success = false, message = "Validation failed. Please check your inputs." });
+	}
+
+
 
 	[HttpPost]
 	public IActionResult DeleteConfirmed(int id)
@@ -95,6 +103,20 @@ namespace ExaminationSystem.MVC.Controllers
 
 	  return View(paginated);
 	}
+	[HttpGet]
+	public async Task<IActionResult> IsDeptNameUnique(string name, int id)
+	{
+	  var isUnique = await _departmentService.IsNameUniqueAsync(name, id);
+	  return Json(isUnique);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> IsDeptDiscUnique(string disc, int id)
+	{
+	  var isUnique = await _departmentService.IsDiscUniqueAsync(disc, id);
+	  return Json(isUnique);
+	}
+
 
 
   }

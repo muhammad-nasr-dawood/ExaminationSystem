@@ -8,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExaminationSystem.Core.Models;
 
-[Index("Disc", Name = "UQ_Dept_Disc", IsUnique = true)]
-[Index("Name", Name = "UQ_Dept_Name", IsUnique = true)]
 public partial class Department
 {
     [Key]

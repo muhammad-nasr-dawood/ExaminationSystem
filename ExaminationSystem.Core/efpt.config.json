@@ -291,10 +291,6 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[getStudent]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[GetTopicById]",
          "ObjectType": 1
       },

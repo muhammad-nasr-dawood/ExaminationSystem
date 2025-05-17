@@ -1,3 +1,4 @@
+using ExaminationSystem.MVC.ViewModels.DepartmentViewModels;
 using System.ComponentModel.DataAnnotations;
 
 namespace ExaminationSystem.MVC.ViewModels.BranchViewModels
@@ -17,6 +18,13 @@ namespace ExaminationSystem.MVC.ViewModels.BranchViewModels
 	[Required(ErrorMessage = "Street Number is required.")]
 	[Range(1, int.MaxValue, ErrorMessage = "Invalid Street Number.")]
 	public int? StreetNo { get; set; }
+
+	[Display(Name = "Departments (Optional)")]
+	public List<int>? SelectedDepartmentIds { get; set; }=new List<int>();
+
+	public List<DepartmentViewModel> AvailableDepartments { get; set; } = new();
+
+	public int NumberOfDepartments { get; set; }
 
 
   }

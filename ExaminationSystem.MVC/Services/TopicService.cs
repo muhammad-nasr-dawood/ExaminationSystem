@@ -1,3 +1,4 @@
+using AutoMapper.QueryableExtensions;
 using ExaminationSystem.Core;
 using ExaminationSystem.Core.Consts;
 using ExaminationSystem.Core.Helpers;
@@ -6,6 +7,7 @@ using ExaminationSystem.MVC.ViewModels.DepartmentViewModels;
 using ExaminationSystem.MVC.ViewModels.TopicViewModels;
 using LinqKit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExaminationSystem.MVC.Services
 {
@@ -23,7 +25,7 @@ namespace ExaminationSystem.MVC.Services
 	  _courseService = courseService;
 	}
 
-	public PaginatedResult<TopicDisplayViewModel> FindAll(
+	public async Task<PaginatedResult<TopicDisplayViewModel>> FindAll(
 	int? pageNumber,
 	int? pageSize,
 	int? courseIdFilter,
@@ -46,44 +48,50 @@ namespace ExaminationSystem.MVC.Services
 	  if (!string.IsNullOrWhiteSpace(searchTerm))
 		criteria = criteria.And(t => t.Name.Contains(searchTerm));
 
-	  Expression<Func<Topic, object>> orderBy = t => t.Id;
+	  var query = _unitOfWork.TopicRepo
+		  .FindAllQueryable(criteria)
+		  .AsNoTracking();
 
-	  if (!string.IsNullOrEmpty(columnOrderBy))
+	  var totalFilteredItems = await query.CountAsync();
+
+	  switch (columnOrderBy?.ToLower())
 	  {
-		switch (columnOrderBy.ToLower())
-		{
-		  case "name":
-			orderBy = t => t.Name;
-			break;
-		}
+		case "name":
+		  query = orderByDirection == OrderBy.Ascending
+			  ? query.OrderBy(t => t.Name)
+			  : query.OrderByDescending(t => t.Name);
+		  break;
+
+		default:
+		  query = orderByDirection == OrderBy.Ascending
+			  ? query.OrderBy(t => t.Id)
+			  : query.OrderByDescending(t => t.Id);
+		  break;
 	  }
 
-	  var result = _unitOfWork.TopicRepo.FindAll(
-		  take: pageSize,
-		  skip: (pageNumber.Value - 1) * pageSize,
-		  criteria: criteria,
-		  orderBy: orderBy,
-		  orderByDirection: orderByDirection
-	  );
-
-	  var mapped = _mapper.Map<List<TopicDisplayViewModel>>(result.Items);
-
-	  foreach (var vm in mapped)
-	  {
-		var entity = result.Items.First(x => x.Id == vm.Id);
-		vm.NumberOfCourses = entity.Crs.Count;
-	  }
+	  var projected = await query
+		  .Select(t => new TopicDisplayViewModel
+		  {
+			Id = t.Id,
+			Name = t.Name,
+			IsDeleted = t.IsDeleted,
+			NumberOfCourses = t.Crs.Count
+		  })
+		  .Skip((pageNumber.Value - 1) * pageSize.Value)
+		  .Take(pageSize.Value)
+		  .ToListAsync();
 
 	  return new PaginatedResult<TopicDisplayViewModel>
 	  {
-		Items = mapped,
-		PageSize = result.PageSize,
-		CurrentPage = result.CurrentPage,
-		TotalFilteredItems = result.TotalFilteredItems,
-		TotalItemsInTable = result.TotalItemsInTable,
-		TotalPages = result.TotalPages
+		Items = projected,
+		PageSize = pageSize.Value,
+		CurrentPage = pageNumber.Value,
+		TotalFilteredItems = totalFilteredItems,
+		TotalItemsInTable = totalFilteredItems,
+		TotalPages = (int)Math.Ceiling((double)totalFilteredItems / pageSize.Value)
 	  };
 	}
+
 	public List<CourseDisplayViewModel> GetAllCourses()
 	{
 
@@ -110,34 +118,53 @@ namespace ExaminationSystem.MVC.Services
 
 	public TopicAddEditViewModel GetTopicForEdit(int id)
 	{
-	  var topic = _unitOfWork.TopicRepo.GetById(id);
+	  var topic = _unitOfWork.TopicRepo
+		  .FindAllQueryable(t => t.Id == id)
+		  .AsNoTracking()
+		  .FirstOrDefault();
+
+	  if (topic == null)
+		return null;
 
 	  var vm = _mapper.Map<TopicAddEditViewModel>(topic);
 
-	  vm.AvailableCourses = _mapper.Map<List<CourseDisplayViewModel>>(
-		  _unitOfWork.CoursesRepo.FindAll(c => !c.IsDeleted)
-	  );
+	  var courses = _unitOfWork.CoursesRepo
+		  .FindAllQueryable(c => !c.IsDeleted)
+		  .AsNoTracking()
+		  .ToList();
+
+	  vm.AvailableCourses = _unitOfWork.CoursesRepo
+	.FindAllQueryable(c => !c.IsDeleted)
+	.AsNoTracking()
+	.ProjectTo<CourseDisplayViewModel>(_mapper.ConfigurationProvider)
+	.ToList();
+
 
 	  vm.SelectedCourseIds = topic.Crs.Select(c => c.Id).ToList();
 
 	  return vm;
 	}
+
 	public List<CourseDisplayViewModel> GetAvailableCourses()
 	{
-	  var courses = _unitOfWork.CoursesRepo.FindAll(c => !c.IsDeleted).ToList();
-	  return _mapper.Map<List<CourseDisplayViewModel>>(courses);
+	  return _unitOfWork.CoursesRepo
+		  .FindAllQueryable(c => !c.IsDeleted)
+		  .AsNoTracking()
+		  .ProjectTo<CourseDisplayViewModel>(_mapper.ConfigurationProvider)
+		  .ToList();
 	}
+
+
 
 	public object AddTopic(TopicAddEditViewModel model)
 	{
 	  var topic = _mapper.Map<Topic>(model);
 	  topic.IsDeleted = false;
 
-
 	  var selectedCrs = _unitOfWork.CoursesRepo
-		  .FindAll(c => model.SelectedCourseIds.Contains(c.Id))
+		  .FindAllQueryable(c => model.SelectedCourseIds.Contains(c.Id))
+		  .AsNoTracking()
 		  .ToList();
-
 
 	  foreach (var course in selectedCrs)
 	  {
@@ -150,18 +177,21 @@ namespace ExaminationSystem.MVC.Services
 	  return new { success = true, message = "Topic added successfully." };
 	}
 
+
+
 	public object EditTopic(TopicAddEditViewModel model)
 	{
 	  var topic = _unitOfWork.TopicRepo.GetById(model.Id.Value);
 	  if (topic == null)
-		return new JsonResult(new { success = false, message = "Topic not found." });
+		return new { success = false, message = "Topic not found." };
 
 	  _mapper.Map(model, topic);
 
 	  topic.Crs.Clear();
 
 	  var selectedCrs = _unitOfWork.CoursesRepo
-		  .FindAll(c => model.SelectedCourseIds.Contains(c.Id))
+		  .FindAllQueryable(c => model.SelectedCourseIds.Contains(c.Id))
+		  .AsNoTracking()
 		  .ToList();
 
 	  foreach (var course in selectedCrs)
@@ -174,7 +204,21 @@ namespace ExaminationSystem.MVC.Services
 	  return new { success = true, message = "Topic updated successfully." };
 	}
 
+	public async Task<string?> CheckTopicNameStatusAsync(string name, int? id)
+	{
+	  var existing = await _unitOfWork.TopicRepo
+		  .FindAllQueryable(t => t.Name == name && (!id.HasValue || t.Id != id.Value))
+		  .Select(t => new { t.IsDeleted })
+		  .FirstOrDefaultAsync();
 
+	  if (existing == null)
+		return null; 
+
+	  if (!existing.IsDeleted)
+		return "Topic name already exists.";
+
+	  return "Topic name exists but is inactive. Please restore it instead.";
+	}
 
 
 

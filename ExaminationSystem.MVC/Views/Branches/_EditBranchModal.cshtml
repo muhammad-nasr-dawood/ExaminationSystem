@@ -7,6 +7,7 @@
 
 </style>
 
+
 <div class="modal fade" id="editBranchModal-@Model.Id" tabindex="-1" aria-labelledby="editBranchModalLabel-@Model.Id" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -40,6 +41,7 @@
 
                 </select>
                  <span asp-validation-for="ZipCode" class="text-danger"></span>
+				
             </div>         
 
 
@@ -48,7 +50,24 @@
                     <label asp-for="StreetNo" class="form-label"></label>
                     <input asp-for="StreetNo" class="form-control" />
                     <span asp-validation-for="StreetNo" class="text-danger"></span>
+					
+
                    </div>
+					<div class="mb-3">
+						<label asp-for="SelectedDepartmentIds" class="form-label"></label>
+						<select asp-for="SelectedDepartmentIds" class="select2 form-select" id="branchDepartments" multiple="multiple">
+
+							@foreach (var dept in Model.AvailableDepartments)
+							{
+								
+								<option value="@dept.Id" selected="@(Model.SelectedDepartmentIds.Contains(dept.Id))">
+									@dept.Name
+								</option>
+							}
+						</select>
+						<span asp-validation-for="SelectedDepartmentIds" class="text-danger"></span>
+					</div>
+
 
 
 					<div class="modal-footer">
@@ -64,6 +83,7 @@
 </div>
 <script>
 $(document).ready(function () {
+
 	$('#editBranchForm').on('submit', function (e) {
 		e.preventDefault();
 		if (!$(this).valid()) return;
@@ -76,7 +96,7 @@ $(document).ready(function () {
 			data: formData,
 			success: function (response) {
 				try {
-					
+					//Edit Branch
 					if (typeof response === 'object' && response.success) {
 						$('#editBranchModal-' + response.id).modal('hide');
 
@@ -84,6 +104,8 @@ $(document).ready(function () {
 							$('#branch-' + response.id + ' .location').text(response.branch.zipCode);
 							$('#branch-' + response.id + ' .streetNo').text(response.branch.streetNo);
 							$('#branch-' + response.id + ' .locName').text(response.branch.locationName + " Branch");
+							$('#branch-' + response.id + ' .number-of-departments').text(response.branch.numberOfDepartments);
+
 						}
 
 						Swal.fire({
@@ -94,7 +116,7 @@ $(document).ready(function () {
 							showConfirmButton: false
 						});
 					}
-					
+					//Add Branch
 	             else if (typeof response === 'string' && $(response).filter('div.col-lg-4').length > 0) {
 	             $('#editBranchModal-0').modal('hide');
 	             $('#branch-list').prepend(response);
@@ -134,26 +156,17 @@ $(document).ready(function () {
 					});
 				}
 			},
-			error: function (xhr) {
-				Swal.fire({
-					icon: 'error',
-					title: 'Error!',
-					text: xhr.responseText || 'An error occurred while processing your request.'
-				});
-			}
+	error: function (xhr) {
+		Swal.fire({
+			icon: 'error',
+			title: 'Oops!',
+			text: 'Something went wrong. Please try again later.'
 		});
-	});
+	}
 
-	$('#editBranchModal-@Model.Id').on('shown.bs.modal', function () {
-		const $form = $('#editBranchForm');
-		const $select = $('#ZipCode');
+		});
+			});
 
-		if (!$select.hasClass('select2-initialized')) {
-			$select.select2().on('select2:close', function () {
-				$form.validate().element(this);
-			}).addClass('select2-initialized');
-		}
-	});
 
 	$('#editBranchModal-@Model.Id').on('hide.bs.modal', function () {
 		const modal = this;
@@ -162,9 +175,7 @@ $(document).ready(function () {
 			focused.blur();
 		}
 	});
-		$('#editBranchForm input').on('blur', function () {
-		$(this).valid(); 
-	});
+
 });
 
 

@@ -53,7 +53,8 @@ builder.Services.AddScoped<ILocationRepo, LocationRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IBaseRepo<StaffBranchIntakeWorksFor>, BaseRepo<StaffBranchIntakeWorksFor>>();
-builder.Services.AddScoped<IBaseRepo<Intake>, BaseRepo<Intake>>();
+builder.Services.AddScoped<IIntakeRepo,IntakeRepo>();
+builder.Services.AddScoped<IBaseRepo<Role>, BaseRepo<Role>>();
 
 
 
@@ -62,6 +63,7 @@ builder.Services.AddScoped<IImageService, ImageKitService>();
 
 builder.Services.AddScoped<IBaseRepo<Staff>, BaseRepo<Staff>>(); // staff repo using the generic repo
 builder.Services.AddScoped<IBaseRepo<Student>, BaseRepo<Student>>();
+builder.Services.AddScoped<IBaseRepo<BranchDept>, BaseRepo<BranchDept>>();
 //builder.Services.AddScoped<IStudentRepo, StudentRepo>();
 
 builder.Services.AddScoped<IBaseRepo<User>, BaseRepo<User>>();

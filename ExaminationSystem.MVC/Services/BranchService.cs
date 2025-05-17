@@ -29,33 +29,83 @@ namespace ExaminationSystem.MVC.Services
 
 	public List<BranchViewModel> GetAll()
 	{
+	  var branches = _unitOfWork.BranchesRepo
+		  .FindAllQueryable(b => !b.IsDeleted)
+		  .Include(b => b.ZipCodeNavigation) 
+		  .AsNoTracking()
+		  .Select(b => new BranchViewModel
+		  {
+			Id = b.Id,
+			LocationName = b.ZipCodeNavigation.Governate
+		  })
+		  .ToList();
 
-	  var branches = _unitOfWork.BranchesRepo.FindAll(b => !b.IsDeleted).ToList();
-	  return _mapper.Map<List<BranchViewModel>>(branches);
+	  return branches;
 	}
 
 
-	public BranchEditViewModel GetBranchForEdit(int id)
+
+
+	public async Task<BranchEditViewModel> GetBranchForEditAsync(int id)
 	{
-	  var branch = _unitOfWork.BranchesRepo.GetById(id);
-	  if (branch == null)
-	  {
-		return null;
-	  }
+	  var branch = await _unitOfWork.BranchesRepo.FindAsync(b => b.Id == id);
+	  if (branch == null) return null;
 
-	  return _mapper.Map<BranchEditViewModel>(branch);
+	  var viewModel = _mapper.Map<BranchEditViewModel>(branch);
+
+	  var activeIntakeId = await _unitOfWork.IntakeRepo.GetActiveIntakeIdAsync();
+	  if (activeIntakeId == 0) return viewModel;
+
+	  var assignedDeptIds = _unitOfWork.BranchDeptRepo
+		  .FindAllQueryable(bd => bd.BranchId == id && bd.IntakeId == activeIntakeId)
+		  .Select(bd => bd.DeptId)
+		  .ToList(); 
+
+	  viewModel.SelectedDepartmentIds = assignedDeptIds;
+
+	  viewModel.AvailableDepartments = await _unitOfWork.DepartmentRepo
+		  .FindAllQueryable(d => !d.IsDeleted)
+		  .AsNoTracking()
+		  .ProjectTo<DepartmentViewModel>(_mapper.ConfigurationProvider)
+		  .ToListAsync();
+
+	  return viewModel;
 	}
+
+
+
 
 	public void Update(BranchEditViewModel viewModel)
 	{
 	  var branch = _unitOfWork.BranchesRepo.GetById(viewModel.Id);
 	  if (branch != null)
 	  {
-
 		_mapper.Map(viewModel, branch);
+		_unitOfWork.Complete();
+
+		var activeIntakeId = _unitOfWork.IntakeRepo.GetActiveIntakeIdAsync().Result;
+
+		var existingDeptLinks = _unitOfWork.BranchDeptRepo
+			.FindAll(bd => bd.BranchId == branch.Id && bd.IntakeId == activeIntakeId)
+			.ToList();
+
+		foreach (var link in existingDeptLinks)
+		  _unitOfWork.BranchDeptRepo.Delete(link);
+
+		foreach (var deptId in viewModel.SelectedDepartmentIds)
+		{
+		  _unitOfWork.BranchDeptRepo.Add(new BranchDept
+		  {
+			BranchId = branch.Id,
+			DeptId = deptId,
+			IntakeId = activeIntakeId
+		  });
+		}
+
 		_unitOfWork.Complete();
 	  }
 	}
+
 
 
 	public async Task<List<LocationViewModel>> GetLocations(int? id = null)
@@ -83,19 +133,26 @@ namespace ExaminationSystem.MVC.Services
 
 	}
 
-	public async Task<bool> DeleteManagerByBranchId(int id)
+	public async Task<bool> DeleteManagerByBranchId(int branchId)
 	{
-	  var Branch = await _unitOfWork.StaffBranchManageRepo.GetByBranchId(id);
-	  if (Branch == null)
-		return false;
+	  var manager = await _unitOfWork.StaffBranchManageRepo.GetByBranchId(branchId);
+	  if (manager == null) return false;
 
-	  else
+	  _unitOfWork.StaffBranchManageRepo.Delete(manager);
+
+	  
+	  var staff = await _unitOfWork.StaffRepo.FindAsync(s => s.Ssn == manager.StaffSsn);
+	  var managerRole = await _unitOfWork.RoleRepo.FindAsync(r => r.Name == "branch_manager");
+	  if (staff != null && managerRole != null && staff.Roles.Contains(managerRole))
 	  {
-		_unitOfWork.StaffBranchManageRepo.Delete(Branch);
-		_unitOfWork.Complete();
-		return (Branch != null);
+		staff.Roles.Remove(managerRole);
 	  }
+
+	  await _unitOfWork.CompleteAsync();
+
+	  return true;
 	}
+
 
 
 	public async Task<BranchManagerViewModel> GetUnassignedStaffAsync(int branchId)
@@ -126,16 +183,54 @@ namespace ExaminationSystem.MVC.Services
 
 	public async Task<string?> AddBranchManager(int branchId, long staffSsn)
 	{
-	  
-	  var rec = await _unitOfWork.StaffBranchManageRepo.AddBranchManager(branchId, staffSsn);
-	  _unitOfWork.Complete();
-
-	  if (rec == null)
+	 
+	  var branch = await _unitOfWork.BranchesRepo.FindAsync(b => b.Id == branchId);
+	  var newStaff = await _unitOfWork.StaffRepo.FindAsync(s => s.Ssn == staffSsn);
+	  if (branch == null || newStaff == null)
 		return null;
 
-	  var staff = await _unitOfWork.StaffRepo.FindAsync(s => s.Ssn == staffSsn);
-	  return _mapper.Map<StaffGeneralDisplayVM>( staff).FullName; 
+	
+	  var existing = await _unitOfWork.StaffBranchManageRepo.GetByBranchId(branchId);
+	  if (existing != null)
+	  {
+		var oldStaff = await _unitOfWork.StaffRepo.FindAsync(s => s.Ssn == existing.StaffSsn);
+		var managerRole = await _unitOfWork.RoleRepo.FindAsync(r => r.Name == "branch_manager");
+
+		if (oldStaff != null && managerRole != null && oldStaff.Roles.Contains(managerRole))
+		{
+		  oldStaff.Roles.Remove(managerRole);
+		}
+
+		_unitOfWork.StaffBranchManageRepo.Delete(existing);
+	  }
+
+	  var activeIntakeId = await _unitOfWork.IntakeRepo.GetActiveIntakeIdAsync();
+	  if (activeIntakeId == 0)
+		return null;
+
+	  
+	  var newManager = new StaffBranchManage
+	  {
+		StaffSsn = staffSsn,
+		BranchId = branchId,
+		IntakeId = activeIntakeId,
+		HiringDate = DateOnly.FromDateTime(DateTime.Now)
+	  };
+
+	  await _unitOfWork.StaffBranchManageRepo.AddAsync(newManager);
+
+	  var roleToAdd = await _unitOfWork.RoleRepo.FindAsync(r => r.Name == "branch_manager");
+	  if (roleToAdd != null && !newStaff.Roles.Contains(roleToAdd))
+	  {
+		newStaff.Roles.Add(roleToAdd);
+	  }
+
+	  await _unitOfWork.CompleteAsync();
+	  return _mapper.Map<StaffGeneralDisplayVM>(newStaff)?.FullName;
 	}
+
+
+
 
 
 
@@ -150,19 +245,31 @@ namespace ExaminationSystem.MVC.Services
 	  _unitOfWork.BranchesRepo.Add(newBranch);
 	  _unitOfWork.Complete();
 
-
-	  var location = _unitOfWork.LocationRepo
-		  .Find(l => l.ZipCode == newBranch.ZipCode);
-
-	  var result = _mapper.Map<BranchViewModel>(newBranch);
-
-	  if (location != null)
+	  var activeIntakeId = _unitOfWork.IntakeRepo.GetActiveIntakeIdAsync().Result;
+	  if (activeIntakeId == 0)
 	  {
-		result.LocationName = location.Governate;
+		throw new InvalidOperationException("No active intake found.");
 	  }
+
+	  foreach (var deptId in viewModel.SelectedDepartmentIds)
+	  {
+		_unitOfWork.BranchDeptRepo.Add(new BranchDept
+		{
+		  BranchId = newBranch.Id,
+		  DeptId = deptId,
+		  IntakeId = activeIntakeId
+		});
+	  }
+
+	  _unitOfWork.Complete();
+
+	  var location = _unitOfWork.LocationRepo.Find(l => l.ZipCode == newBranch.ZipCode);
+	  var result = _mapper.Map<BranchViewModel>(newBranch);
+	  result.NumberOfDepartments = viewModel.SelectedDepartmentIds.Count;
 
 	  return result;
 	}
+
 
 
 

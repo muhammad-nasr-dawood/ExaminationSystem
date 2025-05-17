@@ -171,7 +171,7 @@
 					
 					else
 					{
-						<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#largeModal">
+						<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#courseModal">
 							<i class="ti ti-plus"></i> Add Course
 						</button>
 					}
@@ -361,14 +361,31 @@
 				});
 				$('#courseTopics').val(null).trigger('change');
 			});
+			$('#courseForm').find('.text-danger').text('');
+			$('#courseForm').find('.input-validation-error').removeClass('input-validation-error');
 			$('#courseModal').modal('show');
 			
 		});
-		const $form = $('#courseForm');
-		const $select = $('#courseTopics');
-		    	$select.select2().on('select2:close', function () {
-				$form.validate().element(this); 
+			$(document).on('shown.bs.modal', '#courseModal', function () {
+				const $form = $('#courseForm');
+				$.validator.unobtrusive.parse($form);
+
+				const $select = $('#courseTopics');
+
+				$select.select2({
+					placeholder: "Select Topics",
+					allowClear: true,
+					dropdownParent: $('#courseModal')
+				});
+
+				$select.on('select2:close', function () {
+					$form.validate().element(this);
+				});
+
 			});
+
+
+
 				function openEditCourse(id) {
 			$.get(`/Courses/GetCourseForEdit/${id}`, function (model) {
 				if (model) {
@@ -380,10 +397,11 @@
 						const selected = model.selectedTopicIds.includes(t.id) ? 'selected' : '';
 						$('#courseTopics').append(`<option value="${t.id}" ${selected}>${t.name}</option>`);
 					});
-					$('#courseForm').find('.text-danger').text('');
-		        	$('#courseForm').find('.input-validation-error').removeClass('input-validation-error');
-					$('#courseModal').modal('show');
-				
+				   const $form = $('#courseForm');
+				   $form.find('.text-danger').text('');
+				   $form.find('.input-validation-error').removeClass('input-validation-error');
+				   $form.find('select, input').removeClass('input-validation-error');
+				   $('#courseModal').modal('show');
 				}
 			});
 		}
@@ -406,15 +424,16 @@
 				url: url,
 				type: 'POST',
 				data: formData,
-				success: function (response) {
-					if (response.success) {
-						$('#courseModal').modal('hide');
-						$('#coursesTable').DataTable().ajax.reload();
-						Swal.fire('Success!', response.message, 'success');
-					} else {
-						Swal.fire('Error!', response.message, 'error');
-					}
-				},
+						success: function (response) {
+				if (response.success) {
+					$('#courseModal').modal('hide');
+					$('#coursesTable').DataTable().ajax.reload();
+					Swal.fire('Success!', response.message, 'success');
+				} else {
+					Swal.fire('Error!', response.message, 'error'); 
+				}
+			}
+			,
 				error: function () {
 					Swal.fire('Error!', 'Something went wrong.', 'error');
 				}
