@@ -6,6 +6,7 @@ using ExaminationSystem.Core.Models;
 using ExaminationSystem.EF;
 using ExaminationSystem.MVC.ViewModels.StudentViewModels;
 using LinqKit;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -295,12 +296,51 @@ namespace ExaminationSystem.MVC.Services
 		  std.StudentIntakeBranchDepartmentStudies.Any(rel =>
 			  rel.BranchId == branchId &&
 			  rel.DepartmentId == deptId &&
-			  rel.Intake.IsRunning == 1);
+			  rel.Intake.IsRunning == 1 &&
+			  rel.StudentSsnNavigation.SsnNavigation.IsActive == true);
 
 	  var students = await UnitOfWork.StudentRepo.FindAllAsync(filter);
 
 	  return _mapper.Map<List<StudentBasicInfoVM>>(students);
 	}
-  }
 
+	public List<StudentExamVM> GetStudentExams(long studentSSN, bool isPending)
+	{
+	  DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+	  Expression<Func<StudentExamModel, bool>> filters;
+	  if (isPending)
+		filters = std => std.StudentId == studentSSN && (std.ExamModel.Pool.Configuration.Date >= today || std.ExamModel.Pool.Configuration.Date == null);
+	  else
+		filters = std => std.StudentId == studentSSN && std.ExamModel.Pool.Configuration.Date < today;
+	  var exams = UnitOfWork.StudentExamModelRepo.FindAll(criteria: filters);
+	  return _mapper.Map<List<StudentExamVM>>(exams);
+	}
+
+
+
+	public List<StudentCourseScheduleVM> GetStudentCourseSchedule (long studentSSN)
+	{
+	  // Get all student enrollments
+	  var enrollments = UnitOfWork.StudentIntakeBranchDepartmentStudyRepo
+		  .FindAll(std => std.StudentSsn == studentSSN)
+		  .ToList(); // Force materialization
+
+	  if (!enrollments.Any())
+		return new List<StudentCourseScheduleVM>();
+
+	  // Materialize teachings and filter in memory
+	  var teachings = UnitOfWork.TeachingRepo
+		  .FindAll().Items
+		  .ToList() // Force materialization
+		  .Where(teaching => enrollments.Any(std =>
+			  std.BranchId == teaching.BranchId &&
+			  std.DepartmentId == teaching.DepartmentId &&
+			  std.IntakeId == teaching.IntakeId))
+		  .ToList();
+
+	  return _mapper.Map<List<StudentCourseScheduleVM>>(teachings);
+	}
+
+
+  }
 }

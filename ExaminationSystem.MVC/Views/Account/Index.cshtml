@@ -72,7 +72,9 @@
 </div>
 <!--/ Navbar pills -->
 <!-- User Profile Content -->
+
 <div class="row">
+	<!-- Left Column - Student Info -->
 	<div class="col-xl-4 col-lg-5 col-md-5">
 		<!-- About User -->
 		<div class="card mb-6">
@@ -80,22 +82,23 @@
 				<small class="card-text text-uppercase text-muted small">About</small>
 				<ul class="list-unstyled my-3 py-1">
 					<li class="d-flex align-items-center mb-4"><i class="ti ti-user ti-lg"></i><span class="fw-medium mx-2">Full Name:</span> <span>@Model.Fname @Model.Lname</span></li>
-					<li class="d-flex align-items-center mb-4"><i class="ti ti-check ti-lg"></i><span class="fw-medium mx-2">Status:</span>
+					<li class="d-flex align-items-center mb-4">
+						<i class="ti ti-check ti-lg"></i><span class="fw-medium mx-2">Status:</span>
 						@if (Model.IsActive)
 						{
 							<span>Active</span>
-						}else{
+						}
+						else
+						{
 							<span>Inactive</span>
 						}
 					</li>
 					<li class="d-flex align-items-center mb-4"><i class="ti ti-crown ti-lg"></i><span class="fw-medium mx-2">Role:</span> <span class="text-capitalize">@Model.UserRole</span></li>
 					<li class="d-flex align-items-center mb-4"><i class="ti ti-flag ti-lg"></i><span class="fw-medium mx-2">City:</span> <span>@Model.City</span></li>
-					@* <li class="d-flex align-items-center mb-2"><i class="ti ti-language ti-lg"></i><span class="fw-medium mx-2">Languages:</span> <span>English</span></li> *@
 				</ul>
 				<small class="card-text text-uppercase text-muted small">Contacts</small>
 				<ul class="list-unstyled my-3 py-1">
 					<li class="d-flex align-items-center mb-4"><i class="ti ti-phone-call ti-lg"></i><span class="fw-medium mx-2">Contact:</span> <span>@Model.PhoneNumber</span></li>
-					@* <li class="d-flex align-items-center mb-4"><i class="ti ti-messages ti-lg"></i><span class="fw-medium mx-2">Skype:</span> <span>john.doe</span></li> *@
 					<li class="d-flex align-items-center mb-4"><i class="ti ti-mail ti-lg"></i><span class="fw-medium mx-2">Email:</span> <span>@Model.Email</span></li>
 				</ul>
 				@if (Model.UserRole == "Student")
@@ -119,14 +122,50 @@
 						</li>
 					</ul>
 				}
-
 			</div>
 		</div>
-		<!--/ About User -->
-		<!-- Profile Overview -->
-		
-		<!--/ Profile Overview -->
 	</div>
+	@if (Model.UserRole == "Student")
+	{
+		<div class="col-xl-8 col-lg-7 col-md-7">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Exams</h5>
+
+					<div class="row mb-3">
+						<div class="col-md-4">
+							<select id="examFilter" class="form-select">
+								<option value="">All</option>
+								<option value="pending">Pending</option>
+								<option value="old">Old</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="table-responsive">
+						<table id="examTable" class="table table-striped">
+							<thead>
+								<tr>
+									<th>Course Name</th>
+									<th>Exam ID</th>
+									<th>Date</th>
+									<th>Start Time</th>
+									<th>End Time</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	}
+
+</div>
+
+
+
 	<div class="col-xl-8 col-lg-7 col-md-7">
 		<!-- Activity Timeline -->
 		@if (!User.IsInRole("Student")){
@@ -254,7 +293,39 @@
         $('#branchFilter, #departmentFilter, #courseFilter, #statusFilter')
           .change(() => table.draw());
       });
-    </script>
+
+
+		$(document).ready(function () {
+		  var table = $('#examTable').DataTable({
+			processing: true,
+			serverSide: true,
+			ajax: {
+			  url: '@Url.Action("GetExams", "Students")',
+			  type: 'POST',
+			  data: function (d) {
+				d.filter = $('#examFilter').val(); // filter: "all", "pending", or "old"
+			  },
+			  dataSrc: 'data'
+			},
+			columns: [
+			  { data: 'courseName', title: 'Course Name' },
+			  { data: 'examId', title: 'Exam ID' },
+			  { data: 'date', title: 'Date' },
+			  { data: 'startingTime', title: 'Start Time' },
+			  { data: 'endingTime', title: 'End Time' }
+			],
+			language: {
+			  emptyTable: "No exams found ."
+			  }
+		  });
+
+		  $('#examFilter').change(function () {
+			table.draw();
+		  });
+		});
+
+		</script>
   }
 }
+
 

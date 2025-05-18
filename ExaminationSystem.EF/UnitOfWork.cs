@@ -54,27 +54,28 @@ namespace ExaminationSystem.EF
 
        public ILocationRepo LocationRepo { get;}
 
-        public UnitOfWork(ExaminationDBContext dbContext, 
-            IBaseRepo<Student> studentRepo, 
-            IAuthRepo authRepo, 
-            IBaseRepo<Staff> staffRepo, 
-            ILocationRepo locationRepo, 
-            IBranchRepo branchRepo,
-            IBaseRepo<Department> departmentRepo, 
-            IBaseRepo<User> userRepo,
-            IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> teachRepo, 
-            IBaseRepo<Course> coursesRepo,
-            IBaseRepo<ProfileImage> profileImageRepo, 
-            IStaffBranchManageRepo staffBranchManageRepo,
-            IPoolRepo _poolRepo,
-            IQuestionRepo _questionRepo,
-            IBaseRepo<StaffBranchIntakeWorksFor> worksFor,
-            IBaseRepo<Intake> intakeRepo,
-            IBaseRepo<Topic> topicRepo,
-            IBaseRepo<StudentIntakeBranchDepartmentStudy> studentIntakeBranchDepartmentStudyRepo,
-            IExamRepo examRepo
-            
-            )
+        public IBaseRepo<StudentExamModel> StudentExamModelRepo { get; }
+
+        public UnitOfWork(ExaminationDBContext dbContext,
+              IBaseRepo<Student> studentRepo,
+              IAuthRepo authRepo,
+              IBaseRepo<Staff> staffRepo,
+              ILocationRepo locationRepo,
+              IBranchRepo branchRepo,
+              IBaseRepo<Department> departmentRepo,
+              IBaseRepo<User> userRepo,
+              IBaseRepo<StaffBranchIntakeDepartmentCourseTeach> teachRepo,
+              IBaseRepo<Course> coursesRepo,
+              IBaseRepo<ProfileImage> profileImageRepo,
+              IStaffBranchManageRepo staffBranchManageRepo,
+              IPoolRepo _poolRepo,
+              IQuestionRepo _questionRepo,
+              IBaseRepo<StaffBranchIntakeWorksFor> worksFor,
+              IBaseRepo<Intake> intakeRepo,
+              IBaseRepo<Topic> topicRepo, 
+              IBaseRepo<StudentIntakeBranchDepartmentStudy> studentIntakeBranchDepartmentStudyRepo,
+              IBaseRepo<StudentExamModel> studentExamModelRepo
+              )
 
         {
             _dbContext = dbContext;
@@ -102,8 +103,10 @@ namespace ExaminationSystem.EF
 
             PoolRepo = _poolRepo; // Added PoolRepo to UnitOfWork
             QuestionRepo =  _questionRepo;
+            IntakeRepo = intakeRepo;
+            WorksForRepo = worksFor;
 
-
+            StudentExamModelRepo = studentExamModelRepo;
 
         }
 
