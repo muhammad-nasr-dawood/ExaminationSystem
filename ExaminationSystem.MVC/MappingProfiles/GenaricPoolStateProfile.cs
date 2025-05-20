@@ -56,7 +56,7 @@ namespace ExaminationSystem.MVC.MappingProfiles
 			dest.Branches[branchId].Departments.Add(deptId, department);
 			dest.Branches[branchId].Objects.Add(dynamicSrc);
 		  }
-		  else
+		  else if (!dest.Branches[branchId].Departments[deptId].Courses.ContainsKey(courseId))
 		  {
 			// Both branch and department exist
 			var department = dest.Branches[branchId].Departments[deptId];
@@ -69,6 +69,11 @@ namespace ExaminationSystem.MVC.MappingProfiles
 			department.Objects.Add(dynamicSrc);
 
 			dest.Branches[branchId].Objects.Add(dynamicSrc);
+
+		  }
+		  else // this case is made for configuration
+		  {
+			dest.Branches[branchId].Departments[deptId].Courses[courseId].Objects.Add(dynamicSrc);
 
 		  }
 		 

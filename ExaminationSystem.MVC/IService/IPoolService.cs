@@ -45,6 +45,8 @@ namespace ExaminationSystem.MVC.IService
 
 	public Task<List<includedAndExcludedStudentsResult>> includedAndExcludedStudents(long staffId, int poolId,OutputParameter<int>_);
 
+	public Task<int> SetExamSession(long staffId, int poolId, DateOnly date, TimeOnly startingTime, TimeOnly endingTime, int duration);
+
 
   }
 }

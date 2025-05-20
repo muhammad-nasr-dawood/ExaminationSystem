@@ -388,6 +388,35 @@ namespace ExaminationSystem.MVC.Controllers
 	  }
 	}
 
+
+
+	[HttpPost]
+	public async Task<IActionResult> SetExamSession(long staffId, int poolId, DateOnly date, TimeOnly startingTime, TimeOnly endingTime, int duration)
+	{
+	  try
+	  {
+		var res = await _poolService.SetExamSession(staffId, poolId, date, startingTime, endingTime, duration);
+
+		if (res > 0)
+		{
+		  return Json(new { success = true, message = "Exam session set successfully." });
+		}
+		else
+		{
+		  return Json(new { success = false, message = "Failed to set exam session." });
+		}
+
+	  }
+	  catch (Exception ex)
+	  {
+		return Json(new { success = false, message = ex.Message });
+	  }
+
+	}
+
+
+
+
 	[HttpGet]
 	public async Task<IActionResult> Bank(int? CourseId)
 	{

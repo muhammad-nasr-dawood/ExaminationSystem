@@ -53,6 +53,9 @@ namespace ExaminationSystem.Core.IRepositories
         public Task<List<includedAndExcludedStudentsResult>> includedAndExcludedStudents(long staffId,int poolId, OutputParameter<int> returnValue );
 
 
+        public Task<int> SetExamSession(long staffId, int poolId, DateOnly date, TimeOnly startingTime, TimeOnly endingTime, int duration, OutputParameter<int> returnValue);
+
+
     }
 
 }

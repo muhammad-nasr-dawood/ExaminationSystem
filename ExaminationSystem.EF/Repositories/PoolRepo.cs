@@ -100,6 +100,10 @@ namespace ExaminationSystem.EF.Repositories
             return await _dbContext.Procedures.includedAndExcludedStudentsAsync(staffId, poolId,returnValue);
         }
 
+        public async Task<int> SetExamSession(long staffId, int poolId, DateOnly date, TimeOnly startingTime, TimeOnly endingTime, int duration, OutputParameter<int> returnValue)
+        {
+            return await _dbContext.Procedures.SetExamSessionAsync(staffId, poolId, date, startingTime, endingTime, duration, returnValue);
+        }
 
     }
 }
