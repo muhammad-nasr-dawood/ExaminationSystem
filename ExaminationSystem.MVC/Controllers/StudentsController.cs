@@ -47,6 +47,7 @@ public class StudentsController : Controller
 
 	return View();
   }
+
   [HttpPost]
   public IActionResult GetAllStudent() // will only be used throw ajax call
   {
@@ -222,40 +223,66 @@ public class StudentsController : Controller
 
 
   [HttpPost]
-  public IActionResult GetExams(string filter)
+  public IActionResult GetExams()
   {
 	try
 	{
+	  var draw = int.Parse(Request.Form["draw"].FirstOrDefault() ?? "1");
+	  var start = int.Parse(Request.Form["start"].FirstOrDefault() ?? "0");
+	  var length = int.Parse(Request.Form["length"].FirstOrDefault() ?? "10");
+
+	  var searchValue = Request.Form["search[value]"].FirstOrDefault();
+	  var filter = Request.Form["filter"].FirstOrDefault() ?? "all"; // "all", "pending", "old", or "active"
+
+	  var orderColumnIndex = int.Parse(Request.Form["order[0][column]"].FirstOrDefault() ?? "0");
+	  var orderDir = Request.Form["order[0][dir]"].FirstOrDefault() ?? "asc";
+
+	  string[] columnNames = { "CourseName", "ExamId", "Date", "StartingTime", "EndingTime", "Actions" };
+	  string orderBy = columnNames[orderColumnIndex];
+
 	  long studentId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-	  // You said your filtering (pending/old) is handled here:
-	  List<StudentExamVM> exams = _studentService.GetStudentExams(studentId, filter != "old");
+	  int pageNumber = (start / length) + 1;
+	  int pageSize = length;
 
-	  // Format the result for DataTables
-	  var result = exams.Select(e => new
-	  {
-		courseName = e.CourseName,
-		examId = e.ExamId,
-		date = e.Date?.ToString("yyyy-MM-dd"),
-		startingTime = e.StartingTime?.ToString("HH:mm"),
-		endingTime = e.EndingTime?.ToString("HH:mm")
-	  }).ToList();
+	  var examResult = _studentService.GetStudentExams(
+		  pageNumber: pageNumber,
+		  pageSize: pageSize,
+		  studentSSN: studentId,
+		  examStatus: filter,
+		  columnOrderBy: orderBy,
+		  orderByDirection: orderDir == "asc" ? OrderBy.Ascending : OrderBy.Descending,
+		  searchTerm: searchValue
+	  );
 
 	  return Json(new
 	  {
-		draw = Request.Form["draw"],
-		recordsTotal = result.Count,
-		recordsFiltered = result.Count,
-		data = result
+		draw = draw,
+		recordsTotal = examResult.TotalItemsInTable,
+		recordsFiltered = examResult.TotalFilteredItems,
+		data = examResult.Items.Select(e => new
+		{
+		  courseName = e.CourseName,
+		  examId = e.ExamId,
+		  date = e.Date?.ToString("yyyy-MM-dd"),
+		  startingTime = e.StartingTime?.ToString("HH:mm"),
+		  endingTime = e.EndingTime?.ToString("HH:mm"),
+		  isActive = e.Date?.ToString("yyyy-MM-dd") == DateOnly.FromDateTime(DateTime.Now).ToString("yyyy-MM-dd") &&
+					  e.StartingTime <= TimeOnly.FromDateTime(DateTime.Now) &&
+					  e.EndingTime >= TimeOnly.FromDateTime(DateTime.Now)
+		}).ToList()
 	  });
 	}
 	catch (Exception ex)
 	{
-	  // Log the exception if needed
-	  return StatusCode(500, "Error retrieving exam data");
+	  return Json(new
+	  {
+		draw = 1,
+		recordsTotal = 0,
+		recordsFiltered = 0,
+		data = new List<object>()
+	  });
 	}
   }
-
-
 
 }

@@ -304,18 +304,84 @@ namespace ExaminationSystem.MVC.Services
 	  return _mapper.Map<List<StudentBasicInfoVM>>(students);
 	}
 
-	public List<StudentExamVM> GetStudentExams(long studentSSN, bool isPending)
+	public PaginatedResult<StudentExamVM> GetStudentExams(
+		int? pageNumber,
+		int? pageSize,
+		long studentSSN,
+		string examStatus, // "all", "pending", "old", or "active"
+		string columnOrderBy = null,
+		string orderByDirection = OrderBy.Ascending,
+		string searchTerm = null)
 	{
-	  DateOnly today = DateOnly.FromDateTime(DateTime.Now);
-	  Expression<Func<StudentExamModel, bool>> filters;
-	  if (isPending)
-		filters = std => std.StudentId == studentSSN && (std.ExamModel.Pool.Configuration.Date >= today || std.ExamModel.Pool.Configuration.Date == null);
-	  else
-		filters = std => std.StudentId == studentSSN && std.ExamModel.Pool.Configuration.Date < today;
-	  var exams = UnitOfWork.StudentExamModelRepo.FindAll(criteria: filters);
-	  return _mapper.Map<List<StudentExamVM>>(exams);
-	}
+	  pageNumber ??= 1;
+	  pageSize ??= 10;
 
+	  DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+	  DateTime now = DateTime.Now;
+	  Expression<Func<StudentExamModel, bool>> filters = std => std.StudentId == studentSSN;
+
+	  // Apply status filter
+	  if (!string.IsNullOrEmpty(examStatus))
+	  {
+		switch (examStatus.ToLower())
+		{
+		  case "pending":
+			filters = filters.And(std => std.ExamModel.Pool.Configuration.Date >= today ||
+									  std.ExamModel.Pool.Configuration.Date == null);
+			break;
+		  case "old":
+			filters = filters.And(std => std.ExamModel.Pool.Configuration.Date < today);
+			break;
+		  case "active":
+			filters = filters.And(std => std.ExamModel.Pool.Configuration.Date == today &&
+									  std.ExamModel.Pool.Configuration.StartingTime != null &&
+									  std.ExamModel.Pool.Configuration.EndingTime != null &&
+									  TimeOnly.FromDateTime(now) >= std.ExamModel.Pool.Configuration.StartingTime.Value &&
+									  TimeOnly.FromDateTime(now) <= std.ExamModel.Pool.Configuration.EndingTime.Value); break;
+			// "all" case doesn't need additional filtering
+		}
+	  }
+
+	  // Add search term filtering if needed
+	  if (!string.IsNullOrWhiteSpace(searchTerm))
+	  {
+		filters = filters.And(std => std.ExamModel.Pool.Course.Name.Contains(searchTerm));
+	  }
+
+	  // Ordering logic remains the same
+	  Expression<Func<StudentExamModel, object>> orderBy = null;
+	  if (!string.IsNullOrEmpty(columnOrderBy))
+	  {
+		if (columnOrderBy.Equals("CourseName", StringComparison.OrdinalIgnoreCase))
+		{
+		  orderBy = std => std.ExamModel.Pool.Course.Name;
+		}
+		else if (columnOrderBy.Equals("Date", StringComparison.OrdinalIgnoreCase))
+		{
+		  orderBy = std => std.ExamModel.Pool.Configuration.Date;
+		}
+	  }
+
+	  var exams = UnitOfWork.StudentExamModelRepo.FindAll(
+		  take: pageSize,
+		  skip: (pageNumber - 1) * pageSize,
+		  criteria: filters,
+		  orderBy: orderBy,
+		  orderByDirection: orderByDirection
+	  );
+
+	  var mappedExams = _mapper.Map<List<StudentExamVM>>(exams.Items);
+
+	  return new PaginatedResult<StudentExamVM>()
+	  {
+		Items = mappedExams,
+		PageSize = exams.PageSize,
+		CurrentPage = exams.CurrentPage,
+		TotalPages = exams.TotalPages,
+		TotalFilteredItems = exams.TotalFilteredItems,
+		TotalItemsInTable = exams.TotalItemsInTable,
+	  };
+	}
 
 
 	public List<StudentCourseScheduleVM> GetStudentCourseSchedule (long studentSSN)

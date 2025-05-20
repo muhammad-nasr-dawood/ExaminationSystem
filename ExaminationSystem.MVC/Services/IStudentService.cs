@@ -37,7 +37,16 @@ namespace ExaminationSystem.MVC.Services
 	public bool UpdateStudent(StudentDetailsVM stdvm);
 
 	public Task<List<StudentBasicInfoVM>> GetStudentsByDepartmentBranchAndActiveIntakeAsync(int deptId, int branchId);
-	public List<StudentExamVM> GetStudentExams(long studentSSN, bool isPending);
+	//public List<StudentExamVM> GetStudentExams(long studentSSN, bool isPending);
+
+	public PaginatedResult<StudentExamVM> GetStudentExams(
+		int? pageNumber,
+		int? pageSize,
+		long studentSSN,
+		string examStatus, // "all", "pending", "old", or "active"
+		string columnOrderBy = null,
+		string orderByDirection = OrderBy.Ascending,
+		string searchTerm = null);
 
 	public List<StudentCourseScheduleVM> GetStudentCourseSchedule(long studentSSN);
 
