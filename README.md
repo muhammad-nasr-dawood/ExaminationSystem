@@ -19,21 +19,12 @@ A full-featured Examination Management System built with **ASP.NET Core MVC**, *
 - **Database:** SQL Server
 - **Frontend:** HTML, CSS, Bootstrap, jQuery
 
-## 📷 Screenshots
-
-*(You can add screenshots here if available to showcase the UI and functionality)*
 
 ## 📦 Getting Started
 
 ### Prerequisites
 
-- [.NET 6 SDK](https://dotnet.microsoft.com/download)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
 - [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 - [Visual Studio 2022](https://visualstudio.microsoft.com/) (recommended)
 
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/examination-system.git
-   cd examination-system
